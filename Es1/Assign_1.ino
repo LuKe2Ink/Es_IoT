@@ -12,10 +12,14 @@
 #define ROUTINE 1
 #define POLLING 2
 
+#define SPEED 500
+
 int count;
 int state;
 int timer;
+int limitTime;
 int mov;
+int score;
 unsigned long startMillis;
 unsigned long currentMillis;
 
@@ -32,13 +36,14 @@ void setup() {
   pinMode(BTNc, INPUT);
   pinMode(BTNd, INPUT);
 
+  score=0;
   state = 0;
+  limitTime = 15000;
 }
 
 void setupGame(){
   count = 13;
   timer = random(1000, 10000);
-  Serial.println(timer);
   startMillis = millis();
   state++;
 }
@@ -52,13 +57,22 @@ void routine(){
   if(currentMillis - startMillis >= timer){
     state++;
   }
-  delay(500);
+  delay(SPEED);
 }
 
 void polling(){
-  if(digitalRead(count-4) == LOW){
-    Serial.println("Click");
+  currentMillis = millis();
+  if(currentMillis - startMillis < limitTime){
+    if(digitalRead(count-4) == LOW){
+    score++;
+    Serial.print("New point! Score: ");
+    Serial.println(score);
     state=0;
+    }
+  }else{
+    Serial.print("Game Over. Final Score: ");
+    Serial.print(score);
+    state++;
   }
 }
 
