@@ -25,7 +25,7 @@ unsigned long currentMillis;
 
 void setup() {
   Serial.begin(9600);
-  
+
   pinMode(LEDa, OUTPUT);
   pinMode(LEDb, OUTPUT);
   pinMode(LEDc, OUTPUT);
@@ -56,13 +56,24 @@ void routine(){
   digitalWrite(count, HIGH);
   if(currentMillis - startMillis >= timer){
     state++;
-    Serial.println("time is over");
   }
   delay(SPEED);
 }
 
 void polling(){
-  
+  currentMillis = millis();
+  if(currentMillis - startMillis < limitTime){
+    if(digitalRead(count-4) == LOW){
+    score++;
+    Serial.print("New point! Score: ");
+    Serial.println(score);
+    state=0;
+    }
+  }else{
+    Serial.print("Game Over. Final Score: ");
+    Serial.print(score);
+    state++;
+  }
 }
 
 void loop() {
