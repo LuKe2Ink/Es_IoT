@@ -14,14 +14,17 @@
 
 #define SPEED 500
 
+bool DEBUG = true;
+
 int count;
 int state;
 int timer;
-int limitTime;
+unsigned long limitTime;
 int mov;
 int score;
 unsigned long startMillis;
 unsigned long currentMillis;
+const float F = 1.2;
 
 void setup() {
   Serial.begin(9600);
@@ -38,7 +41,7 @@ void setup() {
 
   score=0;
   state = 0;
-  limitTime = 15000;
+  limitTime = 10000;
 }
 
 void setupGame(){
@@ -46,6 +49,14 @@ void setupGame(){
   timer = random(1000, 10000);
   startMillis = millis();
   state++;
+
+  if(score!= 0){
+      limitTime /=F;
+      if(DEBUG){
+          Serial.print("Now i will wait   ");
+          Serial.println(limitTime);
+        }
+    }
 }
 
 void routine(){
@@ -56,15 +67,19 @@ void routine(){
   digitalWrite(count, HIGH);
   if(currentMillis - startMillis >= timer){
     state++;
+    startMillis = millis();
   }
   delay(SPEED);
-  Serial.println("lamping led: "); 
-  Serial.print(count);
-  Serial.println(" ");
+  if(DEBUG){
+    Serial.print("lamping led: "); 
+    Serial.println(count);
+    }
 }
 
 void polling(){
-   Serial.println("Im waiting hooman...."); 
+  if(DEBUG){
+    Serial.println("Im waiting hooman...."); 
+  }
   currentMillis = millis();
   if(currentMillis - startMillis < limitTime){
     if(digitalRead(count-4) == HIGH){
@@ -92,7 +107,6 @@ void loop() {
       polling();
     break;
     default:
-
     break;
   }
 }
