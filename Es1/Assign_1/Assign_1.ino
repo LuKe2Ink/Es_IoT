@@ -8,6 +8,9 @@
 #define BTNc 7
 #define BTNd 6
 
+#define RED 4
+#define POT 
+
 #define SETUP_GAME 0
 #define ROUTINE 1
 #define POLLING 2
@@ -33,6 +36,7 @@ void setup() {
   pinMode(LEDb, OUTPUT);
   pinMode(LEDc, OUTPUT);
   pinMode(LEDd, OUTPUT);
+  pinMode(RED, OUTPUT);
 
   pinMode(BTNa, INPUT);
   pinMode(BTNb, INPUT);
@@ -65,6 +69,8 @@ void routine(){
   mov = count == 13 ? -1 : (count == 10 ? 1 : mov);
   count += mov;
   digitalWrite(count, HIGH);
+  
+
   if(currentMillis - startMillis >= timer){
     state++;
     startMillis = millis();
@@ -96,6 +102,7 @@ void polling(){
 }
 
 void loop() {
+  digitalWrite(RED, HIGH);
   switch(state){
     case 0:
       setupGame();
