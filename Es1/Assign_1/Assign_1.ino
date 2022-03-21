@@ -58,12 +58,16 @@ void routine(){
     state++;
   }
   delay(SPEED);
+  Serial.println("lamping led: "); 
+  Serial.print(count);
+  Serial.println(" ");
 }
 
 void polling(){
+   Serial.println("Im waiting hooman...."); 
   currentMillis = millis();
   if(currentMillis - startMillis < limitTime){
-    if(digitalRead(count-4) == LOW){
+    if(digitalRead(count-4) == HIGH){
     score++;
     Serial.print("New point! Score: ");
     Serial.println(score);
