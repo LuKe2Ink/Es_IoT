@@ -8,7 +8,7 @@
 #define BTNc 7
 #define BTNd 6
 
-#define RED 4
+#define RED 5
 #define POT 
 
 #define SETUP_GAME 0
@@ -18,6 +18,7 @@
 #define SPEED 500
 
 bool DEBUG = true;
+bool HAJIME = false;
 
 int count;
 int state;
@@ -25,9 +26,11 @@ int timer;
 unsigned long limitTime;
 int mov;
 int score;
+int brightness = 0;
+int fadeAmount = 5;
 unsigned long startMillis;
 unsigned long currentMillis;
-const float F = 1.2;
+const float F = 1.4;
 
 void setup() {
   Serial.begin(9600);
@@ -88,7 +91,7 @@ void polling(){
   }
   currentMillis = millis();
   if(currentMillis - startMillis < limitTime){
-    if(digitalRead(count-4) == HIGH){
+    if(digitalRead(count-4) == LOW){
     score++;
     Serial.print("New point! Score: ");
     Serial.println(score);
@@ -102,8 +105,8 @@ void polling(){
 }
 
 void loop() {
-  digitalWrite(RED, HIGH);
-  switch(state){
+  if(HAJIME){
+   switch(state){
     case 0:
       setupGame();
     break;
@@ -116,4 +119,19 @@ void loop() {
     default:
     break;
   }
+  } else {
+        analogWrite(RED, brightness);
+         brightness = brightness + fadeAmount;
+
+  // reverse the direction of the fading at the ends of the fade:
+      if (brightness <= 0 || brightness >= 255) {
+         fadeAmount = -fadeAmount;
+       }
+  // wait for 30 milliseconds to see the dimming effect
+  delay(30);
+  
+  if(digitalRead(BTNa) == LOW){
+      HAJIME = true;
+    }
+   }
 }
