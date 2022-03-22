@@ -9,7 +9,7 @@
 #define BTNd 6
 
 #define RED 5
-#define POT 
+#define POT 3
 
 #define SETUP_GAME 0
 #define ROUTINE 1
@@ -132,6 +132,7 @@ void loop() {
   
   if(digitalRead(BTNa) == LOW){
       HAJIME = true;
+      digitalWrite(RED, LOW);
     }
    }
 }
