@@ -1,24 +1,28 @@
+#include <Sleep_n0m1.h>
+
 #define LEDa 13
 #define LEDb 12
 #define LEDc 11
 #define LEDd 10
 
-#define BTNa 9
-#define BTNb 8
-#define BTNc 7
-#define BTNd 6
+#define BTNa 5
+#define BTNb 4
+#define BTNc 3
+#define BTNd 2
 
-#define RED 5
+#define RED 7
 #define POT 3
 
 #define SETUP_GAME 0
-#define ROUTINE 1
-#define POLLING 2
+#define START 1
+#define ROUTINE 2
+#define POLLING 3
 
 #define SPEED 500
 
+
+
 bool DEBUG = true;
-bool HAJIME = false;
 
 int count;
 int state;
@@ -30,6 +34,7 @@ int brightness = 0;
 int fadeAmount = 5;
 unsigned long startMillis;
 unsigned long currentMillis;
+
 const float F = 1.4;
 
 void setup() {
@@ -49,9 +54,12 @@ void setup() {
   score=0;
   state = 0;
   limitTime = 10000;
+
+  Serial.println("Welcome to the Catch the Bouncing Led Ball Game. Press Key T1 to Start");
+  startMillis = millis();
 }
 
-void setupGame(){
+void start(){
   count = 13;
   timer = random(1000, 10000);
   startMillis = millis();
@@ -66,14 +74,60 @@ void setupGame(){
     }
 }
 
+void setupGame(){
+    Serial.println("ECCCO");
+    currentMillis = millis();
+     if(currentMillis - startMillis < limitTime){
+       analogWrite(RED, brightness);
+        brightness = brightness + fadeAmount;
+        if (brightness <= 0 || brightness >= 255) {
+          fadeAmount = -fadeAmount;
+       } 
+       delay(30);
+     if(digitalRead(BTNa) == HIGH){
+        state++;
+        digitalWrite(RED, LOW);
+    }
+  }else {
+      Serial.println("Ngul a' mammt'");
+      sleepNow();
+  }
+}
+
+  void sleepNow() // here we put the arduino to sleep
+{
+set_sleep_mode(SLEEP_MODE_PWR_DOWN); // sleep mode is set here
+// enables the sleep bit in the mcucr register
+// so sleep is possible. just a safety pin
+/* Now it is time to enable an interrupt.*/
+attachInterrupt(digitalPinToInterrupt(BTNd),cacca, LOW); // use interrupt 0 (pin 2) and run function
+sleep_enable(); 
+// wakeUpNow when pin 2 gets LOW
+sleep_mode(); // here the device is actually put to sleep!!
+// THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
+
+
+
+Serial.println("Ngul a' mammt'");
+
+sleep_disable(); // first thing after waking from sleep:
+// disable sleep...
+detachInterrupt(digitalPinToInterrupt(BTNd)); // disables interrupt 0 on pin 2 so the
+// wakeUpNow code will not be executed
+// during normal running time.
+}
+
+void cacca(){
+  Serial.println("SOno una cacca");
+  }
+
+
 void routine(){
   currentMillis = millis();
   digitalWrite(count, LOW);
   mov = count == 13 ? -1 : (count == 10 ? 1 : mov);
   count += mov;
   digitalWrite(count, HIGH);
-  
-
   if(currentMillis - startMillis >= timer){
     state++;
     startMillis = millis();
@@ -91,7 +145,7 @@ void polling(){
   }
   currentMillis = millis();
   if(currentMillis - startMillis < limitTime){
-    if(digitalRead(count-4) == LOW){
+    if(digitalRead(count-8) == LOW){
     score++;
     Serial.print("New point! Score: ");
     Serial.println(score);
@@ -105,34 +159,21 @@ void polling(){
 }
 
 void loop() {
-  if(HAJIME){
+  //Serial.println(analogRead(A0));
    switch(state){
     case 0:
       setupGame();
     break;
     case 1:
+      start();
+      break;
+    case 2:
       routine();
     break;
-    case 2:
+    case 3:
       polling();
     break;
     default:
     break;
   }
-  } else {
-        analogWrite(RED, brightness);
-         brightness = brightness + fadeAmount;
-
-  // reverse the direction of the fading at the ends of the fade:
-      if (brightness <= 0 || brightness >= 255) {
-         fadeAmount = -fadeAmount;
-       }
-  // wait for 30 milliseconds to see the dimming effect
-  delay(30);
-  
-  if(digitalRead(BTNa) == LOW){
-      HAJIME = true;
-      digitalWrite(RED, LOW);
-    }
-   }
 }
