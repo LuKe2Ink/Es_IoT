@@ -1,44 +1,46 @@
-#include <Sleep_n0m1.h>
+#include <avr/sleep.h>
+
+#include <EnableInterrupt.h>
 
 #define LEDa 13
 #define LEDb 12
 #define LEDc 11
 #define LEDd 10
 
-#define BTNa 5
-#define BTNb 4
-#define BTNc 3
-#define BTNd 2
+#define BTNa 7
+#define BTNb 6
+#define BTNc 5
+#define BTNd 4
 
-#define RED 7
-#define POT 3
+#define RED 9
+#define POT A0
 
 #define SETUP_GAME 0
 #define START 1
 #define ROUTINE 2
 #define POLLING 3
+#define WAITING 4
 
-#define SPEED 500
+#define TEN_SEC 10000
+#define DIV 128
 
-
-
-bool DEBUG = true;
 
 int count;
 int state;
+int speedLed;
 int timer;
-unsigned long limitTime;
 int mov;
+double limitTime;
 int score;
+double diff;
 int brightness = 0;
 int fadeAmount = 5;
 unsigned long startMillis;
 unsigned long currentMillis;
 
-const float F = 1.4;
-
 void setup() {
   Serial.begin(9600);
+  randomSeed(analogRead(0));
 
   pinMode(LEDa, OUTPUT);
   pinMode(LEDb, OUTPUT);
@@ -50,128 +52,140 @@ void setup() {
   pinMode(BTNb, INPUT);
   pinMode(BTNc, INPUT);
   pinMode(BTNd, INPUT);
+  
+  setParams();
+}
 
+void setParams(){
   score=0;
+  count = 12;
+  mov = 1;
+  speedLed = 1000;
+  diff=0;
   state = 0;
-  limitTime = 10000;
-
+  limitTime = 15000;
   Serial.println("Welcome to the Catch the Bouncing Led Ball Game. Press Key T1 to Start");
   startMillis = millis();
 }
 
-void start(){
-  count = 13;
-  timer = random(1000, 10000);
-  startMillis = millis();
-  state++;
-
-  if(score!= 0){
-      limitTime /=F;
-      if(DEBUG){
-          Serial.print("Now i will wait   ");
-          Serial.println(limitTime);
-        }
-    }
-}
-
 void setupGame(){
-    Serial.println("ECCCO");
     currentMillis = millis();
-     if(currentMillis - startMillis < limitTime){
+     if(currentMillis - startMillis < TEN_SEC ){
        analogWrite(RED, brightness);
         brightness = brightness + fadeAmount;
         if (brightness <= 0 || brightness >= 255) {
           fadeAmount = -fadeAmount;
        } 
        delay(30);
-     if(digitalRead(BTNa) == HIGH){
+     if(digitalRead(BTNa) == LOW){
+        diff=(int)(analogRead(POT)/DIV);
+        diff++;
+        Serial.print("Difficult set to: ");
+        Serial.println((int)diff);
         state++;
         digitalWrite(RED, LOW);
     }
   }else {
-      Serial.println("Ngul a' mammt'");
       sleepNow();
   }
 }
 
-  void sleepNow() // here we put the arduino to sleep
+void sleepNow()
 {
-set_sleep_mode(SLEEP_MODE_PWR_DOWN); // sleep mode is set here
-// enables the sleep bit in the mcucr register
-// so sleep is possible. just a safety pin
-/* Now it is time to enable an interrupt.*/
-attachInterrupt(digitalPinToInterrupt(BTNd),cacca, LOW); // use interrupt 0 (pin 2) and run function
-sleep_enable(); 
-// wakeUpNow when pin 2 gets LOW
-sleep_mode(); // here the device is actually put to sleep!!
-// THE PROGRAM CONTINUES FROM HERE AFTER WAKING UP
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+
+  digitalWrite(RED, LOW);
+  enableInterrupt(BTNd, setTimer, RISING);
+  enableInterrupt(BTNc, setTimer, RISING);
+  enableInterrupt(BTNb, setTimer, RISING);
+  enableInterrupt(BTNa, setTimer, RISING);
+
+  sleep_enable(); 
+ 
+  sleep_mode(); 
+
+  sleep_disable(); 
 
 
-
-Serial.println("Ngul a' mammt'");
-
-sleep_disable(); // first thing after waking from sleep:
-// disable sleep...
-detachInterrupt(digitalPinToInterrupt(BTNd)); // disables interrupt 0 on pin 2 so the
-// wakeUpNow code will not be executed
-// during normal running time.
+  disableInterrupt(BTNb);
+  disableInterrupt(BTNa);
+  disableInterrupt(BTNd);
+  disableInterrupt(BTNc);
 }
 
-void cacca(){
-  Serial.println("SOno una cacca");
-  }
+void setTimer(){
+  startMillis = millis();
+}
 
+void startGame(){
+  timer = random(1000, 10000);
+  startMillis = millis();
+  state++;
+  if(score!= 0){
+      limitTime -= (diff*100);
+      speedLed-=(diff*20);
+    }
+}
 
 void routine(){
   currentMillis = millis();
   digitalWrite(count, LOW);
-  mov = count == 13 ? -1 : (count == 10 ? 1 : mov);
   count += mov;
+  mov = count == 13 ? -1 : (count == 10 ? 1 : mov);
   digitalWrite(count, HIGH);
   if(currentMillis - startMillis >= timer){
     state++;
     startMillis = millis();
+    Serial.print("You have ");
+    Serial.print(limitTime/1000);
+    Serial.println(" seconds to press the button");
   }
-  delay(SPEED);
-  if(DEBUG){
-    Serial.print("lamping led: "); 
-    Serial.println(count);
-    }
+  delay(speedLed);
 }
 
 void polling(){
-  if(DEBUG){
-    Serial.println("Im waiting hooman...."); 
-  }
   currentMillis = millis();
   if(currentMillis - startMillis < limitTime){
-    if(digitalRead(count-8) == LOW){
+    if(digitalRead(count-6) == LOW){
+    digitalWrite(count, LOW);
     score++;
     Serial.print("New point! Score: ");
     Serial.println(score);
-    state=0;
+    state=1;
     }
   }else{
     Serial.print("Game Over. Final Score: ");
-    Serial.print(score);
+    Serial.println(score);
+    startMillis = millis();
     state++;
   }
 }
 
+void waiting(){
+  digitalWrite(count, LOW);
+  currentMillis = millis();
+  if(currentMillis - startMillis >= TEN_SEC ){
+    state=0;
+    setParams();
+  }
+}
+
 void loop() {
-  //Serial.println(analogRead(A0));
    switch(state){
     case 0:
       setupGame();
     break;
     case 1:
-      start();
+      startGame();
       break;
     case 2:
       routine();
     break;
     case 3:
       polling();
+    break;
+    case 4:
+      waiting();
     break;
     default:
     break;
