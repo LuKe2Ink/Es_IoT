@@ -93,7 +93,6 @@ void setupGame(){
 void sleepNow()
 {
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
-
   digitalWrite(RED, LOW);
   enableInterrupt(BTNd, setTimer, RISING);
   enableInterrupt(BTNc, setTimer, RISING);
@@ -114,6 +113,7 @@ void sleepNow()
 }
 
 void setTimer(){
+  Serial.println("Waking up");
   startMillis = millis();
 }
 
@@ -123,7 +123,7 @@ void startGame(){
   state++;
   if(score!= 0){
       limitTime -= (diff*100);
-      speedLed-=(diff*20);
+      speedLed-=(diff*10);
     }
 }
 
