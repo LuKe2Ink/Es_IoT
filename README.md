@@ -1,4 +1,7 @@
-# Es_IoT
+# Directory gruppo
 
-# Matteo inutile come Rei
+## Luigi Incarnato
 
+## Nardini Michele
+
+## Santoro Michele
