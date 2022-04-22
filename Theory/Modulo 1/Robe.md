@@ -99,3 +99,56 @@ Il sistema non e' piu' responsive se disattivati.
 ### Power Management
 
 ![power mode](https://i.imgur.com/iBfQrnw.png)
+
+## Asynchronous Serial
+
+- Non viene utilizzato alcun clock per la comunicazione
+- 2 linee TX tramsette RX riceve
+
+La sincronizzazione si ottiene attraverso un protocollo, per garantire una trasmissione robusta ed a prova di errore.
+
+I pin 0,1 di arduino sono associati a RX e TX rispettivamente.
+
+### Parametri del protocollo
+
+1. Baud Rate
+   - la velocita' della transmissione [bits/seconds] , 9600 bps
+2. data frame
+3. Sync bits
+4. bit di paritaà
+
+## Synchronous Serial
+
+- Clock utlizzato per sincronizzare la comunicazione tra le parti -> velocita' maggiore (es. I2C SPI)
+
+### I2C
+
+E' un protocollo bus standard, 2 pin richiesti, 2 linee (dati, clock), utilizza un architettura master-slave che include 1 o piu' slaves, tutti i dispositivi condividono le 2 linee:
+
+1. di clock (SCL) per poter sincronizzare la comunicazione
+2. di dati bidirezionali (SDA).
+
+Il master inizia le comunicazioni e gli slaves possono solo rispondere al loro messaggio personale, possiedono un ID di 7 bit con cui il master puo indirizzare il comando, dopo la ricezione del messaggio lo slave risponde con un ACK e la fine della comunicazione e' sancita da un bit di STOP.
+
+Un esempio del protocollo I2C e' la misurazione delle temperature del sensore TC74.
+
+Per poter utilizzare il protocollo e' necessario utilizzare la libreria [Wire](http://arduino.cc/en/Reference/Wire) estensione di Stream
+
+### SPI
+
+Lo SPI bus implementa un protocollo seriale full-duplex che permette comunicazioni bidirezionali tra master e slave, utilizza linee diverse per trasmettere e ricevere (diversamente da I2C), anche questo protocollo e' sincrono ed utilizza uno shared clock.
+
+1. linea dello shared clock (SCK)
+2. linea shared del Master Out Slave (send data from master -> slave) (MOSI)
+3. linea shared Master In Slave (send data from slave -> master) (MISO)
+4. linea shared (SS) (selezionare il device)
+
+Per poter utilizzare SPI e' necessario utilizzare la libreria [SPI](https://www.arduino.cc/en/Reference/SPI)
+
+Metodo _transfer()_ per transferire dati, per comunicare con uno slave settiamo il pin dello slave a LOW e chiamiamo SPI.transfer() per passargli dati e poi il pin torna HIGH.
+
+Un esempio e' l'uso del Microchip MCP4231.
+
+## I2C vs SPI
+
+Il primo protocollo funziona solo con 2 linee e la modalita' master-slave e' piu agile mentre SPI puo' lavorare a velocita' piu alte e non necessita di pull-up resistors.
