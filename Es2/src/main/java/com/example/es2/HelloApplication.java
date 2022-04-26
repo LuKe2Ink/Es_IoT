@@ -10,24 +10,27 @@ import jssc.*;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+
+    private static final int WIDTH = 1200;
+    private static final int HEIGHT = 800;
+
+    private CoffeeMachineManager coffeeMachineManager;
+
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("GUI_Assign_2.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(),  1200, 800);
-        stage.setTitle("Assignment 2!");
-
-        System.out.println(SerialPortList.getPortNames() + " Michi no sa nemmeno pulirsi il culetto");
-
-        for(String port : SerialPortList.getPortNames()) {
-            System.out.println(port);
-        }
+        Scene scene = new Scene(fxmlLoader.load(),  WIDTH, HEIGHT);
+        stage.setTitle("Coffee Machine");
 
         stage.setScene(scene);
         stage.show();
 
+        System.out.println("Welcome");
 
-
+        coffeeMachineManager = new CoffeeMachineManager();
     }
+
+
 
     public static void main(String[] args) {
         launch();
