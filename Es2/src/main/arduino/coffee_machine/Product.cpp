@@ -13,6 +13,10 @@ void Product::setQuantity(int quantity){
   this->quantity = quantity;
 }
 
+bool Product::isNotAveable(){
+  return this->quantity == 0;
+}
+
 int Product::getQuantity(){
   return this->quantity;
 }

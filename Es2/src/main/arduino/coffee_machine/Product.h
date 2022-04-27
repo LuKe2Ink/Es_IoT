@@ -10,6 +10,7 @@ class Product {
     void decQuantity();
     void setQuantity(int quantity);
     int getQuantity();
+    bool isNotAveable();
   private:
     int quantity;
 

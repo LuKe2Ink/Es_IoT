@@ -30,6 +30,7 @@ Button* bDown;
 Button* bMake;
 int selectedProduct;
 String productName[] = {"Coffee", "Tea", "Chocolate"};
+Product* productList[3];
 unsigned long startMillis;
 unsigned long currentMillis;
 int pos;   
@@ -49,6 +50,9 @@ void setup() {
   bMake = new ButtonImpl(B_MAKE);
   pos = 0;
   delta = 1;
+  productList[0] = coffee;
+  productList[1] = tea;
+  productList[2] = chocolate;
 
 }
 
@@ -98,12 +102,27 @@ void disableInterruptButton(){
   disableInterrupt(B_MAKE);
 }
 
+
+
 void incSelect(){
   if(selectedProduct < 2){
-    selectedProduct++;
-    Serial.println(productName[selectedProduct]);
+      Serial.println(productName[selectedProduct]);
   }
   startTimer();
+}
+
+Product* getProduct(int index){
+  switch(index){
+    case 0:
+      return coffee;
+    break;
+    case 1:
+      return tea;
+    break;
+    case 2:
+      return chocolate;
+    break;
+  }
 }
 
 void decreaseSelectedItem(String productName){
