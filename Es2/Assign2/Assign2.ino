@@ -2,9 +2,14 @@
 #define BTN_UP 7
 #define BNT_DOWN 6
 #define MAKE_BTN 5
+#define PIR_PIN 4
 #define TEMP_PIN A0 
 #define TRIG 13
 #define ECHO 12
+#define POT A1
+
+
+#define CALIBRATION_TIME_SEC 10
 
 const float vs = 331.45 + 0.62*20;
 
@@ -34,7 +39,21 @@ void setup() {
   Serial.begin(9600);
 
   //Servo motor 
-  servo.attach(3);
+  servo.attach(10);
+
+  // Pir 
+  pinMode(PIR_PIN,INPUT);
+
+   Serial.print("Calibrating sensor... ");
+  for(int i = 0; i < CALIBRATION_TIME_SEC; i++){
+    Serial.print(".");
+    delay(1000);
+  }
+  Serial.println(" done");
+  Serial.println("PIR SENSOR READY.");
+  delay(50);
+
+  // Pot 
 }
 
 float getDistance()
@@ -72,9 +91,21 @@ void loop() {
 
     
 
-    servo.write(val);
+    servo.write(val%180);
     Serial.println(val);
     val += 30;
+
+
+  int detected = digitalRead(PIR_PIN);
+  if (detected == HIGH){
+    Serial.println("detected!");  
+  }
     
-    delay(1000);
+    delay(500);
+
+  int newValue = analogRead(POT_PIN);
+  if (newValue != current){
+    current = newValue;
+    Serial.println(current);
+  }
 }
