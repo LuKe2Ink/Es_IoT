@@ -27,7 +27,7 @@ public class HelloApplication extends Application {
 
         System.out.println("Welcome");
 
-        coffeeMachineManager = new CoffeeMachineManager();
+        //coffeeMachineManager = new CoffeeMachineManager();
     }
 
 

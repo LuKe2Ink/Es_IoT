@@ -2,6 +2,7 @@
 #include "Display.h"
 #include "Product.h"
 #include "ButtonImpl.h"
+#include "ServoMotorImpl.h"
 #include <EnableInterrupt.h>
 
 enum {
@@ -16,9 +17,10 @@ enum {
 #define B_DOWN 3
 #define B_MAKE 4
 #define T_OUT 5000L
+#define T_MAKING 55
 
 
-
+ServoMotor* servo;
 Display* display_lcd;
 Product* coffee;
 Product* tea;
@@ -30,10 +32,13 @@ int selectedProduct;
 String productName[] = {"Coffee", "Tea", "Chocolate"};
 unsigned long startMillis;
 unsigned long currentMillis;
+int pos;   
+int delta;
 
 void setup() {
   /*MsgService.init();*/
   Serial.begin(9600);
+  servo = new ServoMotorImpl(9);
   state = WELCOME;
   display_lcd = new Display();
   coffee = new Product(N_MAX_QUANTITY);
@@ -42,6 +47,8 @@ void setup() {
   bUp = new ButtonImpl(B_UP);
   bDown = new ButtonImpl(B_DOWN);
   bMake = new ButtonImpl(B_MAKE);
+  pos = 0;
+  delta = 1;
 
 }
 
@@ -70,14 +77,25 @@ void loop() {
 
       if(currentMillis - startMillis > T_OUT && startMillis != 0){
         state = READY;
+        disableInterruptButton();
       }
-      
-      disableInterrupt(B_UP);
-      disableInterrupt(B_DOWN);
-      disableInterrupt(B_MAKE);
+    break;
+    case MAKING:
+      display_lcd->setText("Making a " + productName[selectedProduct]);
+      Serial.println("Making a " + productName[selectedProduct]);
+      moveServo();
+      Serial.println("The " + productName[selectedProduct] + " is ready");
+      decreaseSelectedItem(productName[selectedProduct]);
+      state = READY;
     break;
   }
  
+}
+
+void disableInterruptButton(){
+  disableInterrupt(B_UP);
+  disableInterrupt(B_DOWN);
+  disableInterrupt(B_MAKE);
 }
 
 void incSelect(){
@@ -86,6 +104,33 @@ void incSelect(){
     Serial.println(productName[selectedProduct]);
   }
   startTimer();
+}
+
+void decreaseSelectedItem(String productName){
+  switch(selectedProduct){
+    case 0:
+      coffee->decQuantity();
+      //Serial.println(coffee->getQuantity());
+    break;
+    case 1:
+      tea->decQuantity();
+      //Serial.println(tea->getQuantity());
+    break;
+    case 2:
+      chocolate->decQuantity();
+      //Serial.println(chocolate->getQuantity());
+    break;
+  }
+}
+
+void moveServo(){
+  servo->on();
+  for (int i = 0; i < 180; i++) {
+    servo->setPosition(pos);         
+    delay(T_MAKING);            
+    pos += delta;
+  }
+  servo->off();
 }
 
 void decSelect(){
@@ -97,10 +142,9 @@ void decSelect(){
 }
 
 void makeProduct(){
-  //display_lcd->setText("Make");
-  Serial.print("Making: ");
-  Serial.println(productName[selectedProduct]);
   checkSugar();
+  state = MAKING;
+  disableInterruptButton();
 }
 
 void startTimer(){
