@@ -29,7 +29,6 @@ Button* bUp;
 Button* bDown;
 Button* bMake;
 int selectedProduct;
-String productName[] = {"Coffee", "Tea", "Chocolate"};
 Product* productList[3];
 unsigned long startMillis;
 unsigned long currentMillis;
