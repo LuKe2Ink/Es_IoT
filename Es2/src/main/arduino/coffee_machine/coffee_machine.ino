@@ -52,10 +52,6 @@ void setup() {
   Serial.begin(9600);
 
 
-
-
-
-
   
   servo = new ServoMotorImpl(9);
   state = WELCOME;
@@ -123,9 +119,11 @@ void disableInterruptButton(){
 
 
 void incSelect(){
+  
   if(selectedProduct < 2){
+      selectedProduct++;
+   //   display_lcd->setText(productList[selectedProduct]->toString());
       Serial.println(productList[selectedProduct]->toString());
-      display_lcd->setText(productList[selectedProduct]->toString());
   }
   startTimer();
 }
@@ -161,8 +159,8 @@ void moveServo(){
 void decSelect(){
   if(selectedProduct > 0){
     selectedProduct--;
-    Serial.println(productList[selectedProduct]->toString());
       display_lcd->setText(productList[selectedProduct]->toString());
+      Serial.println(productList[selectedProduct]->toString());
   }
   startTimer();
 }
