@@ -46,6 +46,7 @@ unsigned long startMillis;
 unsigned long currentMillis;
 int pos;   
 int delta;
+String currentProd;
 
 void setup() {
   /*MsgService.init();*/
@@ -53,7 +54,7 @@ void setup() {
 
 
   
-  servo = new ServoMotorImpl(9);
+  servo = new ServoMotorImpl(10);
   state = WELCOME;
   display_lcd = new Display();
   coffee = new Product(N_MAX_QUANTITY, "Coffee");
@@ -67,7 +68,6 @@ void setup() {
   productList[0] = coffee;
   productList[1] = tea;
   productList[2] = chocolate;
-
 }
 
 void loop() {
@@ -96,7 +96,9 @@ void loop() {
       if(currentMillis - startMillis > T_OUT && startMillis != 0){
         state = READY;
         disableInterruptButton();
-      }
+        } else {
+        display_lcd->setText(currentProd);
+        }
     break;
     case MAKING:
       display_lcd->setText("Making a " + productList[selectedProduct]->toString());
@@ -116,13 +118,16 @@ void disableInterruptButton(){
   disableInterrupt(B_MAKE);
 }
 
+void printProduct(){
+  
+}
 
 
 void incSelect(){
   
   if(selectedProduct < 2){
       selectedProduct++;
-   //   display_lcd->setText(productList[selectedProduct]->toString());
+      currentProd = productList[selectedProduct]->toString();
       Serial.println(productList[selectedProduct]->toString());
   }
   startTimer();
@@ -159,7 +164,7 @@ void moveServo(){
 void decSelect(){
   if(selectedProduct > 0){
     selectedProduct--;
-      display_lcd->setText(productList[selectedProduct]->toString());
+    currentProd = productList[selectedProduct]->toString();
       Serial.println(productList[selectedProduct]->toString());
   }
   startTimer();
