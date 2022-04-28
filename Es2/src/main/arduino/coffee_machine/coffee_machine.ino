@@ -181,8 +181,7 @@ void moveServo(int grades){
     delay(T_MAKING);            
     pos = pos + (grades > 0 ? 1 : -1);
     Serial.println(pos);
-  
-     }
+    }
 
 }
   servo->off();
