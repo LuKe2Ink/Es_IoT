@@ -6,13 +6,16 @@
 class Product {
 
   public:
-    Product(int quantity);
+    Product(int quantity, String productName);
     void decQuantity();
     void setQuantity(int quantity);
     int getQuantity();
     bool isNotAveable();
+    String toString();
   private:
+    String productName;
     int quantity;
+    
 
 };
 

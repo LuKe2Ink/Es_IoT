@@ -13,11 +13,23 @@ enum {
 }state;
 
 #define N_MAX_QUANTITY 50
+
 #define B_UP 2
 #define B_DOWN 3
 #define B_MAKE 4
+
+//#define B_UP 7
+//#define B_DOWN 6
+//#define B_MAKE 5
+//#define PIR_PIN 4
+#define TEMP_PIN A0 
+#define TRIG 13
+#define ECHO 12
+#define POT A1
+
 #define T_OUT 5000L
 #define T_MAKING 55
+
 
 
 ServoMotor* servo;
@@ -38,12 +50,19 @@ int delta;
 void setup() {
   /*MsgService.init();*/
   Serial.begin(9600);
+
+
+
+
+
+
+  
   servo = new ServoMotorImpl(9);
   state = WELCOME;
   display_lcd = new Display();
-  coffee = new Product(N_MAX_QUANTITY);
-  tea = new Product(N_MAX_QUANTITY);
-  chocolate = new Product(N_MAX_QUANTITY);
+  coffee = new Product(N_MAX_QUANTITY, "Coffee");
+  tea = new Product(N_MAX_QUANTITY, "Tea");
+  chocolate = new Product(N_MAX_QUANTITY, "Chocolate");
   bUp = new ButtonImpl(B_UP);
   bDown = new ButtonImpl(B_DOWN);
   bMake = new ButtonImpl(B_MAKE);
@@ -84,11 +103,11 @@ void loop() {
       }
     break;
     case MAKING:
-      display_lcd->setText("Making a " + productName[selectedProduct]);
-      Serial.println("Making a " + productName[selectedProduct]);
+      display_lcd->setText("Making a " + productList[selectedProduct]->toString());
+      Serial.println("Making a " + productList[selectedProduct]->toString());
       moveServo();
-      Serial.println("The " + productName[selectedProduct] + " is ready");
-      decreaseSelectedItem(productName[selectedProduct]);
+      Serial.println("The " + productList[selectedProduct]->toString() + " is ready");
+      decreaseSelectedItem(productList[selectedProduct]->toString());
       state = READY;
     break;
   }
@@ -105,26 +124,14 @@ void disableInterruptButton(){
 
 void incSelect(){
   if(selectedProduct < 2){
-      Serial.println(productName[selectedProduct]);
+      Serial.println(productList[selectedProduct]->toString());
+      display_lcd->setText(productList[selectedProduct]->toString());
   }
   startTimer();
 }
 
-Product* getProduct(int index){
-  switch(index){
-    case 0:
-      return coffee;
-    break;
-    case 1:
-      return tea;
-    break;
-    case 2:
-      return chocolate;
-    break;
-  }
-}
 
-void decreaseSelectedItem(String productName){
+void decreaseSelectedItem(String productList){
   switch(selectedProduct){
     case 0:
       coffee->decQuantity();
@@ -154,7 +161,8 @@ void moveServo(){
 void decSelect(){
   if(selectedProduct > 0){
     selectedProduct--;
-    Serial.println(productName[selectedProduct]);
+    Serial.println(productList[selectedProduct]->toString());
+      display_lcd->setText(productList[selectedProduct]->toString());
   }
   startTimer();
 }

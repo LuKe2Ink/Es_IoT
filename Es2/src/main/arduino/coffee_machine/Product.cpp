@@ -1,8 +1,9 @@
 #include "Product.h"
 #include "Arduino.h"
 
-Product::Product(int quantity){
+Product::Product(int quantity, String productName){
   this->quantity = quantity;
+  this -> productName = productName;
 }
 
 void Product::decQuantity(){
@@ -20,3 +21,7 @@ bool Product::isNotAveable(){
 int Product::getQuantity(){
   return this->quantity;
 }
+
+String Product::toString(){
+    return this-> productName;
+  }
