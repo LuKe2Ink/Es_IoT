@@ -10,7 +10,7 @@ class Product {
     void decQuantity();
     void setQuantity(int quantity);
     int getQuantity();
-    bool isNotAveable();
+    bool isNotAviable();
     String toString();
   private:
     String productName;

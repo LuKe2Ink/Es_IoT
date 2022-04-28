@@ -14,7 +14,7 @@ void Product::setQuantity(int quantity){
   this->quantity = quantity;
 }
 
-bool Product::isNotAveable(){
+bool Product::isNotAviable(){
   return this->quantity == 0;
 }
 
