@@ -68,6 +68,8 @@ void setup() {
   productList[1] = machine->tea;
   productList[2] = machine->chocolate;
   machine->servo->setPosition(180);
+
+  
 }
 
 void loop() {
