@@ -4,29 +4,28 @@
 #include "Task.h"
 #include "Product.h"
 #include "Machine.h"
-#include <EnableInterrupt.h>
 
 
 class SelectionTask: public Task {
 
   public:
     SelectionTask(Machine* machine);
-    Machine* machine;
-    Product* product[PROD_NUM];
-    int unaviableProd;
-    int selectedProd;
+    static Machine* machine;
+    static Product* product[PROD_NUM];
+    static int unaviableProd;
+    static int selectedProd;
     int currentMillis;
-    int startMillis;
+    static int startMillis;
     int pos;
     
     void init(int period);  
     void tick();
     void checkSleepMode();
-    void incSelect();
-    void decSelect();
+    static void incSelect();
+    static void decSelect();
+    static void makeProduct();
     void moveServo(bool orario);
-    void makeProduct();
-    void startTimer();
+    static void startTimer();
     void disableInterruptButton();
 };
 

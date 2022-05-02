@@ -1,6 +1,5 @@
 #include "SelectionTask.h"
-#include "Machine.h"
-#include "Arduino.h"
+#include <EnableInterrupt.h>
 
 #define ORARIO 1
 #define ANTI_ORARIO -1
@@ -46,20 +45,20 @@ void SelectionTask::tick(){
         }
         break;
         case SELECT:
-          enableInterrupt(B_UP, incSelect, RISING);
-          enableInterrupt(B_DOWN, decSelect, RISING);
-          enableInterrupt(B_MAKE, makeProduct, RISING);
-          
-          currentMillis = millis();
+        enableInterrupt(B_UP, incSelect, RISING);
+        enableInterrupt(B_DOWN, decSelect, RISING);
+        enableInterrupt(B_MAKE, makeProduct, RISING);
+        
+        currentMillis = millis();
 
-          checkSleepMode();
+        checkSleepMode();
 
-          if(currentMillis - startMillis > T_OUT && startMillis != 0){
-              this->machine->state = READY;
-              disableInterruptButton();
-              } else {
-              //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
-              }
+        if(currentMillis - startMillis > T_OUT && startMillis != 0){
+            this->machine->state = READY;
+            disableInterruptButton();
+            } else {
+            //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
+            }
         break;
         
         case MAKING:
@@ -82,21 +81,21 @@ void SelectionTask::checkSleepMode(){
 }
 
 void SelectionTask::makeProduct(){
-    this->machine->state = MAKING;
+    machine->state = MAKING;
     //disabilitare i bottoni(oltre alle nostre menti)
-    this->product[this->selectedProd]->decQuantity();
+    product[selectedProd]->decQuantity();
     if(product[selectedProd]->isNotAviable()){
-        this->unaviableProd++;
+        unaviableProd++;
   } 
 }
 
 void SelectionTask::incSelect(){
   
-  this->selectedProd++;
-  if(this->selectedProd == PROD_NUM){
-    this->selectedProd = 0;
+  selectedProd++;
+  if(selectedProd == PROD_NUM){
+    selectedProd = 0;
   } 
-  if(this->product[this->selectedProd]->isNotAviable()){
+  if(product[selectedProd]->isNotAviable()){
     incSelect();
   }
   //currentProd = productList[this->selectedProd]->toString();
@@ -118,16 +117,16 @@ void SelectionTask::moveServo(bool orario){
 }
 
 void SelectionTask::decSelect(){
-  this->selectedProd--;
-  if(this->selectedProd == -1){
-    this->selectedProd = PROD_NUM-1;
+  selectedProd--;
+  if(selectedProd == -1){
+    selectedProd = PROD_NUM-1;
   } 
-  if(product[this->selectedProd]->isNotAviable()){
-    this->decSelect();
+  if(product[selectedProd]->isNotAviable()){
+    decSelect();
   }
   //currentProd = productList[this->selectedProd]->toString();
   //Serial.println(currentProd +" "+ productList[this->selectedProd]->getQuantity());
-  this->startTimer();
+  startTimer();
 }
 
 

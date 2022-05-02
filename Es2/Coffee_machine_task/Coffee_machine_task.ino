@@ -1,12 +1,9 @@
 //#include "MsgService.h"
-#include "Display.h"
 #include "Product.h"
-#include "ButtonImpl.h"
-#include "ServoMotorImpl.h"
-#include <EnableInterrupt.h>
 #include "Machine.h"
 #include "Scheduler.h"
 #include "SugarTask.h"
+#include "SelectionTask.h"
 
 
 
@@ -14,7 +11,7 @@
 
 //#define B_UP 7
 //#define B_DOWN 6
-//#define B_MAKE 5
+//#define B_MAKE u
 #define PIR_PIN 7
 #define TEMP_PIN A0 
 #define TRIG 13
@@ -29,6 +26,7 @@
 Machine* machine;
 Scheduler scheda;
 SugarTask* sugar;
+SelectionTask* selection;
 
 int selectedProduct;
 Product* productList[3];
@@ -54,11 +52,22 @@ void setup() {
   Serial.begin(9600);
   machine = new Machine();
   scheda.init(100);
+
+  /*Sugar Task*/
   sugar = new SugarTask(POT);
   sugar->init(500);
   scheda.addTask(sugar);
+  /*Selection Task*/
+  
+  //REGA DECOMMENTATE PER AVERE ERRORI CHE BHO NON CAPISCO
 
-machine->state = WELCOME;
+// vi voglio bene <3
+
+  // selection = new SelectionTask(machine);
+  // selection->init(100);
+  // scheda.addTask(selection);
+
+  machine->state = WELCOME;
   // state = WELCOME;
   pos = 0;
   delta = 1;
