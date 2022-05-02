@@ -3,15 +3,25 @@
 
 #include "Task.h"
 
-class SugarTask : public Task{
-    int pot_pin;
-    int current_level;
+//class SugarTask : public Task{
+//    int pot_pin;
+//    int current_level;
+//
+//    public: 
+//      SugarTask(int pot_pin);
+//      void init(int period);
+//      void tick();
+//        
+//  };
 
-    public: 
-      SugarTask(int pot_pin);
-      void init(int period);
-      void tick();
-        
-  };
+class SugarTask: public Task {
+
+  float currentSugar;
+
+public:
+
+  void init(int period);  
+  void tick();
+};
 
 #endif

@@ -14,7 +14,6 @@ public class HelloApplication extends Application {
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 800;
 
-    private CoffeeMachineManager coffeeMachineManager;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -27,7 +26,6 @@ public class HelloApplication extends Application {
 
         System.out.println("Welcome");
 
-        coffeeMachineManager = new CoffeeMachineManager();
     }
 
 
