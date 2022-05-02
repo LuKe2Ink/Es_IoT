@@ -16,10 +16,11 @@
 
 class SugarTask: public Task {
 
+  int pot_pin;
   float currentSugar;
 
 public:
-
+  SugarTask(int pot_pin);
   void init(int period);  
   void tick();
 };

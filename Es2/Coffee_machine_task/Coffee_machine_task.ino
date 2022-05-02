@@ -4,17 +4,13 @@
 #include "ButtonImpl.h"
 #include "ServoMotorImpl.h"
 #include <EnableInterrupt.h>
-
+#include "Machine.h"
 #include "Scheduler.h"
+#include "SugarTask.h"
 
 
 
 
-#define N_MAX_QUANTITY 50
-
-#define B_UP 2
-#define B_DOWN 3
-#define B_MAKE 4
 
 //#define B_UP 7
 //#define B_DOWN 6
@@ -33,30 +29,51 @@
 #define ORARIO 1
 #define ANTI_ORARIO -1
 
+Machine* machine;
+Scheduler scheda;
+SugarTask* sugar;
 
-enum state{
+int selectedProduct;
+Product* productList[3];
+unsigned long startMillis;
+unsigned long currentMillis;
+unsigned long idleMillis;
+int pos;   
+int delta;
+String currentProd;
+int aviableProd;
+
+enum {
   WELCOME,
   READY,
   SELECT,
-  MAKING
+  MAKING,
+  WAITING_REMOVING,
+  ASSISTANCE,
+  SLEEP
 }state;
 
-struct Machine {
-  ServoMotor* servo = new ServoMotorImpl(10);
-  Display* display_lcd = new Display();
-  Product* coffee = new Product(N_MAX_QUANTITY , "Coffee");
-  Product* tea = new Product(N_MAX_QUANTITY , "Tea");
-  Product* chocolate = new Product(N_MAX_QUANTITY , "Chocolate");
-  Button* bUp = new ButtonImpl(B_UP);
-  Button* bDown= new ButtonImpl(B_DOWN);
-  Button* bMake = new ButtonImpl(B_MAKE);
-  
-};
-
 void setup() {
-  Machine coffee_machine;
+  Serial.begin(9600);
+  machine = new Machine();
+  scheda.init(100);
+  sugar = new SugarTask(POT);
+  sugar->init(500);
+  scheda.addTask(sugar);
+
+  state = WELCOME;
+  pos = 0;
+  delta = 1;
+  productList[0] = machine->coffee;
+  productList[1] = machine->tea;
+  productList[2] = machine->chocolate;
+  machine->servo->setPosition(180);
 }
 
 void loop() {
+//  sugar->tick();
+  scheda.schedule();
 
+
+  
 }
