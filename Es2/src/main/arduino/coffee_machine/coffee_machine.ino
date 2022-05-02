@@ -5,6 +5,10 @@
 #include "ServoMotorImpl.h"
 #include <EnableInterrupt.h>
 
+#include "Scheduler.h"
+
+#include "SugarTask.h"
+
 enum {
   WELCOME,
   READY,
@@ -52,12 +56,14 @@ int pos;
 int delta;
 String currentProd;
 int aviableProd;
+Scheduler sch;
+SugarTask* sugar;
 
 void setup() {
   /*MsgService.init();*/
   Serial.begin(9600);
 
-
+  sch.init(100);
   
   servo = new ServoMotorImpl(10);
   state = WELCOME;
@@ -68,15 +74,25 @@ void setup() {
   bUp = new ButtonImpl(B_UP);
   bDown = new ButtonImpl(B_DOWN);
   bMake = new ButtonImpl(B_MAKE);
+
+ sugar = new SugarTask(POT);
+
+  sugar->init(500);
+  sch.addTask(sugar);
+  
+
+  
   pos = 0;
   delta = 1;
   productList[0] = coffee;
   productList[1] = tea;
   productList[2] = chocolate;
+  servo->setPosition(180);
 }
 
 void loop() {
-
+  //  sch.schedule();
+  sugar-> tick();
   switch(state){
     case WELCOME:
         display_lcd->setText("Welcome");
@@ -85,11 +101,11 @@ void loop() {
         state = READY;
     break;
     case READY:
-    Serial.println("porcodio");
 //      display_lcd->setText("Ready");
       selectedProduct = 0;
       startMillis = 0;
-      moveServo(ORARIO),
+      
+      moveServo(ORARIO);
       Serial.println("Ready");
       state = SELECT;
     break;
@@ -118,6 +134,8 @@ void loop() {
       moveServo(ANTI_ORARIO);
 
       state = READY;
+      
+
     break;
   }
  
