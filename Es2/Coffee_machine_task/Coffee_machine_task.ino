@@ -24,10 +24,7 @@
 #define T_OUT 5000L
 #define T_MAKING 55
 
-#define PROD_NUM 3
 
-#define ORARIO 1
-#define ANTI_ORARIO -1
 
 Machine* machine;
 Scheduler scheda;
@@ -43,15 +40,15 @@ int delta;
 String currentProd;
 int aviableProd;
 
-enum {
-  WELCOME,
-  READY,
-  SELECT,
-  MAKING,
-  WAITING_REMOVING,
-  ASSISTANCE,
-  SLEEP
-}state;
+// enum {
+//   WELCOME,
+//   READY,
+//   SELECT,
+//   MAKING,
+//   WAITING_REMOVING,
+//   ASSISTANCE,
+//   SLEEP
+// }state;
 
 void setup() {
   Serial.begin(9600);
@@ -61,7 +58,8 @@ void setup() {
   sugar->init(500);
   scheda.addTask(sugar);
 
-  state = WELCOME;
+machine->state = WELCOME;
+  // state = WELCOME;
   pos = 0;
   delta = 1;
   productList[0] = machine->coffee;

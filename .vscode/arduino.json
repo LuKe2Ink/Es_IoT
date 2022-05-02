@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "Es2\\Coffee_machine_task\\Coffee_machine_task.ino",
+    "port": "COM3"
+}

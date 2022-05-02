@@ -1,25 +1,7 @@
 #include "Arduino.h"
-#include "Display.h"
-#include "Product.h"
-#include "ButtonImpl.h"
-#include "ServoMotorImpl.h"
+
 #include "Machine.h"
 
-#define N_MAX_QUANTITY 50
-
-enum {
-  WELCOME,
-  READY,
-  SELECT,
-  MAKING,
-  WAITING_REMOVING,
-  ASSISTANCE,
-  SLEEP
-}state;
-
-#define B_UP 2
-#define B_DOWN 3
-#define B_MAKE 4
 
 Machine::Machine(){
   this->servo = new ServoMotorImpl(10);

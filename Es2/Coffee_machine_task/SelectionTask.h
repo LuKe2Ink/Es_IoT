@@ -2,13 +2,17 @@
 #define __SELECTION__
 
 #include "Task.h"
+#include "Product.h"
+#include "Machine.h"
+#include <EnableInterrupt.h>
+
 
 class SelectionTask: public Task {
 
   public:
-    SelectionTask(Machine* machine, Product* product);
+    SelectionTask(Machine* machine);
     Machine* machine;
-    Product* product[3];
+    Product* product[PROD_NUM];
     int unaviableProd;
     int selectedProd;
     int currentMillis;
@@ -17,14 +21,13 @@ class SelectionTask: public Task {
     
     void init(int period);  
     void tick();
-
-  private:
     void checkSleepMode();
     void incSelect();
     void decSelect();
-    void moveServo();
+    void moveServo(bool orario);
     void makeProduct();
     void startTimer();
+    void disableInterruptButton();
 };
 
 #endif

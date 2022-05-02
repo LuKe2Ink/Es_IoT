@@ -2,10 +2,15 @@
 #include "Machine.h"
 #include "Arduino.h"
 
+#define ORARIO 1
+#define ANTI_ORARIO -1
+#define PROD_NUM 3
 
-SelectionTask::SelectionTask(Machine* machine, Product* product){
+SelectionTask::SelectionTask(Machine* machine){ 
     this->machine = machine;
-    this->product = product;
+    this->product[0] = this->machine->coffee;
+    this->product[1] = this->machine->tea;
+    this->product[2] = this->machine->chocolate;
     this->unaviableProd = 0;
     this->selectedProd = 0;
     pos=0;
@@ -16,8 +21,6 @@ void SelectionTask::init(int period){
 }
   
 void SelectionTask::tick(){
-  
-
   switch(this->machine->state){
         case WELCOME:
             this->machine->display_lcd->setText("Welcome");
@@ -43,27 +46,27 @@ void SelectionTask::tick(){
         }
         break;
         case SELECT:
-        enableInterrupt(B_UP, this->incSelect, RISING);
-        enableInterrupt(B_DOWN, this->decSelect, RISING);
-        enableInterrupt(B_MAKE, this->makeProduct, RISING);
-        
-        currentMillis = millis();
+          enableInterrupt(B_UP, incSelect, RISING);
+          enableInterrupt(B_DOWN, decSelect, RISING);
+          enableInterrupt(B_MAKE, makeProduct, RISING);
+          
+          currentMillis = millis();
 
-        checkSleepMode();
+          checkSleepMode();
 
-        if(currentMillis - startMillis > T_OUT && startMillis != 0){
-            this->machine->state = READY;
-            disableInterruptButton();
-            } else {
-            //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
-            }
+          if(currentMillis - startMillis > T_OUT && startMillis != 0){
+              this->machine->state = READY;
+              disableInterruptButton();
+              } else {
+              //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
+              }
         break;
         
         case MAKING:
         //display_lcd->setText("Making a " + productList[this->selectedProd]->toString());
-        Serial.println("Making a " + productList[this->selectedProd]->toString());
+        Serial.println("Making a " + product[this->selectedProd]->toString());
         moveServo(true);
-        Serial.println("The " + productList[this->selectedProd]->toString() + " is ready");
+        Serial.println("The " + product[this->selectedProd]->toString() + " is ready");
         //decreaseSelectedItem(productList[this->selectedProd]->toString());
 
         //state = READY;
@@ -78,11 +81,11 @@ void SelectionTask::checkSleepMode(){
 
 }
 
-void SelectionTask::makeProduct(int select){
+void SelectionTask::makeProduct(){
     this->machine->state = MAKING;
     //disabilitare i bottoni(oltre alle nostre menti)
-    this->product[select]->decQuantity();
-    if(product[select]->isNotAviable()){
+    this->product[this->selectedProd]->decQuantity();
+    if(product[selectedProd]->isNotAviable()){
         this->unaviableProd++;
   } 
 }
@@ -115,11 +118,11 @@ void SelectionTask::moveServo(bool orario){
 }
 
 void SelectionTask::decSelect(){
-  this->this->selectedProd--;
+  this->selectedProd--;
   if(this->selectedProd == -1){
     this->selectedProd = PROD_NUM-1;
   } 
-  if(productList[this->selectedProd]->isNotAviable()){
+  if(product[this->selectedProd]->isNotAviable()){
     this->decSelect();
   }
   //currentProd = productList[this->selectedProd]->toString();
@@ -130,4 +133,11 @@ void SelectionTask::decSelect(){
 
 void SelectionTask::startTimer(){
   startMillis = millis();
+}
+
+// Potrebbe essere inutile ma nel caso stica e la teniamo
+void SelectionTask::disableInterruptButton(){
+  disableInterrupt(B_UP);
+  disableInterrupt(B_DOWN);
+  disableInterrupt(B_MAKE);
 }
