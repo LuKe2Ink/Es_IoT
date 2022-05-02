@@ -12,6 +12,7 @@ class Machine {
     Button* bUp;
     Button* bDown ;
     Button* bMake ;
+    state state;
 };
 
 #endif

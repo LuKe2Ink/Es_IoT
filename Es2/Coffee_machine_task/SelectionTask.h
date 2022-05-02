@@ -1,12 +1,30 @@
 #ifndef __SELECTION__
 #define __SELECTION__
 
-class Selection {
+#include "Task.h"
+
+class SelectionTask: public Task {
 
   public:
-    Selection(Machine* machine);
+    SelectionTask(Machine* machine, Product* product);
+    Machine* machine;
+    Product* product[3];
+    int unaviableProd;
+    int selectedProd;
+    int currentMillis;
+    int startMillis;
+    int pos;
+    
+    void init(int period);  
+    void tick();
 
-//  private: 
+  private:
+    void checkSleepMode();
+    void incSelect();
+    void decSelect();
+    void moveServo();
+    void makeProduct();
+    void startTimer();
 };
 
 #endif

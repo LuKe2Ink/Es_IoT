@@ -7,8 +7,15 @@
 
 #define N_MAX_QUANTITY 50
 
-
-
+enum {
+  WELCOME,
+  READY,
+  SELECT,
+  MAKING,
+  WAITING_REMOVING,
+  ASSISTANCE,
+  SLEEP
+}state;
 
 #define B_UP 2
 #define B_DOWN 3
@@ -23,4 +30,5 @@ Machine::Machine(){
   this->bUp = new ButtonImpl(B_UP);
   this-> bDown = new ButtonImpl(B_DOWN);
   this->bMake = new ButtonImpl(B_MAKE);
+  this->state = state;
 }
