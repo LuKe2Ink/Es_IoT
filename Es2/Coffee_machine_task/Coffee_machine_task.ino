@@ -13,7 +13,6 @@
 //#define B_DOWN 6
 //#define B_MAKE u
 #define PIR_PIN 7
-#define TEMP_PIN A0 
 #define TRIG 13
 #define ECHO 12
 #define POT A0
@@ -54,8 +53,13 @@ void setup() {
   scheda.init(100);
 
   /*Sugar Task*/
+<<<<<<< HEAD
   sugar = new SugarTask();
   sugar->init(20);
+=======
+  sugar = new SugarTask(POT, machine);
+  sugar->init(500);
+>>>>>>> b3282098c9c65fb277bdb1163849534421a5a4b1
   scheda.addTask(sugar);
   /*Selection Task*/
   

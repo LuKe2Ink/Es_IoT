@@ -2,6 +2,7 @@
 #define __SUGARTASK__
 
 #include "Task.h"
+#include "Machine.h"
 
 //class SugarTask : public Task{
 //    int pot_pin;
@@ -31,9 +32,9 @@ class SugarTask: public Task {
   float currentSugar;
 
 public:
-
   void init(int period);  
   void tick();
+  Machine* machine;
 };
 
 #endif
