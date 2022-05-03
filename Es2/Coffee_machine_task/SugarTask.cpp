@@ -22,8 +22,9 @@
 #include "SugarTask.h"
 #include "Arduino.h"
 
-SugarTask::SugarTask(int pin){
+SugarTask::SugarTask(int pin, Machine* machine){
     this->pot_pin = pin;
+    this->machine = machine;
     pinMode(this->pot_pin, INPUT) ;
   
   }
@@ -39,7 +40,8 @@ void SugarTask::tick(){
   sugarValue /= 2;
   if(this->currentSugar != sugarValue){
     this->currentSugar = sugarValue;
-    Serial.print(this->currentSugar);
-    Serial.println(" cucchiaini di zucchero");
+    // Serial.print(this->currentSugar);
+    // Serial.println(" cucchiaini di zucchero");
+    this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
   }
 }

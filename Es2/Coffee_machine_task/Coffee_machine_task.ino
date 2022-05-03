@@ -54,7 +54,7 @@ void setup() {
   scheda.init(100);
 
   /*Sugar Task*/
-  sugar = new SugarTask(POT);
+  sugar = new SugarTask(POT, machine);
   sugar->init(500);
   scheda.addTask(sugar);
   /*Selection Task*/
