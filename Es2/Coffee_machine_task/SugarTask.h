@@ -32,6 +32,7 @@ class SugarTask: public Task {
   float currentSugar;
 
 public:
+  SugarTask(Machine* machine);
   void init(int period);  
   void tick();
   Machine* machine;

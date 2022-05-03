@@ -24,7 +24,7 @@ class SelectionTask: public Task {
     void incSelect();
     void decSelect();
     void makeProduct();
-    void moveServo(bool orario);
+    void moveServo();
     void startTimer();
     void disableInterruptButton();
 };

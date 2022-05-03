@@ -21,6 +21,7 @@
 //  }
 #include "SugarTask.h"
 #include "Arduino.h"
+#define POT A1
 
 //SugarTask::SugarTask(int pin){
 //    this->pot_pin = pin;
@@ -44,13 +45,19 @@
 //  }
 //}
 
+SugarTask::SugarTask(Machine* machine){
+  this->machine = machine;
+  pinMode(POT, INPUT) ;
+
+}
+
 void SugarTask::init(int period){
   Task::init(period);   
   currentSugar = 0;
 }
   
 void SugarTask::tick(){
-  int sugarValue = analogRead(A0);
+  int sugarValue = analogRead(POT);
   sugarValue /= 128;
   sugarValue /= 2;
   if(this->currentSugar != sugarValue){

@@ -12,8 +12,11 @@ class CheckTask : public Task{
 
     public:
         CheckTask(Machine* machine);
+        void moveBackAndForward();
+        void checkTemp();
         void init(int period);
         void tick();
+
         Machine* machine;
 
 };

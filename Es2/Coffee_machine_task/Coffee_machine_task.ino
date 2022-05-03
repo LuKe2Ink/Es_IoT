@@ -53,13 +53,8 @@ void setup() {
   scheda.init(100);
 
   /*Sugar Task*/
-<<<<<<< HEAD
-  sugar = new SugarTask();
-  sugar->init(20);
-=======
-  sugar = new SugarTask(POT, machine);
+  sugar = new SugarTask(machine);
   sugar->init(500);
->>>>>>> b3282098c9c65fb277bdb1163849534421a5a4b1
   scheda.addTask(sugar);
   /*Selection Task*/
   
@@ -78,7 +73,7 @@ void setup() {
   productList[0] = machine->coffee;
   productList[1] = machine->tea;
   productList[2] = machine->chocolate;
-  machine->servo->setPosition(180);
+  // machine->servo->setPosition(180);
 
   
 }

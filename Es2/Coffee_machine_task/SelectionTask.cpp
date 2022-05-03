@@ -6,6 +6,7 @@
 #define ANTI_ORARIO -1
 #define PROD_NUM 3
 
+
 SelectionTask::SelectionTask(Machine* machine){ 
     this->machine = machine;
     this->product[0] = this->machine->coffee;
@@ -13,7 +14,6 @@ SelectionTask::SelectionTask(Machine* machine){
     this->product[2] = this->machine->chocolate;
     this->unaviableProd = 0;
     this->selectedProd = 0;
-    pos=0;
 }
 
 void SelectionTask::init(int period){
@@ -33,7 +33,7 @@ void SelectionTask::tick(){
         this->selectedProd = 0;
         this->startMillis = 0;
         
-        moveServo(ORARIO);
+        moveServo();
         Serial.println("Ready"); 
         if(this->unaviableProd == PROD_NUM){
             Serial.println("Assistance");
@@ -60,6 +60,7 @@ void SelectionTask::tick(){
           Serial.println("porco il dio 1");
         }
         
+        
         if(machine->bMake->isPressed()){
           makeProduct();
           Serial.println("porco il dio 2");
@@ -79,7 +80,7 @@ void SelectionTask::tick(){
         case MAKING:
         //display_lcd->setText("Making a " + productList[this->selectedProd]->toString());
         Serial.println("Making a " + this->product[this->selectedProd]->toString());
-        moveServo(true);
+        moveServo();
         Serial.println("The " + this->product[this->selectedProd]->toString() + " is ready");
         //decreaseSelectedItem(productList[this->selectedProd]->toString());
 
@@ -120,12 +121,12 @@ void SelectionTask::incSelect(){
 
 
 
-void SelectionTask::moveServo(bool orario){
+void SelectionTask::moveServo(){
   machine->servo->on();
-  for (int i = 0; i < 180; i++) {
+
+  for (int pos = 0; pos < 180; pos += 1){
     machine->servo->setPosition(pos);         
     delay(T_MAKING);            
-    pos += orario ? 1 : -1;
     Serial.println(pos);
   }
   machine->servo->off();
