@@ -1,6 +1,7 @@
 #include "SelectionTask.h"
 #include <EnableInterrupt.h>
 
+
 #define ORARIO 1
 #define ANTI_ORARIO -1
 #define PROD_NUM 3
@@ -30,32 +31,46 @@ void SelectionTask::tick(){
         case READY:
         //display_lcd->setText("Ready");
         this->selectedProd = 0;
-        startMillis = 0;
+        this->startMillis = 0;
         
         moveServo(ORARIO);
-        //Serial.println("Ready"); Proco dio
+        Serial.println("Ready"); 
         if(this->unaviableProd == PROD_NUM){
             Serial.println("Assistance");
             //display_lcd->setText("Assistance required");
             this->machine->state = ASSISTANCE;
         }else{
-            startMillis = 0;
+            this->startMillis = 0;
             this->machine->state = SELECT;
             //idleMillis = millis(); Michi merda
         }
         break;
         case SELECT:
-        enableInterrupt(B_UP, incSelect, RISING);
-        enableInterrupt(B_DOWN, decSelect, RISING);
-        enableInterrupt(B_MAKE, makeProduct, RISING);
+//        enableInterrupt(B_UP, SelectionTask.incSelect, RISING);
+//        enableInterrupt(B_DOWN, decSelect, RISING);
+//        enableInterrupt(B_MAKE, makeProduct, RISING);
+
+        if(machine->bUp->isPressed()){
+          incSelect();
+          Serial.println("porco il dio");
+        }
         
-        currentMillis = millis();
+        if(machine->bDown->isPressed()){
+          decSelect();
+          Serial.println("porco il dio 1");
+        }
+        
+        if(machine->bMake->isPressed()){
+          makeProduct();
+          Serial.println("porco il dio 2");
+        }
+        
+        this->currentMillis = millis();
 
-        checkSleepMode();
+        //checkSleepMode();
 
-        if(currentMillis - startMillis > T_OUT && startMillis != 0){
+        if(this->currentMillis - this->startMillis > T_OUT && this->startMillis != 0){
             this->machine->state = READY;
-            disableInterruptButton();
             } else {
             //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
             }
@@ -63,9 +78,9 @@ void SelectionTask::tick(){
         
         case MAKING:
         //display_lcd->setText("Making a " + productList[this->selectedProd]->toString());
-        Serial.println("Making a " + product[this->selectedProd]->toString());
+        Serial.println("Making a " + this->product[this->selectedProd]->toString());
         moveServo(true);
-        Serial.println("The " + product[this->selectedProd]->toString() + " is ready");
+        Serial.println("The " + this->product[this->selectedProd]->toString() + " is ready");
         //decreaseSelectedItem(productList[this->selectedProd]->toString());
 
         //state = READY;
@@ -98,22 +113,22 @@ void SelectionTask::incSelect(){
   if(product[selectedProd]->isNotAviable()){
     incSelect();
   }
-  //currentProd = productList[this->selectedProd]->toString();
-  //Serial.println(currentProd +" "+ this->product[this->selectedProd]->getQuantity());
+  //currentProd = productList[selectedProd]->toString();
+  Serial.println(product[selectedProd]->toString() +" "+ product[selectedProd]->getQuantity());
   startTimer();
 }
 
 
 
 void SelectionTask::moveServo(bool orario){
-  this->machine->servo->on();
+  machine->servo->on();
   for (int i = 0; i < 180; i++) {
-    this->machine->servo->setPosition(pos);         
+    machine->servo->setPosition(pos);         
     delay(T_MAKING);            
     pos += orario ? 1 : -1;
     Serial.println(pos);
   }
-  this->machine->servo->off();
+  machine->servo->off();
 }
 
 void SelectionTask::decSelect(){
@@ -124,19 +139,12 @@ void SelectionTask::decSelect(){
   if(product[selectedProd]->isNotAviable()){
     decSelect();
   }
-  //currentProd = productList[this->selectedProd]->toString();
-  //Serial.println(currentProd +" "+ productList[this->selectedProd]->getQuantity());
+  //currentProd = productList[selectedProd]->toString();
+  Serial.println(product[selectedProd]->toString() +" "+ product[selectedProd]->getQuantity());
   startTimer();
 }
 
 
 void SelectionTask::startTimer(){
   startMillis = millis();
-}
-
-// Potrebbe essere inutile ma nel caso stica e la teniamo
-void SelectionTask::disableInterruptButton(){
-  disableInterrupt(B_UP);
-  disableInterrupt(B_DOWN);
-  disableInterrupt(B_MAKE);
 }

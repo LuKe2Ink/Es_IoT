@@ -9,3 +9,7 @@ ButtonImpl::ButtonImpl(int pin){
 bool ButtonImpl::isPressed(){
   return digitalRead(pin) == HIGH;
 }
+
+int ButtonImpl::toString(){
+  return digitalRead(pin);
+}

@@ -16,7 +16,7 @@
 #define TEMP_PIN A0 
 #define TRIG 13
 #define ECHO 12
-#define POT A1
+#define POT A0
 
 #define T_OUT 5000L
 #define T_MAKING 55
@@ -54,8 +54,8 @@ void setup() {
   scheda.init(100);
 
   /*Sugar Task*/
-  sugar = new SugarTask(POT);
-  sugar->init(500);
+  sugar = new SugarTask();
+  sugar->init(20);
   scheda.addTask(sugar);
   /*Selection Task*/
   
@@ -63,9 +63,9 @@ void setup() {
 
 // vi voglio bene <3
 
-  // selection = new SelectionTask(machine);
-  // selection->init(100);
-  // scheda.addTask(selection);
+   selection = new SelectionTask(machine);
+   selection->init(100);
+   scheda.addTask(selection);
 
   machine->state = WELCOME;
   // state = WELCOME;

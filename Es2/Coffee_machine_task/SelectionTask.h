@@ -8,24 +8,24 @@
 
 class SelectionTask: public Task {
 
-  public:
-    SelectionTask(Machine* machine);
-    static Machine* machine;
-    static Product* product[PROD_NUM];
-    static int unaviableProd;
-    static int selectedProd;
+    Machine* machine;
+    Product* product[PROD_NUM];
+    int unaviableProd;
+    int selectedProd;
     int currentMillis;
-    static int startMillis;
+    int startMillis;
     int pos;
     
+  public:
+    SelectionTask(Machine* machine);
     void init(int period);  
     void tick();
     void checkSleepMode();
-    static void incSelect();
-    static void decSelect();
-    static void makeProduct();
+    void incSelect();
+    void decSelect();
+    void makeProduct();
     void moveServo(bool orario);
-    static void startTimer();
+    void startTimer();
     void disableInterruptButton();
 };
 
