@@ -13,7 +13,6 @@
 //#define B_DOWN 6
 //#define B_MAKE u
 #define PIR_PIN 7
-#define TEMP_PIN A0 
 #define TRIG 13
 #define ECHO 12
 #define POT A1
