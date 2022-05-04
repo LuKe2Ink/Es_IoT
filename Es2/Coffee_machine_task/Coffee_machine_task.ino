@@ -4,6 +4,8 @@
 #include "Scheduler.h"
 #include "SugarTask.h"
 #include "SelectionTask.h"
+#include "AwakeTask.h"
+#include "SelfTestTask.h"
 
 
 
@@ -25,6 +27,8 @@
 Machine* machine;
 Scheduler scheda;
 SugarTask* sugar;
+AwakeTask* awake;
+SelfTestTask* selfTest;
 SelectionTask* selection;
 
 int selectedProduct;
@@ -54,8 +58,16 @@ void setup() {
 
   /*Sugar Task*/
   sugar = new SugarTask(machine);
-  sugar->init(500);
+  sugar->init(20);
   scheda.addTask(sugar);
+
+  awake = new AwakeTask(machine);
+  awake->init(20);
+  scheda.addTask(awake);
+
+/*  selfTest = new SelfTestTask(machine);
+  selfTest->init(20);
+  scheda.addTask(selfTest);*/
   /*Selection Task*/
   
   //REGA DECOMMENTATE PER AVERE ERRORI CHE BHO NON CAPISCO

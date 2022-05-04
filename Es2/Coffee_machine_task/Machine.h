@@ -1,3 +1,5 @@
+#include <NewPing.h>
+
 #ifndef __MACHINE__
 #define __MACHINE__
 
@@ -5,6 +7,7 @@
 #include "Product.h"
 #include "ButtonImpl.h"
 #include "ServoMotorImpl.h"
+#include "Temp.h"
 
 
 #define N_MAX_QUANTITY 50
@@ -29,10 +32,14 @@ enum stato{
 
 
 class Machine {
+
+
   public:
     Machine();
+    NewPing* sonar;
     ServoMotor* servo ;
     Display* display_lcd ;
+    Temp* temp;
     Product* coffee ;
     Product* tea ;
     Product* chocolate ;

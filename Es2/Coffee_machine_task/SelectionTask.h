@@ -15,6 +15,7 @@ class SelectionTask: public Task {
     int currentMillis;
     int startMillis;
     int pos;
+    unsigned long idleMillis;
     
   public:
     SelectionTask(Machine* machine);
@@ -26,7 +27,9 @@ class SelectionTask: public Task {
     void makeProduct();
     void moveServo();
     void startTimer();
+    void machineOn();
     void disableInterruptButton();
+    boolean debounce(int pin);
 };
 
 #endif

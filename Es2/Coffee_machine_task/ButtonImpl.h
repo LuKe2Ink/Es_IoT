@@ -10,9 +10,11 @@ public:
   ButtonImpl(int pin);
   bool isPressed();
   int toString();
+  bool debounce();
 
 private:
   int pin;
+  int debounceDelay;
 
 };
 
