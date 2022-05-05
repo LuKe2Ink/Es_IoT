@@ -2,39 +2,71 @@ package com.example.es2;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import org.json.JSONObject;
+
 
 public class GUIController {
 
     private static final String N_MAX_PRODUCT = "50";
 
-    private static final String PORT = "COM3";
+    private static final String PORT = "COM6";
     private static final int RATE = 9600;
 
-    private CommChannel commChannel;
+    public CommChannel commChannel;
 
     @FXML
-    private Label state;
+    public Label state;
 
     @FXML
-    private Label coffeeQuantity;
+    public Label coffeeQuantity;
 
     @FXML
-    private Label teaQuantity;
+    public Label teaQuantity;
 
     @FXML
-    private Label chocolateQuantity;
+    public Label chocolateQuantity;
 
     @FXML
-    private Label numberSelfTest;
+    public Label numberSelfTest;
 
     public GUIController() throws Exception {
         this.commChannel = new SerialCommChannel(PORT, RATE);
+        System.out.println("Waiting Arduino for rebooting...");
+        Thread.sleep(4000);
+        JSONObject json = null;
+        boolean keepReading = true;
+        while (keepReading) {
+            String msg = this.commChannel.receiveMsg();
+            msg.replace("/.*{/", "");
+            if(msg.contains("{")){
+                json = new JSONObject(msg);
+                keepReading = false;
+            }
+            //msg.replaceAll("/.*{/", "");
+            //System.out.println(msg);
+        }
+        System.out.println(json);
+
+
+//
+//        System.out.println(json.getInt("coffee"));
+//        int coffee = json.getInt("coffee");
+//        coffeeQuantity.setText(String.valueOf(coffee));
+//        int chocolate = json.getInt("chocolate");
+//        chocolateQuantity.setText(String.valueOf(chocolate));
+//        int tea = json.getInt("tea");
+//        teaQuantity.setText(String.valueOf(tea));
     }
 
 
     @FXML
     protected void refillClicked() throws InterruptedException {
         boolean msgReceived = false;
+
+        System.out.println("coffeeQuantity = " + coffeeQuantity);
+        System.out.println("teaQuantity = " + teaQuantity);
+        System.out.println("chocolateQuantity = " + chocolateQuantity);
+
 
         coffeeQuantity.setText(N_MAX_PRODUCT);
         chocolateQuantity.setText(N_MAX_PRODUCT);

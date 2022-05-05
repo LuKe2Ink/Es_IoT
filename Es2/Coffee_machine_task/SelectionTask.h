@@ -4,10 +4,13 @@
 #include "Task.h"
 #include "Product.h"
 #include "Machine.h"
+#include "MsgService.h"
+
 
 
 class SelectionTask: public Task {
-
+  
+    Msg* service;
     Machine* machine;
     Product* product[PROD_NUM];
     int unaviableProd;

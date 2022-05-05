@@ -10,7 +10,7 @@
 #define T_IDLE 10000
 
 
-SelectionTask::SelectionTask(Machine* machine){ 
+SelectionTask::SelectionTask(Machine* machine){
     this->machine = machine;
     this->product[0] = this->machine->coffee;
     this->product[1] = this->machine->tea;
@@ -22,6 +22,11 @@ SelectionTask::SelectionTask(Machine* machine){
 
 void SelectionTask::init(int period){
   Task::init(period);
+  MsgService.init();
+  String json = "";
+  json = json + "{'coffee':"+this->machine->coffee->getQuantity()+",'tea': "+this->machine->tea->getQuantity()+",'chocolate': "+this->machine->chocolate->getQuantity()+ "}";
+
+  MsgService.sendMsg(json);
 }
   
 void SelectionTask::tick(){
@@ -96,6 +101,13 @@ void SelectionTask::tick(){
    
     break;
     case ASSISTANCE:
+      if(MsgService.isMsgAvailable()){
+        this->service = MsgService.receiveMsg();
+        if(service->getContent() == "refill"){
+          this->machine->display_lcd->setText("Received");
+        }
+      }          
+      this->machine->display_lcd->setText("Assistance");
       Serial.println("Assistance");
     break;
     }

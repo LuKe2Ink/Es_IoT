@@ -10,8 +10,8 @@ module com.example.es2 {
 //    requires eu.hansolo.tilesfx;
 
 
-
     opens com.example.es2 to javafx.fxml;
     requires jssc;
+    requires org.json;
     exports com.example.es2;
 }

@@ -21,8 +21,10 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(),  WIDTH, HEIGHT);
         stage.setTitle("Coffee Machine");
 
+
         stage.setScene(scene);
         stage.show();
+        scene.getRoot().getChildrenUnmodifiable().stream().forEach(x -> System.out.println(x.get));
 
         System.out.println("Welcome");
 
@@ -30,8 +32,7 @@ public class HelloApplication extends Application {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         launch();
-
     }
 }
