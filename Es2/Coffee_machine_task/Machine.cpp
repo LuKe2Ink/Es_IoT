@@ -8,9 +8,10 @@ Machine::Machine(){
   this->sonar = new NewPing(7, 8, 40);
   this->display_lcd = new Display();
   this->temp = new Temp(3);
-  this->coffee = new Product(N_MAX_QUANTITY , "Coffee");
-  this->tea = new Product(N_MAX_QUANTITY , "Tea");
-  this->chocolate = new Product(N_MAX_QUANTITY , "Chocolate");
+  this->pir = new Pir(5);
+  this->coffee = new Product(1 , "Coffee");
+  this->tea = new Product(1 , "Tea");
+  this->chocolate = new Product(1 , "Chocolate");
   this->bUp = new ButtonImpl(B_UP);
   this-> bDown = new ButtonImpl(B_DOWN);
   this->bMake = new ButtonImpl(B_MAKE);

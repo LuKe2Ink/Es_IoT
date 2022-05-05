@@ -17,6 +17,7 @@ SelectionTask::SelectionTask(Machine* machine){
     this->product[2] = this->machine->chocolate;
     this->unaviableProd = 0;
     this->selectedProd = 0;
+    this->pos = 0;
 }
 
 void SelectionTask::init(int period){
@@ -26,25 +27,24 @@ void SelectionTask::init(int period){
 void SelectionTask::tick(){
   switch(this->machine->state){
         case WELCOME:
-            idleMillis = millis();
-            this->machine->display_lcd->setText("Welcome");
-            Serial.println("Welcome");
+            machine->display_lcd->setText("Welcome");
             delay(4000);
             this->machine->state = READY;
         break;
         case READY:
-        idleMillis = millis();
-        //display_lcd->setText("Ready");
+        this->idleMillis = millis();
+        this->currentMillis = millis();
+        machine->display_lcd->setText("Ready");
         this->selectedProd = 0;
         this->startMillis = 0;
         
-        Serial.println("Ready"); 
         if(this->unaviableProd == PROD_NUM){
             Serial.println("Assistance");
             //display_lcd->setText("Assistance required");
             this->machine->state = ASSISTANCE;
         }else{
             this->startMillis = 0;
+            Serial.println("vado in select");
             this->machine->state = SELECT;
         }
         break;
@@ -69,16 +69,13 @@ void SelectionTask::tick(){
 
         if(this->currentMillis - this->startMillis > T_OUT && this->startMillis != 0){
             this->machine->state = READY;
-            } else {
-            //display_lcd->setText(currentProd +" "+ productList[this->selectedProd]->getQuantity());
             }
         break;
         
         case MAKING:
-        //display_lcd->setText("Making a " + productList[this->selectedProd]->toString());
-        Serial.println("Making a " + this->product[this->selectedProd]->toString());
-        moveServo();
-        Serial.println("The " + this->product[this->selectedProd]->toString() + " is ready");
+        machine->display_lcd->setText("Making a " + product[selectedProd]->toString());
+        moveServo(true);
+        machine->display_lcd->setText("The " + product[selectedProd]->toString() + " is ready");
         //decreaseSelectedItem(productList[this->selectedProd]->toString());
 
         //state = READY;
@@ -90,26 +87,26 @@ void SelectionTask::tick(){
           currentMillis = millis();
       
           if(currentMillis - startMillis > T_OUT || machine->sonar->ping_cm() == 0){
-            moveServo();
+            moveServo(false);
             machine->state = READY;
           }
           //Serial.println(sonar.ping_cm());
     break;
     case SLEEP:
-      Serial.println("Sleep");
+   
+    break;
+    case ASSISTANCE:
+      Serial.println("Assistance");
     break;
     }
 }
 
-void SelectionTask::machineOn(){
-  machine->state = WELCOME;
-  idleMillis = millis();
-}
-
 void SelectionTask::checkSleepMode(){
   currentMillis = millis();
-  if(currentMillis - idleMillis > T_IDLE && machine->sonar->ping_cm() == 0){
+  Serial.println(currentMillis - idleMillis);
+  if(currentMillis - idleMillis > T_IDLE && !(machine->pir->isPresent())){
     machine->state = SLEEP;
+    Serial.println("Sleep");
   }
 }
 
@@ -120,7 +117,6 @@ void SelectionTask::makeProduct(){
     if(product[selectedProd]->isNotAviable()){
         unaviableProd++;
     } 
-    idleMillis = millis();
 }
 
 void SelectionTask::incSelect(){
@@ -133,19 +129,18 @@ void SelectionTask::incSelect(){
     incSelect();
   }
   //currentProd = productList[selectedProd]->toString();
-  Serial.println(product[selectedProd]->toString() +" "+ product[selectedProd]->getQuantity());
+  machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
-  idleMillis = millis();
 }
 
 
 
-void SelectionTask::moveServo(){
+void SelectionTask::moveServo(bool orario){
   machine->servo->on();
-
-  for (int pos = 0; pos < 180; pos += 1){
+  for (int i = 0; i < 180; i++) {
     machine->servo->setPosition(pos);         
     delay(T_MAKING);            
+    pos += orario ? 1 : -1;
   }
   machine->servo->off();
 }
@@ -159,9 +154,8 @@ void SelectionTask::decSelect(){
     decSelect();
   }
   //currentProd = productList[selectedProd]->toString();
-  Serial.println(product[selectedProd]->toString() +" "+ product[selectedProd]->getQuantity());
+  machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
-  idleMillis = millis();
 }
 
 

@@ -11,8 +11,8 @@ void AwakeTask::init(int period){
   
 void AwakeTask::tick(){
   if(machine->state == SLEEP){
-    if(machine->sonar->ping_cm() != 0){
-      machine->state = WELCOME;
+    if(machine->pir->isPresent()){
+      machine->state = READY;
     }
   }
 }

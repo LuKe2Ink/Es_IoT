@@ -5,16 +5,12 @@
 #include "SugarTask.h"
 #include "SelectionTask.h"
 #include "AwakeTask.h"
-#include "SelfTestTask.h"
-
-
 
 
 
 //#define B_UP 7
 //#define B_DOWN 6
 //#define B_MAKE u
-#define PIR_PIN 7
 #define TRIG 13
 #define ECHO 12
 #define POT A0
@@ -28,7 +24,6 @@ Machine* machine;
 Scheduler scheda;
 SugarTask* sugar;
 AwakeTask* awake;
-SelfTestTask* selfTest;
 SelectionTask* selection;
 
 int selectedProduct;
@@ -65,9 +60,6 @@ void setup() {
   awake->init(20);
   scheda.addTask(awake);
 
-/*  selfTest = new SelfTestTask(machine);
-  selfTest->init(20);
-  scheda.addTask(selfTest);*/
   /*Selection Task*/
   
   //REGA DECOMMENTATE PER AVERE ERRORI CHE BHO NON CAPISCO

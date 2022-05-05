@@ -2,11 +2,11 @@
 #define BTN_UP 7
 #define BNT_DOWN 6
 #define MAKE_BTN 5
-#define PIR_PIN 4
+#define PIR_PIN 5
 #define TEMP_PIN A0 
 #define TRIG 13
 #define ECHO 12
-#define POT A1
+#define POT_PIN A1
 
 
 #define CALIBRATION_TIME_SEC 10
@@ -103,9 +103,5 @@ void loop() {
     
     delay(500);
 
-  int newValue = analogRead(POT_PIN);
-  if (newValue != current){
-    current = newValue;
-    Serial.println(current);
-  }
+  
 }

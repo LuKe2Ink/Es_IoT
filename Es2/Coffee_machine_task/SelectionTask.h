@@ -12,8 +12,8 @@ class SelectionTask: public Task {
     Product* product[PROD_NUM];
     int unaviableProd;
     int selectedProd;
-    int currentMillis;
-    int startMillis;
+    unsigned long currentMillis;
+    unsigned long startMillis;
     int pos;
     unsigned long idleMillis;
     
@@ -25,7 +25,7 @@ class SelectionTask: public Task {
     void incSelect();
     void decSelect();
     void makeProduct();
-    void moveServo();
+    void moveServo(bool orario);
     void startTimer();
     void machineOn();
     void disableInterruptButton();
