@@ -33,19 +33,19 @@ public class GUIController {
         this.commChannel = new SerialCommChannel(PORT, RATE);
         System.out.println("Waiting Arduino for rebooting...");
         Thread.sleep(4000);
-        JSONObject json = null;
-        boolean keepReading = true;
-        while (keepReading) {
-            String msg = this.commChannel.receiveMsg();
-            msg.replace("/.*{/", "");
-            if(msg.contains("{")){
-                json = new JSONObject(msg);
-                keepReading = false;
-            }
-            //msg.replaceAll("/.*{/", "");
-            //System.out.println(msg);
-        }
-        System.out.println(json);
+//        JSONObject json = null;
+//        boolean keepReading = true;
+//        while (keepReading) {
+//            String msg = this.commChannel.receiveMsg();
+//            msg.replace("/.*{/", "");
+//            if(msg.contains("{")){
+//                json = new JSONObject(msg);
+//                keepReading = false;
+//            }
+//            //msg.replaceAll("/.*{/", "");
+//            //System.out.println(msg);
+//        }
+//        System.out.println(json);
 
 
 //
@@ -81,4 +81,26 @@ public class GUIController {
         state.setText("Dropping");
     }
 
+    @FXML
+    protected void updateClicked() throws InterruptedException {
+        JSONObject json = null;
+        boolean keepReading = true;
+        while (keepReading) {
+            String msg = this.commChannel.receiveMsg();
+            msg.replace("/.*{/", "");
+            if(msg.contains("{")){
+                json = new JSONObject(msg);
+                keepReading = false;
+            }
+            //msg.replaceAll("/.*{/", "");
+            //System.out.println(msg);
+        }
+        System.out.println(json);
+
+        coffeeQuantity.setText(String.valueOf(json.getInt("coffee")));
+//        int chocolate = json.getInt("chocolate");
+        chocolateQuantity.setText(String.valueOf(json.getInt("chocolate")));
+//        int tea = json.getInt("tea");
+        teaQuantity.setText(String.valueOf(json.getInt("tea")));
+    }
 }

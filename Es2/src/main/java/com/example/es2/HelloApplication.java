@@ -5,10 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import jssc.*;
-
-import java.io.IOException;
-
 public class HelloApplication extends Application {
 
     private static final int WIDTH = 1200;
@@ -24,7 +20,6 @@ public class HelloApplication extends Application {
 
         stage.setScene(scene);
         stage.show();
-        scene.getRoot().getChildrenUnmodifiable().stream().forEach(x -> System.out.println(x.get));
 
         System.out.println("Welcome");
 
