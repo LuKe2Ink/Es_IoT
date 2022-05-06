@@ -4,16 +4,17 @@
 
 
 Machine::Machine(){
-  this->servo = new ServoMotorImpl(10);
-  this->sonar = new NewPing(7, 8, 40);
+  this->servo = new ServoMotorImpl(SERVO_PIN);
+  this->sonar = new NewPing(TRIG_PIN, ECHO_PIN, SONAR_DISTANCE);
   this->display_lcd = new Display();
-  this->temp = new Temp(3);
-  this->pir = new Pir(5);
-  this->coffee = new Product(1 , "Coffee");
-  this->tea = new Product(1 , "Tea al limone");
-  this->chocolate = new Product(1 , "Chocolate");
+  this->temp = new Temp(TEMP_PIN);
+  this->pir = new Pir(PIR_PIN);
+  this->coffee = new Product(N_MAX_QUANTITY , "Coffee");
+  this->tea = new Product(N_MAX_QUANTITY , "Tea al limone");
+  this->chocolate = new Product(N_MAX_QUANTITY , "Chocolate");
   this->bUp = new ButtonImpl(B_UP);
   this-> bDown = new ButtonImpl(B_DOWN);
   this->bMake = new ButtonImpl(B_MAKE);
   this->state = state;
+  this->checkDone = 0;
 }

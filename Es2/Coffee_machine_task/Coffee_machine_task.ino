@@ -5,33 +5,25 @@
 #include "SugarTask.h"
 #include "SelectionTask.h"
 #include "AwakeTask.h"
-
-
-
-//#define B_UP 7
-//#define B_DOWN 6
-//#define B_MAKE u
-#define TRIG 13
-#define ECHO 12
-#define POT A0
+#include "CheckTask.h"
 
 #define T_OUT 5000L
 #define T_MAKING 55
+#define T_CHECK 180000
 
-
-
-Machine* machine;
+Machine *machine;
 Scheduler scheda;
-SugarTask* sugar;
-AwakeTask* awake;
-SelectionTask* selection;
+SugarTask *sugar;
+AwakeTask *awake;
+SelectionTask *selection;
+CheckTask *check;
 
 int selectedProduct;
-Product* productList[3];
+Product *productList[3];
 unsigned long startMillis;
 unsigned long currentMillis;
 unsigned long idleMillis;
-int pos;   
+int pos;
 int delta;
 String currentProd;
 int aviableProd;
@@ -46,7 +38,8 @@ int aviableProd;
 //   SLEEP
 // }state;
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   machine = new Machine();
   scheda.init(100);
@@ -56,19 +49,20 @@ void setup() {
   sugar->init(20);
   scheda.addTask(sugar);
 
+  /*Awake Task*/
   awake = new AwakeTask(machine);
   awake->init(20);
   scheda.addTask(awake);
 
   /*Selection Task*/
-  
-  //REGA DECOMMENTATE PER AVERE ERRORI CHE BHO NON CAPISCO
+  selection = new SelectionTask(machine);
+  selection->init(100);
+  scheda.addTask(selection);
 
-// vi voglio bene <3
-
-   selection = new SelectionTask(machine);
-   selection->init(100);
-   scheda.addTask(selection);
+  /*Check task*/
+  check = new CheckTask(machine);
+  check->init(T_CHECK);
+  scheda.addTask(check);
 
   machine->state = WELCOME;
   // state = WELCOME;
@@ -78,14 +72,10 @@ void setup() {
   productList[1] = machine->tea;
   productList[2] = machine->chocolate;
   // machine->servo->setPosition(180);
-
-  
 }
 
-void loop() {
-//  sugar->tick();
+void loop()
+{
+  //  sugar->tick();
   scheda.schedule();
-
-
-  
 }

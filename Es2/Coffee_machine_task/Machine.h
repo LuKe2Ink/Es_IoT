@@ -19,6 +19,11 @@
 #define B_DOWN 3
 #define B_MAKE 4
 #define PIR_PIN 5
+#define TRIG_PIN 7
+#define ECHO_PIN 7
+#define SONAR_DISTANCE 40
+#define SERVO_PIN 10
+#define TEMP_PIN A0
 
 #define PROD_NUM 3
 
@@ -50,6 +55,7 @@ class Machine {
     Button* bDown ;
     Button* bMake ;
     stato state;
+    int checkDone;
 };
 
 #endif
