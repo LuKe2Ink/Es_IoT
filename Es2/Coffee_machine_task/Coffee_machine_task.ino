@@ -23,6 +23,7 @@ Product *productList[3];
 unsigned long startMillis;
 unsigned long currentMillis;
 unsigned long idleMillis;
+long check_time = 180000;
 int pos;
 int delta;
 String currentProd;
@@ -61,7 +62,7 @@ void setup()
 
   /*Check task*/
   check = new CheckTask(machine);
-  check->init(T_CHECK);
+  check->init(30000);
   scheda.addTask(check);
 
   machine->state = WELCOME;

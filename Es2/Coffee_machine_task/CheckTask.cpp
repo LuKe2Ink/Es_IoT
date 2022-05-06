@@ -1,5 +1,7 @@
 #include "CheckTask.h"
 
+int count = 0;
+
 CheckTask::CheckTask(Machine *machine)
 {
     this->machine = machine;
@@ -13,12 +15,12 @@ void CheckTask::init(int period)
 void CheckTask::tick()
 {
     // Interrupt check if the machine is in assistance mode
-    if(this->machine->state == ASSISTANCE) return;
-
+    if(this->machine->state == ASSISTANCE || count++ < 5) return;
     this->machine->display_lcd->setText("Make a check onichan");
     this->moveBackAndForward();
     this->checkTemp();
     this->machine->checkDone++;
+    count = 0;
 }
 
 
