@@ -48,7 +48,7 @@
 SugarTask::SugarTask(Machine* machine){
   this->machine = machine;
   pinMode(POT, INPUT) ;
-
+  this->s = NO_CHECK;
 }
 
 void SugarTask::init(int period){
@@ -57,6 +57,23 @@ void SugarTask::init(int period){
 }
   
 void SugarTask::tick(){
+  switch(this->s){
+    case NO_CHECK:
+      if(this->machine->state == SELECT){
+        this->s = CHECK_SUGAR;
+      }
+    break;
+    case CHECK_SUGAR:
+      if(this->machine->state != SELECT){
+        this->s = NO_CHECK;
+      }
+      checkSugar();
+    break;
+  }
+  
+}
+
+void SugarTask::checkSugar(){
   int sugarValue = analogRead(POT);
   sugarValue /= 128;
   sugarValue /= 2;

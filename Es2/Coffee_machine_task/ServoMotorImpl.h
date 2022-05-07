@@ -2,20 +2,20 @@
 #define __SERVOMOTORIMPL__
 
 #include "ServoMotor.h"
-#include <Servo.h>
+#include"ServoTimer2.h"
 
 class ServoMotorImpl: public ServoMotor {
 
 public:
   ServoMotorImpl(int pin);
-
-  void on();
-  void setPosition(int angle);
-  void off();
+  void moveServo(bool orario);
     
 private:
   int pin; 
-  Servo motor; 
+  int pos;
+  ServoTimer2 servo;
+  void off();
+  void on(); 
 };
 
 #endif

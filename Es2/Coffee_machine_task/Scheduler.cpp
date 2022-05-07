@@ -26,7 +26,8 @@ bool Scheduler::addTask(Task* task){
   }
 }
   
-void Scheduler::schedule(){   
+void Scheduler::schedule(){ 
+  while (!timerFlag){}  
   timerFlag = false;
 
   for (int i = 0; i < nTasks; i++){

@@ -4,9 +4,12 @@
 class ServoMotor {
 
 public:
-  virtual void on() = 0;
-  virtual void setPosition(int angle) = 0;
+  virtual void moveServo(bool orario) = 0;
+
+private:
   virtual void off() = 0;
+  virtual void on() = 0;
+  
 };
 
 #endif

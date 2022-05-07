@@ -4,28 +4,10 @@
 #include "Task.h"
 #include "Machine.h"
 
-//class SugarTask : public Task{
-//    int pot_pin;
-//    int current_level;
-//
-//    public: 
-//      SugarTask(int pot_pin);
-//      void init(int period);
-//      void tick();
-//        
-//  };
-
-//class SugarTask: public Task {
-//
-//  int pot_pin;
-//  float currentSugar;
-//
-//public:
-//  SugarTask(int pot_pin);
-//  void init(int period);  
-//  void tick();
-//};
-//
+enum sugarState{
+  NO_CHECK,
+  CHECK_SUGAR
+};
 
 class SugarTask: public Task {
 
@@ -35,7 +17,11 @@ public:
   SugarTask(Machine* machine);
   void init(int period);  
   void tick();
+  void checkSugar();
   Machine* machine;
+
+private:
+  sugarState s;
 };
 
 #endif

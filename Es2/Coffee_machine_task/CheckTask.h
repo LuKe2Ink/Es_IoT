@@ -8,6 +8,11 @@
 #define TEMP_MIN 17
 #define TEMP_MAX 24
 
+enum testState{
+  CHECK,
+  TEST
+};
+
 class CheckTask : public Task{
 
     public:
@@ -18,6 +23,10 @@ class CheckTask : public Task{
         void tick();
 
         Machine* machine;
+
+   private:
+      testState state;
+      int count;
 
 };
 

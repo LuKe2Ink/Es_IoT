@@ -79,7 +79,7 @@ void SelectionTask::tick(){
         
         case MAKING:
         machine->display_lcd->setText("Making a " + product[selectedProd]->toString());
-        moveServo(true);
+        machine->servo->moveServo(true);
         machine->display_lcd->setText("The " + product[selectedProd]->toString() + " is ready");
         //decreaseSelectedItem(productList[this->selectedProd]->toString());
 
@@ -92,7 +92,7 @@ void SelectionTask::tick(){
           currentMillis = millis();
       
           if(currentMillis - startMillis > T_OUT || machine->sonar->ping_cm() == 0){
-            moveServo(false);
+            machine->servo->moveServo(false);
             machine->state = READY;
           }
           //Serial.println(sonar.ping_cm());
@@ -115,7 +115,6 @@ void SelectionTask::tick(){
 
 void SelectionTask::checkSleepMode(){
   currentMillis = millis();
-  Serial.println(currentMillis - idleMillis);
   if(currentMillis - idleMillis > T_IDLE && !(machine->pir->isPresent())){
     machine->state = SLEEP;
     Serial.println("Sleep");
@@ -143,18 +142,7 @@ void SelectionTask::incSelect(){
   //currentProd = productList[selectedProd]->toString();
   machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
-}
-
-
-
-void SelectionTask::moveServo(bool orario){
-  machine->servo->on();
-  for (int i = 0; i < 180; i++) {
-    machine->servo->setPosition(pos);         
-    delay(T_MAKING);            
-    pos += orario ? 1 : -1;
-  }
-  machine->servo->off();
+  this->idleMillis = millis();
 }
 
 void SelectionTask::decSelect(){
@@ -168,6 +156,7 @@ void SelectionTask::decSelect(){
   //currentProd = productList[selectedProd]->toString();
   machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
+  this->idleMillis = millis();
 }
 
 

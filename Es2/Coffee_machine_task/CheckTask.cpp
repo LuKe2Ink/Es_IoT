@@ -5,6 +5,8 @@ int count = 0;
 CheckTask::CheckTask(Machine *machine)
 {
     this->machine = machine;
+    this->state = CHECK;
+    this->count = 0;
 }
 
 void CheckTask::init(int period)
@@ -15,12 +17,24 @@ void CheckTask::init(int period)
 void CheckTask::tick()
 {
     // Interrupt check if the machine is in assistance mode
-    if(this->machine->state == ASSISTANCE || count++ < 5) return;
-    this->machine->display_lcd->setText("Make a check onichan");
-    this->moveBackAndForward();
-    this->checkTemp();
-    this->machine->checkDone++;
-    count = 0;
+    switch(state){
+      case CHECK:
+        count++;
+        Serial.print("Check count: ");
+        Serial.println(count);
+        if(this->machine->state != ASSISTANCE && count == 4){
+          count = 0;
+          state = TEST;
+        }
+      break;
+      case TEST:
+        this->machine->display_lcd->setText("Make a check onichan");
+        this->moveBackAndForward();
+        this->checkTemp();
+        this->machine->checkDone++;
+        this->state = CHECK;
+      break;
+    }
 }
 
 
@@ -40,19 +54,6 @@ int temp = analogRead(TEMP_PIN);
 
 void CheckTask::moveBackAndForward()
 {
-  machine->servo->on();
-    int pos = 0;
-    for (pos = 0; pos <= 180; pos += 1)
-    { 
-        this->machine->servo->setPosition(pos); 
-                                                
-        delay(15);                              
-    }
-    for (pos = 180; pos >= 0; pos -= 1)
-    {                                           
-        this->machine->servo->setPosition(pos); 
-        delay(15);                              
-    }
-
-  machine->servo->off();
+  machine->servo->moveServo(true);
+  machine->servo->moveServo(false);
 }
