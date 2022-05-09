@@ -3,7 +3,6 @@
 #include "Scheduler.h"
 #include "SugarTask.h"
 #include "SelectionTask.h"
-#include "AwakeTask.h"
 #include "CheckTask.h"
 
 #define T_OUT 5000L
@@ -13,7 +12,6 @@
 Machine *machine;
 Scheduler scheda;
 SugarTask *sugar;
-AwakeTask *awake;
 SelectionTask *selection;
 CheckTask *check;
 
@@ -48,11 +46,6 @@ void setup()
   sugar = new SugarTask(machine);
   sugar->init(20);
   scheda.addTask(sugar);
-
-  /*Awake Task*/
-  awake = new AwakeTask(machine);
-  awake->init(20);
-  scheda.addTask(awake);
 
   /*Selection Task*/
   selection = new SelectionTask(machine);

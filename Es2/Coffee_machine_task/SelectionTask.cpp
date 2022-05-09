@@ -1,3 +1,5 @@
+#include <EnableInterrupt.h>
+
 #include "SelectionTask.h"
 #include <NewPing.h>
 #include <avr/sleep.h>
@@ -7,7 +9,7 @@
 #define ORARIO 1
 #define ANTI_ORARIO -1
 #define PROD_NUM 3
-#define T_IDLE 10000
+#define T_IDLE 30000
 
 
 SelectionTask::SelectionTask(Machine* machine){
@@ -18,6 +20,7 @@ SelectionTask::SelectionTask(Machine* machine){
     this->unaviableProd = 0;
     this->selectedProd = 0;
     this->pos = 0;
+    this->countIdle = 0;
 }
 
 void SelectionTask::init(int period){
@@ -54,16 +57,8 @@ void SelectionTask::tick(){
         }
         break;
         case SELECT:
-//        enableInterrupt(B_UP, SelectionTask.incSelect, RISING);
-//        enableInterrupt(B_DOWN, decSelect, RISING);
-//        enableInterrupt(B_MAKE, makeProduct, RISING);
 
           if(machine->bUp->debounce()==HIGH) incSelect(); //incrementa di 1 se il pulsante è premuto
-          
-//        if(machine->bUp->isPressed()){
-//          incSelect();
-//          Serial.println("porco il dio");
-//        }
         
         if(machine->bDown->debounce()==HIGH) decSelect(); //incrementa di 1 se il pulsante è premuto
         
@@ -90,33 +85,57 @@ void SelectionTask::tick(){
         break;
         case WAITING_REMOVING:
           currentMillis = millis();
-      
+          Serial.println(currentMillis - startMillis);
+          Serial.println(machine->sonar->ping_cm());
           if(currentMillis - startMillis > T_OUT || machine->sonar->ping_cm() == 0){
             machine->servo->moveServo(false);
             machine->state = READY;
           }
           //Serial.println(sonar.ping_cm());
-    break;
-    case SLEEP:
-   
-    break;
-    case ASSISTANCE:
-      if(MsgService.isMsgAvailable()){
-        this->service = MsgService.receiveMsg();
-        if(service->getContent() == "refill"){
-          this->machine->display_lcd->setText("Received");
-        }
-      }          
-      this->machine->display_lcd->setText("Assistance");
-      Serial.println("Assistance");
-    break;
+        break;
+        case SLEEP:
+          machine->display_lcd->off();
+          set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+          enableInterrupt(PIR_PIN, awake, RISING);
+
+          sleep_enable(); 
+ 
+          sleep_mode(); 
+
+          sleep_disable(); 
+
+          machine->display_lcd->on();
+          this->machine->state = WELCOME;
+          disableInterrupt(PIR_PIN);
+        break;
+        case ASSISTANCE:
+          if(MsgService.isMsgAvailable()){
+            this->service = MsgService.receiveMsg();
+            if(service->getContent() == "refill"){
+              this->machine->display_lcd->setText("Received");
+            }
+          }          
+          this->machine->display_lcd->setText("Assistance");
+          Serial.println("Assistance");
+        break;
     }
+}
+
+void SelectionTask::awake(){
+  disableInterrupt(PIR_PIN);
+  Serial.println("Esco");
 }
 
 void SelectionTask::checkSleepMode(){
   currentMillis = millis();
-  if(currentMillis - idleMillis > T_IDLE && !(machine->pir->isPresent())){
+  if(currentMillis - idleMillis > T_IDLE && countIdle < 2){
+    countIdle++;
+    this->idleMillis = millis();
+  }
+  if(countIdle == 2 && !(machine->pir->isPresent())){
     machine->state = SLEEP;
+    this->countIdle = 0;
+    this->idleMillis = 0;
     Serial.println("Sleep");
   }
 }

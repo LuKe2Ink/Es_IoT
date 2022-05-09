@@ -13,3 +13,11 @@ void Display::setText(String msg) {
   lcd.setCursor(2, 1); // Set the cursor on the third column and first row.
   lcd.print(msg);
 }
+
+void Display::off(){
+  lcd.noBacklight();
+}
+
+void Display::on(){
+  lcd.backlight();
+}

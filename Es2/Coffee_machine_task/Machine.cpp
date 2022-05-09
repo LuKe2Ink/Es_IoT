@@ -17,4 +17,5 @@ Machine::Machine(){
   this->bMake = new ButtonImpl(B_MAKE);
   this->state = state;
   this->checkDone = 0;
+  this->lastMove = false;
 }

@@ -8,6 +8,8 @@ class Display {
   public:
     Display();
     void setText(String msg);
+    void on();
+    void off();
 
 };
 

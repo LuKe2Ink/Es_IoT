@@ -20,7 +20,7 @@
 #define B_MAKE 4
 #define PIR_PIN 5
 #define TRIG_PIN 7
-#define ECHO_PIN 7
+#define ECHO_PIN 8
 #define SONAR_DISTANCE 40
 #define SERVO_PIN 10
 #define TEMP_PIN A0
@@ -56,6 +56,7 @@ class Machine {
     Button* bMake ;
     stato state;
     int checkDone;
+    bool lastMove;
 };
 
 #endif

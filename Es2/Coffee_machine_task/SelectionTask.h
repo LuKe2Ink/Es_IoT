@@ -33,6 +33,10 @@ class SelectionTask: public Task {
     void machineOn();
     void disableInterruptButton();
     boolean debounce(int pin);
+    static void awake();
+
+  private:
+    int countIdle;
 };
 
 #endif
