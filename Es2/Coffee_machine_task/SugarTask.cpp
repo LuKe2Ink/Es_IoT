@@ -79,8 +79,8 @@ void SugarTask::checkSugar(){
   sugarValue /= 2;
   if(this->currentSugar != sugarValue){
     this->currentSugar = sugarValue;
-    Serial.print(this->currentSugar);
-    Serial.println(" cucchiaini di zucchero");
-    //this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
+    //Serial.print(this->currentSugar);
+    //Serial.println(" cucchiaini di zucchero");
+    this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
   }
 }
