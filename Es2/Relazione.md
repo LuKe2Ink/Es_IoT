@@ -41,6 +41,7 @@ void Scheduler::schedule(){
 
 ```
 
+
 # Machine
 
 Per comodita' abbiamo deciso di creare una classe che chiudesse al proprio interno tutte i sensori e le funzionalita' della macchina, instanziandola solo una volta e' come se possedessimo una macchina del caffe e passassimo il riferimento a questo oggetto ai vari task.
@@ -107,6 +108,10 @@ class Machine {
 
 #endif
 ```
+
+Di conseguenza abbiamo realizzato lo schema del circuito nel seguente modo
+
+![Circuit schema](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/Assign%202.png)
 
 # Selection Task
 
