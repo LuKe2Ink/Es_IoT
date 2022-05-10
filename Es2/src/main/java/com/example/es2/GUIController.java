@@ -10,7 +10,7 @@ public class GUIController {
 
     private static final String N_MAX_PRODUCT = "50";
 
-    private static final String PORT = "COM3";
+    private static final String PORT = "COM6";
     private static final int RATE = 9600;
 
     public CommChannel commChannel;
