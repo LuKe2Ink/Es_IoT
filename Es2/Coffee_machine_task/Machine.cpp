@@ -9,7 +9,7 @@ Machine::Machine(){
   this->display_lcd = new Display();
   this->temp = new Temp(TEMP_PIN);
   this->pir = new Pir(PIR_PIN);
-  this->coffee = new Product(N_MAX_QUANTITY , "Coffee");
+  this->coffee = new Product(30 , "Coffee");
   this->tea = new Product(N_MAX_QUANTITY , "Tea al limone");
   this->chocolate = new Product(N_MAX_QUANTITY , "Chocolate");
   this->bUp = new ButtonImpl(B_UP);

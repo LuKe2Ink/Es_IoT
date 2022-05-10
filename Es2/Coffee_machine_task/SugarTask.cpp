@@ -14,7 +14,7 @@
 //void SugarTask::tick(){
 //    int newValue = analogRead(this->pot_pin);
 //    if(!(this->current_level - 40 < newValue && this->current_level + 40 > newValue)){
-//        Serial.println("We have a difference");
+//        //Serial.println("We have a difference");
 //        this->current_level = newValue;
 //      }
 //      
@@ -40,8 +40,8 @@
 //  sugarValue /= 2;
 //  if(this->currentSugar != sugarValue){
 //    this->currentSugar = sugarValue;
-//    Serial.print(this->currentSugar);
-//    Serial.println(" cucchiaini di zucchero");
+//    //Serial.print(this->currentSugar);
+//    //Serial.println(" cucchiaini di zucchero");
 //  }
 //}
 
@@ -79,8 +79,8 @@ void SugarTask::checkSugar(){
   sugarValue /= 2;
   if(this->currentSugar != sugarValue){
     this->currentSugar = sugarValue;
-    Serial.print(this->currentSugar);
-    Serial.println(" cucchiaini di zucchero");
+    //Serial.print(this->currentSugar);
+    //Serial.println(" cucchiaini di zucchero");
     //this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
   }
 }

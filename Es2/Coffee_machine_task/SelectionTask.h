@@ -5,6 +5,8 @@
 #include "Product.h"
 #include "Machine.h"
 #include "MsgService.h"
+#include "UpdateMessage.h"
+
 
 
 
@@ -13,12 +15,14 @@ class SelectionTask: public Task {
     Msg* service;
     Machine* machine;
     Product* product[PROD_NUM];
+    UpdateMessage* update;
     int unaviableProd;
     int selectedProd;
     unsigned long currentMillis;
     unsigned long startMillis;
     int pos;
     unsigned long idleMillis;
+    String statusMachine;
     
   public:
     SelectionTask(Machine* machine);

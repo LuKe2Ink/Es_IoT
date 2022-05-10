@@ -5,6 +5,6 @@
 
 SetupTask::SetupTask(){
         //display_lcd->setText("Welcome");
-        Serial.println("Welcome");
+        //Serial.println("Welcome");
         delay(4000);
   }

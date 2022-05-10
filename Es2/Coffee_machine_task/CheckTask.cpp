@@ -20,8 +20,8 @@ void CheckTask::tick()
     switch(state){
       case CHECK:
         count++;
-        Serial.print("Check count: ");
-        Serial.println(count);
+        //Serial.print("Check count: ");
+        //Serial.println(count);
         if(this->machine->state != ASSISTANCE && count == 4){
           count = 0;
           state = TEST;
@@ -42,7 +42,7 @@ void CheckTask::checkTemp(){
 int temp = analogRead(TEMP_PIN);
     int value_in_mV = temp * 4.8876;
     double value_in_C = value_in_mV * 0.1;
-    Serial.println(value_in_C);
+    //Serial.println(value_in_C);
     if (value_in_C < TEMP_MIN || value_in_C > TEMP_MAX)
     {
         this->machine->state = ASSISTANCE;
