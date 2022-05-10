@@ -111,7 +111,7 @@ class Machine {
 
 Di conseguenza abbiamo realizzato lo schema del circuito nel seguente modo
 
-![Circuit schema](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/Assign%202.png)
+![Circuit schema](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/thinkercad.png)
 
 # Selection Task
 
