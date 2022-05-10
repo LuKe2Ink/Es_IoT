@@ -10,7 +10,7 @@ public class GUIController {
 
     private static final String N_MAX_PRODUCT = "50";
 
-    private static final String PORT = "COM6";
+    private static final String PORT = "COM3";
     private static final int RATE = 9600;
 
     public CommChannel commChannel;
@@ -31,7 +31,7 @@ public class GUIController {
     public Label numberSelfTest;
 
     int coffee = 0, tea = 0, chocolate = 0, check = 0;
-
+    String stato = null;
 
     public GUIController() throws Exception {
         this.commChannel = new SerialCommChannel(PORT, RATE);
@@ -68,14 +68,14 @@ public class GUIController {
     protected void refillClicked() throws InterruptedException {
         boolean msgReceived = false;
 
-        System.out.println("coffeeQuantity = " + coffeeQuantity);
-        System.out.println("teaQuantity = " + teaQuantity);
-        System.out.println("chocolateQuantity = " + chocolateQuantity);
+//        System.out.println("coffeeQuantity = " + coffeeQuantity);
+//        System.out.println("teaQuantity = " + teaQuantity);
+//        System.out.println("chocolateQuantity = " + chocolateQuantity);
 
-
-        coffeeQuantity.setText(N_MAX_PRODUCT);
-        chocolateQuantity.setText(N_MAX_PRODUCT);
-        teaQuantity.setText(N_MAX_PRODUCT);
+//
+//        coffeeQuantity.setText(N_MAX_PRODUCT);
+//        chocolateQuantity.setText(N_MAX_PRODUCT);
+//        teaQuantity.setText(N_MAX_PRODUCT);
 
         System.out.println("Sending refill");
         commChannel.sendMsg("refill");
@@ -84,6 +84,7 @@ public class GUIController {
     @FXML
     protected void recoverClicked() {
         state.setText("Dropping");
+        commChannel.sendMsg("recover");
     }
 
     @FXML
@@ -113,9 +114,10 @@ public class GUIController {
 //            teaQuantity.setText(String.valueOf(json.getInt("tea")));
         check = json.getInt("check");
 
+        stato = json.getString("stato");
             // Avoids running on the different thread of the GUI, so he can update it async
             Platform.runLater(() -> {
-                updateGui(coffee, tea, chocolate, check);
+                updateGui(coffee, tea, chocolate, check,stato);
 
             });
 
@@ -123,11 +125,12 @@ public class GUIController {
 
     }
 
-    public void updateGui(int coffee, int tea, int chocolate, int check){
+    public void updateGui(int coffee, int tea, int chocolate, int check, String stato){
         teaQuantity.setText(String.valueOf(tea));
         chocolateQuantity.setText(String.valueOf(chocolate));
         coffeeQuantity.setText(String.valueOf(coffee));
         numberSelfTest.setText(String.valueOf(check));
+        state.setText(stato);
     }
 
 }

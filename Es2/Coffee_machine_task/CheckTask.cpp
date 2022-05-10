@@ -20,7 +20,7 @@ void CheckTask::tick()
     switch(state){
       case CHECK:
         count++;
-        if(this->machine->state != ASSISTANCE && count < 1){
+        if(this->machine->state != ASSISTANCE && count == 1){
           count = 0;
           state = TEST;
         }
@@ -40,13 +40,15 @@ void CheckTask::checkTemp(){
     int temp = analogRead(TEMP_PIN);
     int value_in_mV = temp * 4.8876;
     double value_in_C = value_in_mV * 0.1;
+    // value_in_C -= 25;
     if (value_in_C < TEMP_MIN || value_in_C > TEMP_MAX)
     {
         this->machine->state = ASSISTANCE;
-        // set to 0 quantities
-        this->machine->coffee->setQuantity(0);
-        this->machine->tea->setQuantity(0);
-        this->machine->chocolate->setQuantity(0);
+        this->machine->display_lcd->setText("Assistance");
+        
+    } else {
+      Serial.println(value_in_C);
+      this->machine->state = READY;
     }
 }
 

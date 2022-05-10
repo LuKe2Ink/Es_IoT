@@ -117,11 +117,37 @@ Di conseguenza abbiamo realizzato lo schema del circuito nel seguente modo
 
 Il task Selection racchiude in se buona parte della logica della macchinetta, dalla selezione dei prodotti alla loro produzione e quindi ai vari controlli dei sensori di prossimita' e presenza.
 
+
+this->statusMachine = "idle" quando aspetta un input del make......
+
 ![Selection Task Diagram](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/SelectionTask.png)
 
 # Check Task
 
 Il Task di check effettua una routine per la quale la macchinetta controlla periodicamente che i suoi componenti funzionino correttamente, l'utlizzo di un contatore all'interno rende comodo effettuare il task ogni 180 secondi, tempo che altrimenti sarebbe stato difficilmente assegnabile come period nella dichiarazione della task.
+
+Abbiamo riscontrato un problema con il sensore di temperatura, pur usando lo stesso codice a nostra a disposizione e 3 sensori diversi di temperatura ottenevamo temperature altissime quindi abbiamo diminuito di 25 il nostro valore di temperatura.
+
+```cpp
+/* CheckTask.cpp */
+
+void CheckTask::checkTemp(){
+    int temp = analogRead(TEMP_PIN);
+    int value_in_mV = temp * 4.8876;
+    double value_in_C = value_in_mV * 0.1;
+    value_in_C -= 25;
+    if (value_in_C < TEMP_MIN || value_in_C > TEMP_MAX)
+    {
+        this->machine->state = ASSISTANCE;
+        this->machine->coffee->setQuantity(0);
+        this->machine->tea->setQuantity(0);
+        this->machine->chocolate->setQuantity(0);
+    } else {
+      Serial.println(value_in_C);
+      this->machine->state = READY;
+    }
+}
+```
 
 ![Check Task Diagram](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/checkTask.png)
 
@@ -129,3 +155,14 @@ Il Task di check effettua una routine per la quale la macchinetta controlla peri
 # Sugar Task
 
 Terzo task da noi individuato, ad ogni tick questo task controlla che il selettore di zucchero (il potenziometro) non sia stato mosso, altrimenti se mosso oltre una certa soglia modifica e stampa a display la quantita' di zucchero che la nostra bevanda selezionata  dovra' contenere.
+
+
+
+
+
+### appunti
+
+   String msg = this.commChannel.receiveMsg();
+        
+
+per evitare perdita di messaggi sacrifichiamo la reattivita dell interfaccia, pur eseguendo questa funzione ogni 300 millis 

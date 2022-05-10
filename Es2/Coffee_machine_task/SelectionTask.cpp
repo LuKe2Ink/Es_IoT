@@ -21,7 +21,6 @@ SelectionTask::SelectionTask(Machine* machine){
     this->selectedProd = 0;
     this->pos = 0;
     this->countIdle = 0;
-    this->statusMachine = "working";
 }
 
 String json;
@@ -29,11 +28,10 @@ String json;
 void SelectionTask::init(int period){
   Task::init(period);
   MsgService.init();
-  update = new UpdateMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->statusMachine);
+  update = new UpdateMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
   json = update->toJson();
 
   MsgService.sendMsg(json);
-
 }
   
 
@@ -43,37 +41,47 @@ void SelectionTask::tick(){
             machine->display_lcd->setText("Welcome");
             delay(4000);
             this->machine->state = READY;
+            
+          for (int i = 0; i < PROD_NUM; i++){
+          if(this->product[i]->isNotAviable()){
+            this->unaviableProd++;
+          }
+        }
         break;
         case READY:
-        update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->statusMachine);
-        json = update->toJson();
-
-        MsgService.sendMsg(json);
         this->idleMillis = millis();
         this->currentMillis = millis();
         machine->display_lcd->setText("Ready");
         this->selectedProd = 0;
-        this->startMillis = 0;
-        
+        this->startMillis = 0; 
+
+    update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
+            json = update->toJson();
+            MsgService.sendMsg(json);
+
         if(this->unaviableProd == PROD_NUM){
             //Serial.println("Assistance");
             this->machine->display_lcd->setText("Assistance required");
             this->machine->state = ASSISTANCE;
+            this->machine->display_lcd->setText("Assistance");
         }else{
             this->startMillis = 0;
             //Serial.println("vado in select");
             this->machine->state = SELECT;
+            this->machine->statusMachine = "working";
+            update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
+            json = update->toJson();
+            MsgService.sendMsg(json);
         }
         break;
         case SELECT:
 
-          if(machine->bUp->debounce()==HIGH) incSelect(); //incrementa di 1 se il pulsante è premuto
+        if(machine->bUp->debounce()==HIGH) incSelect(); //incrementa di 1 se il pulsante è premuto
         
         if(machine->bDown->debounce()==HIGH) decSelect(); //incrementa di 1 se il pulsante è premuto
         
-        
         if(machine->bMake->isPressed()) makeProduct();
-
+        
         checkSleepMode();
 
         if(this->currentMillis - this->startMillis > T_OUT && this->startMillis != 0){
@@ -82,6 +90,7 @@ void SelectionTask::tick(){
         break;
         
         case MAKING:
+        
         machine->display_lcd->setText("Making a " + product[selectedProd]->toString());
         machine->servo->moveServo(true);
         machine->display_lcd->setText("The " + product[selectedProd]->toString() + " is ready");
@@ -90,9 +99,11 @@ void SelectionTask::tick(){
         //state = READY;
         
         this->machine->state = WAITING_REMOVING;
+        this->machine->statusMachine = "working";
         startTimer();
         break;
         case WAITING_REMOVING:
+        this->statusMachine = "idle";
           currentMillis = millis();
           //Serial.println(currentMillis - startMillis);
           //Serial.println(machine->sonar->ping_cm());
@@ -104,6 +115,13 @@ void SelectionTask::tick(){
         break;
         case SLEEP:
           machine->display_lcd->off();
+
+        this->machine->statusMachine = "idle";
+        update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
+        json = update->toJson();
+
+        MsgService.sendMsg(json);
+        
           set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
           enableInterrupt(PIR_PIN, awake, RISING);
 
@@ -118,18 +136,33 @@ void SelectionTask::tick(){
           disableInterrupt(PIR_PIN);
         break;
         case ASSISTANCE:
-          if(MsgService.isMsgAvailable()){
+        
+        if(this->machine->statusMachine != "assistance"){
+          this->machine->statusMachine = "assistance";
+           update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
+           json = update->toJson();
+           MsgService.sendMsg(json);
+        }
+
+                 if(MsgService.isMsgAvailable()){
             this->service = MsgService.receiveMsg();
             //this->machine->display_lcd->setText(service);
             
             if(service->getContent() == "refill"){
               this->machine->display_lcd->setText("Received refill");
+              this->machine->coffee->setQuantity(N_MAX_QUANTITY);
+              this->machine->tea->setQuantity(N_MAX_QUANTITY);
+              this->machine->chocolate->setQuantity(N_MAX_QUANTITY);
+              this->unaviableProd = 0;
+              this->machine->statusMachine = "idle";
+              this->machine->state = READY;
             } else if(service->getContent() == "recover"){
-              this->machine->display_lcd->setText("Received recover");
+              this->machine->display_lcd->setText("Recover");
+              this->machine->statusMachine = "idle";
+              this->machine->state = READY;
             }
-          }          
-          this->machine->display_lcd->setText("Assistance");
-          //Serial.println("Assistance");
+          }else {
+          } 
         break;
     }
 }
@@ -160,6 +193,7 @@ void SelectionTask::makeProduct(){
     if(product[selectedProd]->isNotAviable()){
         unaviableProd++;
     } 
+      
 }
 
 void SelectionTask::incSelect(){
@@ -170,11 +204,13 @@ void SelectionTask::incSelect(){
   } 
   if(product[selectedProd]->isNotAviable()){
     incSelect();
-  }
-  //currentProd = productList[selectedProd]->toString();
-  machine->display_lcd->setText(product[selectedProd]->toString());
+  }else {
+    machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
   this->idleMillis = millis();
+  }
+  //currentProd = productList[selectedProd]->toString();
+
 }
 
 void SelectionTask::decSelect(){
@@ -184,11 +220,13 @@ void SelectionTask::decSelect(){
   } 
   if(product[selectedProd]->isNotAviable()){
     decSelect();
-  }
-  //currentProd = productList[selectedProd]->toString();
+  }else {
   machine->display_lcd->setText(product[selectedProd]->toString());
   startTimer();
   this->idleMillis = millis();
+  }
+  //currentProd = productList[selectedProd]->toString();
+
 }
 
 

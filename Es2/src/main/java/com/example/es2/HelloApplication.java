@@ -26,7 +26,11 @@ public class HelloApplication extends Application {
 
         GUIController guiController = (GUIController) fxmlLoader.getController();
 
-        System.out.println("Welcome");
+        try {
+            guiController.message();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         new Timer().scheduleAtFixedRate(new TimerTask(){
 
             @Override

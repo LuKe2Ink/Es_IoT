@@ -56,6 +56,7 @@ class Machine {
     Button* bMake ;
     stato state;
     int checkDone;
+    String statusMachine;
     bool lastMove;
 };
 
