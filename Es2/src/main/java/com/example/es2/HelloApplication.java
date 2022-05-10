@@ -22,19 +22,39 @@ public class HelloApplication extends Application {
 
 
         stage.setScene(scene);
-        stage.show();
+
+
+        GUIController guiController = (GUIController) fxmlLoader.getController();
 
         System.out.println("Welcome");
         new Timer().scheduleAtFixedRate(new TimerTask(){
 
             @Override
             public void run(){
-                System.out.println("A Kiss every 5 seconds");
-            }
-        },0,1000);
+                System.out.println("A Kiss every 1 seconds");
+                try {
+                    guiController.message();
+                } catch (InterruptedException e) {
 
-        GUIController guiController = (GUIController) fxmlLoader.getController();
-        guiController.message();
+                    System.out.println("BAD LUCK");
+                }
+            }
+        },0,300);
+
+        stage.show();
+
+//
+//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+//
+//            try {
+//                    guiController.message();
+//                } catch (InterruptedException e) {
+//                    System.out.println("Not a lucky catch");
+//                }
+//
+//        }));
+//        timeline.setCycleCount(Animation.INDEFINITE);
+//        timeline.play();
 
     }
 

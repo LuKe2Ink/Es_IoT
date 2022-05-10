@@ -24,16 +24,19 @@ SelectionTask::SelectionTask(Machine* machine){
     this->statusMachine = "working";
 }
 
+String json;
+
 void SelectionTask::init(int period){
   Task::init(period);
   MsgService.init();
-  update = new UpdateMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(),this->statusMachine);
-  String json = update->toJson();
+  update = new UpdateMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->statusMachine);
+  json = update->toJson();
 
   MsgService.sendMsg(json);
 
 }
   
+
 void SelectionTask::tick(){
   switch(this->machine->state){
         case WELCOME:
@@ -42,10 +45,8 @@ void SelectionTask::tick(){
             this->machine->state = READY;
         break;
         case READY:
-        delay(10000);
-        this->machine->coffee->decQuantity();
-        update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(),this->statusMachine);
-        String json = update->toJson();
+        update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->statusMachine);
+        json = update->toJson();
 
         MsgService.sendMsg(json);
         this->idleMillis = millis();
