@@ -87,9 +87,11 @@ void loop() {
     lcd.setCursor(2, 2); // Set the cursor on the third column and first row.
 
     float d = getDistance();
-    lcd.print(String("Distance: ") + d);
+      Serial.println(String(" C: ") + value_in_C);
 
-    
+float mv = ( temp/1024.0)*5000;
+  float cel = mv/10;
+    Serial.println(String("C pt 2: ") + cel);
 
     servo.write(val%180);
     Serial.println(val);

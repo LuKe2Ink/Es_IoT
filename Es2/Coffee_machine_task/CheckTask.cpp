@@ -20,15 +20,21 @@ void CheckTask::tick()
     switch(state){
       case CHECK:
         count++;
+<<<<<<< HEAD
         //Serial.print("Check count: ");
         //Serial.println(count);
         if(this->machine->state != ASSISTANCE && count == 4){
+=======
+        Serial.print("Check count: ");
+        Serial.println(count);
+        if(this->machine->state != ASSISTANCE && count == 6){
+>>>>>>> f39d633c9666e35a416551164a44c0605ccd4598
           count = 0;
           state = TEST;
         }
       break;
       case TEST:
-        this->machine->display_lcd->setText("Make a check onichan");
+        this->machine->display_lcd->setText("DOING CHECK");
         this->moveBackAndForward();
         this->checkTemp();
         this->machine->checkDone++;
@@ -39,10 +45,13 @@ void CheckTask::tick()
 
 
 void CheckTask::checkTemp(){
-int temp = analogRead(TEMP_PIN);
+    int temp = analogRead(TEMP_PIN);
     int value_in_mV = temp * 4.8876;
     double value_in_C = value_in_mV * 0.1;
+<<<<<<< HEAD
     //Serial.println(value_in_C);
+=======
+>>>>>>> f39d633c9666e35a416551164a44c0605ccd4598
     if (value_in_C < TEMP_MIN || value_in_C > TEMP_MAX)
     {
         this->machine->state = ASSISTANCE;

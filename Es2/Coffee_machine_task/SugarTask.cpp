@@ -81,6 +81,6 @@ void SugarTask::checkSugar(){
     this->currentSugar = sugarValue;
     //Serial.print(this->currentSugar);
     //Serial.println(" cucchiaini di zucchero");
-    //this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
+    this->machine->display_lcd->setText(String(this->currentSugar) + " scoops");
   }
 }
