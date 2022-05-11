@@ -27,7 +27,7 @@ void ServoMotorImpl::moveServo(bool orario)
   {
     unsigned long servoMillis = millis();
 
-     if(servoMillis - previousMillis > servointerval)  //created to delay 15 milliseconds before next pulse
+     if(servoMillis - previousMillis > servointerval)
         {
          previousMillis = servoMillis;
          servo.write(pos);
