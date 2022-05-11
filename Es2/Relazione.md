@@ -4,6 +4,12 @@ In questo progetto e' richiesto di realizzare una macchina del caffe utilizzando
 
 [File con specifiche](https://docs.google.com/document/d/171kcL1d1lW2kN3RdDfdvIkdIngGn8EvuipJRH7uKnXo/edit?usp=sharing)
 
+# Link Video Arduino
+
+[Link video dimostrativo](https://liveunibo-my.sharepoint.com/:v:/g/personal/luigi_incarnato_studio_unibo_it/EZs7HK_2XmZHrJo4VVYMl8cB_eW2DxuyazwKUANQYTgqyA?e=E8wTjP)
+
+# Procedimento
+
 La prima cosa che e' stata fatta e' un diagramma con il quale si sono chiarite le idee su come i vari task saranno stati divisi e progettati, l'intenzione e' stata quella di inserire nel loop solo ed esclusivamente la funzione schedule della Classe Scheduler, alla quale si sono aggiunti mano a mano i vari task.
 
 ```cpp
@@ -115,7 +121,6 @@ Di conseguenza si e' realizzato lo schema del circuito nel seguente modo.
 # Selection Task
 
 Il task Selection racchiude in se buona parte della logica della macchinetta, dalla selezione dei prodotti alla loro produzione e quindi ai vari controlli dei sensori di prossimita' e presenza.
-
 
 ![Selection Task Diagram](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/SelectionTask.png)
 
