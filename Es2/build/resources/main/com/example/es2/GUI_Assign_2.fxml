@@ -50,7 +50,7 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="coffeeQuantity" prefHeight="27.0" prefWidth="51.0" style="-fx-border-radius: 15px; -fx-border-color: black;" text="50">
+                  <Label fx:id="coffeeQuantity" prefHeight="27.0" prefWidth="51.0" text="?">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
@@ -60,17 +60,17 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="teaQuantity" prefHeight="27.0" prefWidth="46.0" style="-fx-border-radius: 15px; -fx-border-color: black;" text="50">
+                  <Label fx:id="teaQuantity" prefHeight="27.0" prefWidth="46.0" text="?">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
                   </Label>
-                  <Label text="Chocolate:">
+                  <Label prefHeight="21.0" prefWidth="96.0" text="Chocolate:">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <Label fx:id="chocolateQuantity" prefHeight="27.0" prefWidth="54.0" style="-fx-border-radius: 15px; -fx-border-color: black;" text="50">
+                  <Label fx:id="chocolateQuantity" prefHeight="27.0" prefWidth="54.0" text="?">
                      <font>
                         <Font name="System Italic" size="16.0" />
                      </font>
@@ -90,7 +90,7 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </Label>
-            <Label fx:id="numberSelfTest" layoutX="276.0" layoutY="305.0" prefHeight="27.0" prefWidth="45.0" style="-fx-border-radius: 15px; -fx-border-color: black;" text="0">
+            <Label fx:id="numberSelfTest" layoutX="276.0" layoutY="305.0" prefHeight="27.0" prefWidth="45.0" text="0">
                <font>
                   <Font name="System Italic" size="16.0" />
                </font>
@@ -109,7 +109,6 @@
                <font>
                   <Font size="19.0" />
                </font></Label>
-            <Button fx:id="updateButton" layoutX="44.0" layoutY="39.0" mnemonicParsing="false" onAction="#updateClicked" text="Update" />
          </children>
       </AnchorPane>
    </children>

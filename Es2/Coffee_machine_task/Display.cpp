@@ -10,7 +10,7 @@ Display::Display() {
 
 void Display::setText(String msg) {
   lcd.clear();
-  lcd.setCursor(2, 1); // Set the cursor on the third column and first row.
+  lcd.setCursor(0, 1); // Set the cursor on the third column and first row.
   lcd.print(msg);
 }
 

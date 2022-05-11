@@ -20,7 +20,7 @@ void CheckTask::tick()
     switch(state){
       case CHECK:
         count++;
-        if(this->machine->state != ASSISTANCE && count == 1){
+        if(this->machine->state != ASSISTANCE && count == 2){
           count = 0;
           state = TEST;
         }

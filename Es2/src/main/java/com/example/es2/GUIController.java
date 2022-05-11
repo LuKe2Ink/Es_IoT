@@ -10,7 +10,7 @@ public class GUIController {
 
     private static final String N_MAX_PRODUCT = "50";
 
-    private static final String PORT = "COM3";
+    private static final String PORT = "COM7";
     private static final int RATE = 9600;
 
     public CommChannel commChannel;
@@ -99,6 +99,9 @@ public class GUIController {
         //boolean keepReading = true;
         //while (keepReading) {
         String msg = this.commChannel.receiveMsg();
+        System.out.println(msg);
+        //String msg1 = msg.substring(msg.indexOf("{") + 1);
+        //msg1.trim();
         msg.replace("/.*{/", "");
         if(msg.contains("{")){
             System.out.println("Found a JSON");

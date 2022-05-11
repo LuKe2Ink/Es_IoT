@@ -111,9 +111,6 @@ void SelectionTask::tick(){
         break;
         case SLEEP:
           machine->display_lcd->off();
-
-        this->machine->statusMachine = "idle";
-        sendUpdateData();
         
           set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
           enableInterrupt(PIR_PIN, awake, RISING);
@@ -125,6 +122,7 @@ void SelectionTask::tick(){
           sleep_disable(); 
 
           machine->display_lcd->on();
+          this->machine->statusMachine = "idle";
           this->machine->state = WELCOME;
           disableInterrupt(PIR_PIN);
         break;
