@@ -2,6 +2,11 @@
 #include "ServoMotorImpl.h"
 #include "Arduino.h"
 
+long servointerval = 2;
+long previousMillis = 0;
+
+long elapsed_time = 0;
+
 ServoMotorImpl::ServoMotorImpl(int pin)
 {
   this->pin = pin;
@@ -16,12 +21,23 @@ void ServoMotorImpl::on()
 void ServoMotorImpl::moveServo(bool orario)
 {
   on();
-  for (int i = MIN_PULSE_WIDTH; i < MAX_PULSE_WIDTH; i++)
+
+  previousMillis = millis();
+  for (int i = MIN_PULSE_WIDTH; i < MAX_PULSE_WIDTH;)
   {
-    servo.write(pos);
-    delay(6);
-    pos += orario ? 1 : -1;
+    unsigned long servoMillis = millis();
+
+     if(servoMillis - previousMillis > servointerval)  //created to delay 15 milliseconds before next pulse
+        {
+         previousMillis = servoMillis;
+         servo.write(pos);
+         pos += orario ? 1 : -1;
+         i++;
+        }
+
   }
+  
+
   off();
 }
 
