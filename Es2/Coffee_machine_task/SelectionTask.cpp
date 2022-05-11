@@ -55,9 +55,7 @@ void SelectionTask::tick(){
         this->selectedProd = 0;
         this->startMillis = 0; 
 
-    update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
-            json = update->toJson();
-            MsgService.sendMsg(json);
+        sendUpdateData();
 
         if(this->unaviableProd == PROD_NUM){
             //Serial.println("Assistance");
@@ -69,9 +67,7 @@ void SelectionTask::tick(){
             //Serial.println("vado in select");
             this->machine->state = SELECT;
             this->machine->statusMachine = "working";
-            update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
-            json = update->toJson();
-            MsgService.sendMsg(json);
+            sendUpdateData();
         }
         break;
         case SELECT:
@@ -117,10 +113,7 @@ void SelectionTask::tick(){
           machine->display_lcd->off();
 
         this->machine->statusMachine = "idle";
-        update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
-        json = update->toJson();
-
-        MsgService.sendMsg(json);
+        sendUpdateData();
         
           set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
           enableInterrupt(PIR_PIN, awake, RISING);
@@ -139,9 +132,7 @@ void SelectionTask::tick(){
         
         if(this->machine->statusMachine != "assistance"){
           this->machine->statusMachine = "assistance";
-           update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
-           json = update->toJson();
-           MsgService.sendMsg(json);
+           sendUpdateData();
         }
 
                  if(MsgService.isMsgAvailable()){
@@ -170,6 +161,13 @@ void SelectionTask::tick(){
 void SelectionTask::awake(){
   disableInterrupt(PIR_PIN);
   //Serial.println("Esco");
+}
+
+void SelectionTask::sendUpdateData(){
+  update->setMessage(this->machine->coffee->getQuantity(),this->machine->tea->getQuantity(),this->machine->chocolate->getQuantity(), this->machine->checkDone,this->machine->statusMachine);
+  json = update->toJson();
+
+  MsgService.sendMsg(json);
 }
 
 void SelectionTask::checkSleepMode(){

@@ -34,6 +34,7 @@ class SelectionTask: public Task {
     void makeProduct();
     void moveServo(bool orario);
     void startTimer();
+    void sendUpdateData();
     void machineOn();
     void disableInterruptButton();
     boolean debounce(int pin);
