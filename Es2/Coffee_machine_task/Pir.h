@@ -1,14 +1,15 @@
 #ifndef __PIR__
 #define __PIR__
 
-class Pir {
+class Pir
+{
 
-  public:
-    Pir(int pin);
-    bool isPresent();
+public:
+  Pir(int pin);
+  bool isPresent();
 
-  private:
-    int pin;
+private:
+  int pin;
 };
 
 #endif

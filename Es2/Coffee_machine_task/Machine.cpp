@@ -2,18 +2,18 @@
 
 #include "Machine.h"
 
-
-Machine::Machine(){
+Machine::Machine()
+{
   this->servo = new ServoMotorImpl(SERVO_PIN);
   this->sonar = new NewPing(TRIG_PIN, ECHO_PIN, SONAR_DISTANCE);
   this->display_lcd = new Display();
   this->temp = new Temp(TEMP_PIN);
   this->pir = new Pir(PIR_PIN);
-  this->coffee = new Product(0 , "Coffee");
-  this->tea = new Product(0 , "Tea al limone");
-  this->chocolate = new Product(1 , "Chocolate");
+  this->coffee = new Product(0, "Coffee");
+  this->tea = new Product(0, "Tea al limone");
+  this->chocolate = new Product(1, "Chocolate");
   this->bUp = new ButtonImpl(B_UP);
-  this-> bDown = new ButtonImpl(B_DOWN);
+  this->bDown = new ButtonImpl(B_DOWN);
   this->bMake = new ButtonImpl(B_MAKE);
   this->state = state;
   this->checkDone = 0;

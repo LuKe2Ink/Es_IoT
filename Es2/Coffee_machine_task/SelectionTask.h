@@ -7,41 +7,39 @@
 #include "MsgService.h"
 #include "UpdateMessage.h"
 
+class SelectionTask : public Task
+{
 
+  Msg *service;
+  Machine *machine;
+  Product *product[PROD_NUM];
+  UpdateMessage *update;
+  int unaviableProd;
+  int selectedProd;
+  unsigned long currentMillis;
+  unsigned long startMillis;
+  int pos;
+  unsigned long idleMillis;
+  String statusMachine;
 
+public:
+  SelectionTask(Machine *machine);
+  void init(int period);
+  void tick();
+  void checkSleepMode();
+  void incSelect();
+  void decSelect();
+  void makeProduct();
+  void moveServo(bool orario);
+  void startTimer();
+  void sendUpdateData();
+  void machineOn();
+  void disableInterruptButton();
+  boolean debounce(int pin);
+  static void awake();
 
-class SelectionTask: public Task {
-  
-    Msg* service;
-    Machine* machine;
-    Product* product[PROD_NUM];
-    UpdateMessage* update;
-    int unaviableProd;
-    int selectedProd;
-    unsigned long currentMillis;
-    unsigned long startMillis;
-    int pos;
-    unsigned long idleMillis;
-    String statusMachine;
-    
-  public:
-    SelectionTask(Machine* machine);
-    void init(int period);  
-    void tick();
-    void checkSleepMode();
-    void incSelect();
-    void decSelect();
-    void makeProduct();
-    void moveServo(bool orario);
-    void startTimer();
-    void sendUpdateData();
-    void machineOn();
-    void disableInterruptButton();
-    boolean debounce(int pin);
-    static void awake();
-
-  private:
-    int countIdle;
+private:
+  int countIdle;
 };
 
 #endif

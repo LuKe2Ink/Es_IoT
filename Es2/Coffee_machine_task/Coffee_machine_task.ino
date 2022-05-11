@@ -15,27 +15,6 @@ SugarTask *sugar;
 SelectionTask *selection;
 CheckTask *check;
 
-int selectedProduct;
-Product *productList[3];
-unsigned long startMillis;
-unsigned long currentMillis;
-unsigned long idleMillis;
-long check_time = 180000;
-int pos;
-int delta;
-String currentProd;
-int aviableProd;
-
-// enum {
-//   WELCOME,
-//   READY,
-//   SELECT,
-//   MAKING,
-//   WAITING_REMOVING,
-//   ASSISTANCE,
-//   SLEEP
-// }state;
-
 void setup()
 {
   Serial.begin(9600);
@@ -58,17 +37,9 @@ void setup()
   scheda.addTask(check);
 
   machine->state = WELCOME;
-  // state = WELCOME;
-  pos = 0;
-  delta = 1;
-  productList[0] = machine->coffee;
-  productList[1] = machine->tea;
-  productList[2] = machine->chocolate;
-  // machine->servo->setPosition(180);
 }
 
 void loop()
 {
-  //  sugar->tick();
   scheda.schedule();
 }

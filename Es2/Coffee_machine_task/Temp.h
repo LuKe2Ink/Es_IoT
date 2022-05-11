@@ -3,15 +3,15 @@
 
 #include <WString.h>
 
-class Temp {
+class Temp
+{
 
-  public:
-    Temp(int pin);
-    int getTemp();
+public:
+  Temp(int pin);
+  int getTemp();
 
-  private:
-    int pin;
-
+private:
+  int pin;
 };
 
 #endif

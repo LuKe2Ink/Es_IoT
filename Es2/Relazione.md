@@ -1,10 +1,10 @@
 # Relazione Assignment 2
 
-In questo progetto ci e' stato richiesto di realizzare una macchina del caffe utilizzando la scheda arduino e la programmazione di task asincroni.
+In questo progetto e' richiesto di realizzare una macchina del caffe utilizzando la scheda arduino e la programmazione di task asincroni.
 
 [File con specifiche](https://docs.google.com/document/d/171kcL1d1lW2kN3RdDfdvIkdIngGn8EvuipJRH7uKnXo/edit?usp=sharing)
 
-Abbiamo deciso di preparare subito un diagramma con il quale ci siamo chiariti le idee su come i vari task saranno poi stati divisi e progettati, la nostra intenzione e' stata quella di inserire nell loop solo ed esclusivamente la funzione schedule della Classe Scheduler, alla quale abbiamo aggiunto mano a mano i vari task.
+La prima cosa che e' stata fatta e' un diagramma con il quale si sono chiarite le idee su come i vari task saranno stati divisi e progettati, l'intenzione e' stata quella di inserire nel loop solo ed esclusivamente la funzione schedule della Classe Scheduler, alla quale si sono aggiunti mano a mano i vari task.
 
 ```cpp
 /* Scheduler.cpp*/
@@ -41,10 +41,9 @@ void Scheduler::schedule(){
 
 ```
 
-
 # Machine
 
-Per comodita' abbiamo deciso di creare una classe che chiudesse al proprio interno tutte i sensori e le funzionalita' della macchina, instanziandola solo una volta e' come se possedessimo una macchina del caffe e passassimo il riferimento a questo oggetto ai vari task.
+Per comodita' si e' deciso di creare una classe che chiudesse al proprio interno tutte i sensori e le funzionalita' della macchina, instanziandola solo una volta e' come se si avesse una macchina del caffe e si passasse il riferimento a questo oggetto ai vari task.
 
 ```cpp
 /* Machine.h */
@@ -109,7 +108,7 @@ class Machine {
 #endif
 ```
 
-Di conseguenza abbiamo realizzato lo schema del circuito nel seguente modo
+Di conseguenza si e' realizzato lo schema del circuito nel seguente modo.
 
 ![Circuit schema](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/thinkercad.png)
 
@@ -118,15 +117,13 @@ Di conseguenza abbiamo realizzato lo schema del circuito nel seguente modo
 Il task Selection racchiude in se buona parte della logica della macchinetta, dalla selezione dei prodotti alla loro produzione e quindi ai vari controlli dei sensori di prossimita' e presenza.
 
 
-this->statusMachine = "idle" quando aspetta un input del make......
-
 ![Selection Task Diagram](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/SelectionTask.png)
 
 # Check Task
 
 Il Task di check effettua una routine per la quale la macchinetta controlla periodicamente che i suoi componenti funzionino correttamente, l'utlizzo di un contatore all'interno rende comodo effettuare il task ogni 180 secondi, tempo che altrimenti sarebbe stato difficilmente assegnabile come period nella dichiarazione della task.
 
-Abbiamo riscontrato un problema con il sensore di temperatura, pur usando lo stesso codice a nostra a disposizione e 3 sensori diversi di temperatura ottenevamo temperature altissime quindi abbiamo diminuito di 25 il nostro valore di temperatura.
+E' stato riscontrato un problema con il sensore di temperatura, pur usando lo stesso codice a nostra a disposizione e 3 sensori diversi di temperatura ottenevamo temperature altissime quindi abbiamo diminuito di 25 il nostro valore di temperatura.
 
 ```cpp
 /* CheckTask.cpp */
@@ -151,18 +148,33 @@ void CheckTask::checkTemp(){
 
 ![Check Task Diagram](https://github.com/LuKe2Ink/Es_IoT/raw/main/Es2/checkTask.png)
 
-
 # Sugar Task
 
-Terzo task da noi individuato, ad ogni tick questo task controlla che il selettore di zucchero (il potenziometro) non sia stato mosso, altrimenti se mosso oltre una certa soglia modifica e stampa a display la quantita' di zucchero che la nostra bevanda selezionata  dovra' contenere.
+Terzo task, ad ogni tick questo task controlla che il selettore di zucchero (il potenziometro) non sia stato mosso, altrimenti se mosso oltre una certa soglia modifica e stampa a display la quantita' di zucchero che la nostra bevanda selezionata  dovra' contenere.
 
+# GUI
 
+Abbiamo creato la GUI in javaFX, in cui sono stati inseriti diversi elementi tra cui i bottoni per il refill/recover e label per mostrare lo stato e le quantità dei prodotti.  
+Si è considerato lo stato di idle come l'attesa di un input da parte dell'utente, lo stato working invece come quello della selezione e l'erogazione del prodotto.
 
+A livello di codice invece abbiamo usato la funzione.
 
+```cpp
+new Timer().scheduleAtFixedRate(new TimerTask(){
 
-### appunti
+            @Override
+            public void run(){
+              // code to run
+            }
+        },0, PERIOD);
+```
 
-   String msg = this.commChannel.receiveMsg();
-        
+Per poter eseguire del codice ogni PERIOD (in questo caso 300ms), all'interno del quale e' stato messo il codice con il quale la GUI si mette in attesa di un messaggio. Tramite questo approccio si evita completamente la perdita di messaggi e la  GUI puo' aggiornarsi in modo autonomo e in tempo reale. Questo codice eseguito all'interno del controller della GUI pero' viene eseguito inun thread diverso da quello della GUI e si ottiene un errore che blocca tutto, per poter risolvere questo problema e' stato necessario richiamare una funzione che va ad operare sulla GUI quale:
 
-per evitare perdita di messaggi sacrifichiamo la reattivita dell interfaccia, pur eseguendo questa funzione ogni 300 millis 
+```cpp
+Platform.runLater(() -> {
+                updateGui(coffee, tea, chocolate, check, stato);
+            });
+```
+
+Per il formato del messaggio per comodita' il JSON semplifica di molto lo scambio di informazioni.

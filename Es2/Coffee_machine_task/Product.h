@@ -3,20 +3,20 @@
 
 #include "Arduino.h"
 
-class Product {
+class Product
+{
 
-  public:
-    Product(int quantity, String productName);
-    void decQuantity();
-    void setQuantity(int quantity);
-    int getQuantity();
-    bool isNotAviable();
-    String toString();
-  private:
-    String productName;
-    int quantity;
-    
+public:
+  Product(int quantity, String productName);
+  void decQuantity();
+  void setQuantity(int quantity);
+  int getQuantity();
+  bool isNotAviable();
+  String toString();
 
+private:
+  String productName;
+  int quantity;
 };
 
 #endif

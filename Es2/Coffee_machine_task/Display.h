@@ -3,14 +3,18 @@
 
 #include <WString.h>
 
-class Display {
+#define LCD_ADDR 0x27
+#define COLS 20
+#define ROWS 4
 
-  public:
-    Display();
-    void setText(String msg);
-    void on();
-    void off();
+class Display
+{
 
+public:
+  Display();
+  void setText(String msg);
+  void on();
+  void off();
 };
 
 #endif

@@ -10,7 +10,6 @@
 #include "Temp.h"
 #include "Pir.h"
 
-
 #define N_MAX_QUANTITY 50
 #define T_OUT 5000L
 #define T_MAKING 55
@@ -21,13 +20,14 @@
 #define PIR_PIN 5
 #define TRIG_PIN 7
 #define ECHO_PIN 8
-#define SONAR_DISTANCE 40
 #define SERVO_PIN 10
 #define TEMP_PIN A0
 
+#define SONAR_DISTANCE 40
 #define PROD_NUM 3
 
-enum stato{
+enum stato
+{
   WELCOME,
   READY,
   SELECT,
@@ -37,27 +37,26 @@ enum stato{
   SLEEP
 };
 
+class Machine
+{
 
-class Machine {
-
-
-  public:
-    Machine();
-    NewPing* sonar;
-    Pir* pir;
-    ServoMotor* servo ;
-    Display* display_lcd ;
-    Temp* temp;
-    Product* coffee ;
-    Product* tea ;
-    Product* chocolate ;
-    Button* bUp;
-    Button* bDown ;
-    Button* bMake ;
-    stato state;
-    int checkDone;
-    String statusMachine;
-    bool lastMove;
+public:
+  Machine();
+  NewPing *sonar;
+  Pir *pir;
+  ServoMotor *servo;
+  Display *display_lcd;
+  Temp *temp;
+  Product *coffee;
+  Product *tea;
+  Product *chocolate;
+  Button *bUp;
+  Button *bDown;
+  Button *bMake;
+  stato state;
+  int checkDone;
+  String statusMachine;
+  bool lastMove;
 };
 
 #endif
