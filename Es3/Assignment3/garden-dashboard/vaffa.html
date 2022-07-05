@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/1.0.2/package/lib/browser/fs.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h1>VAFFA</h1>
+   <button id="robe" onclick="cambiaCose()" > Press me ^.^ </button>
+   <h1 id="cazzo"></h1>
+</body>
+<script type="module">
+
+    function cambiaCose() {
+       document.getElementById('cazzo').innerText = "sesso";
+    }
+
+    const response = await axios.post("http://localhost:3000/garden/boardsensor", )
+
+    console.log(response)
+</script>
+</html>
