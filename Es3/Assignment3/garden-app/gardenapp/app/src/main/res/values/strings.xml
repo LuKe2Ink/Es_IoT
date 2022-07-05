@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">garden-app</string>
+    <string name="smart_garden">Smart Garden</string>
+    <string name="light_system">Light System</string>
+    <string name="led_1">Led 1</string>
+    <string name="led_2">Led 2</string>
+    <string name="led_3">Led 3</string>
+    <string name="led_4">Led 4</string>
+    <string name="on_off">On/Off</string>
+    <string name="default_value">0</string>
+    <string name="irrigation_system">Irrigation System</string>
+    <string name="open_close">Open/Close</string>
+    <string name="require_manual_control">Require Manual Control</string>
+</resources>
