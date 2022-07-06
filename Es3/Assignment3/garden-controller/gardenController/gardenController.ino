@@ -6,11 +6,60 @@
 Scheduler scheda;
 Garden* garden;
 
+
+
 void setup() {
   // put your setup code here, to run once:
   //xSerial.begin(9600);
   Serial.begin(9600);
   garden = new Garden();
+
+  /////////////////////////////////////////  
+  StaticJsonDocument<200> doc;
+  doc["sensor"] = "gps";
+  doc["time"] = 1351824120;
+
+  JsonArray data = doc.createNestedArray("data");
+  data.add(48.756080);
+  data.add(2.302038);
+
+  //stampa json
+  serializeJsonPretty(doc, Serial);
+/////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////
+
+ StaticJsonDocument<200> doc1;
+ char json[] =
+      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+   DeserializationError error = deserializeJson(doc1, json);
+
+  // Test if parsing succeeds.
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+
+  // Fetch values.
+  //
+  // Most of the time, you can rely on the implicit casts.
+  // In other case, you can do doc["time"].as<long>();
+  const char* sensor = doc1["sensor"];
+  long time = doc1["time"];
+  double latitude = doc1["data"][0];
+  double longitude = doc1["data"][1];
+
+  // Print values.
+  Serial.println(sensor);
+  Serial.println(time);
+  Serial.println(latitude, 6);
+  Serial.println(longitude, 6);
+
+////////////////////////////////////////////////
+
 }
 
 void loop() {
