@@ -11,4 +11,10 @@
     <string name="irrigation_system">Irrigation System</string>
     <string name="open_close">Open/Close</string>
     <string name="require_manual_control">Require Manual Control</string>
+    <string name="select_device">Select device</string>
+    <string name="select_device_hint">Select a device from the list below. If you cannot find it, ensure that it has already been paired with this device.</string>
+    <string name="device_list_title">Paired devices:</string>
+    <string name="bluetooth_switch_on">Switch bluetooth on</string>
+    <string name="bluetooth_switch_off">Switch bluetooth off</string>
+    <string name="reload_device_list">Reload</string>
 </resources>

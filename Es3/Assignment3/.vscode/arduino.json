@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "garden-controller\\gardenController\\gardenController.ino",
+    "port": "COM3"
+}
