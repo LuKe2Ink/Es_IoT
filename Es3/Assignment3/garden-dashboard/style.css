@@ -1,0 +1,12 @@
+.contenitore{
+    display: inline-flex;
+}
+#temperatureContainer{
+    display: inline-flex;
+    color: blue;
+    display: block;
+    margin-right: 50px;
+}
+#robe{
+    clear: none;
+}

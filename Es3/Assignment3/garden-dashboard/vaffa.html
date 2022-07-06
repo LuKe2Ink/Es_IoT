@@ -2,26 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/1.0.2/package/lib/browser/fs.min.js"></script>-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="style.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/1.0.2/package/lib/browser/fs.min.js"></script>
+    <script src="https://kit.fontawesome.com/68b52276fd.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-   <h1>VAFFA</h1>
+   <h1>Dashboard of the garden</h1>
+   <center>
+
+    <div class="contenitore">
+
+        <div id="temperatureContainer">
+            <h2>
+                Temperature &nbsp;<i class="fa-solid fa-temperature-high"></i>:
+            </h2>
+            <h3 id="temperature"></h3>
+        </div>
+
+        <div id="brightnessContainer">
+            <h2>
+                Brightness &nbsp;<i class="fa-solid fa-lightbulb" style="color: black;"></i>:
+            </h2>
+            <h3 id="brightness"></h3>
+        </div>
+
+   </div>
+
+   </center>
+
    <button id="robe" onclick="cambiaCose()" > Press me ^.^ </button>
    <h1 id="cazzo"></h1>
 </body>
-<script type="module">
-
-    function cambiaCose() {
-       document.getElementById('cazzo').innerText = "sesso";
-    }
-
-    const response = await axios.post("http://localhost:3000/garden/boardsensor", )
-
-    console.log(response)
-</script>
+<script src="./httpRequest.js"></script>
 </html>
