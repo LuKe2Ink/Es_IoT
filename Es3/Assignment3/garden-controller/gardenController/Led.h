@@ -7,10 +7,12 @@ class Led
 {
     public:
         int pin;
+        int luminosity;
         Led(int pin);
         void turnOn();
         void turnOff();
         void setLuminosity(int value);
+        int getLuminosity();
 };
 
 #endif
