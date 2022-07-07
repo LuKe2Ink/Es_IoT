@@ -36,6 +36,7 @@ void connectToWifi(const char* ssid, const char* password){
 void setup() {
   Serial.begin(115200); 
   pinMode(RED, OUTPUT);
+  pinMode(LIGHT_SENSOR_PIN, OUTPUT);
   connectToWifi(ssid, password);
 }
 
@@ -72,14 +73,15 @@ void loop() {
 
 
   int lumValue = analogRead(LIGHT_SENSOR_PIN);
-
+  Serial.println(lumValue);
+  lumValue = map(lumValue, 0, 1023, 0, 7);
 
   String msg = 
     String("{ \"origin\": ") + "\"sensor-board\"" + 
     ", \"temperature\": " + tempC + 
     ", \"luminosity\": " + lumValue + 
     + " }";
-  delay(500);
+  //delay(500);
 
  // Serial.println(msg);
  
@@ -93,7 +95,7 @@ void loop() {
        Serial.println(String("error: ") + code);
      }
     
-    delay(5000);
+    delay(1000);
 
   } else {
     Serial.println("WiFi Disconnected... Reconnect.");
