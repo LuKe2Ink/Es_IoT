@@ -13,7 +13,8 @@ var irrigazione;
 
 setInterval(async function () {
     i++
-    const response = await axios.post("http://10.201.101.150:3000/garden/boardsensor", );
+    //const response = await axios.post("http://10.201.101.150:3000/garden/boardsensor", );
+    const response = await axios.post("http://localhost:3000/garden/boardsensor", );
 
     temp = response.temp; //o response[0]
     document.getElementById("cazzo").innerText = "ciao"+i;

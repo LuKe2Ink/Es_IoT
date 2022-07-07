@@ -1,11 +1,16 @@
 #include "Scheduler.h"
 #include "Garden.h"
 
+#include <SoftwareSerial.h>
 #include <ArduinoJson.h>
+
+#define RX 2
+#define TX 3
 
 Scheduler scheda;
 Garden* garden;
 
+SoftwareSerial btChannel(RX, TX);
 
 
 void setup() {
@@ -13,7 +18,7 @@ void setup() {
   //xSerial.begin(9600);
   Serial.begin(9600);
   garden = new Garden();
-
+  btChannel.begin(9600);
   /////////////////////////////////////////  
   StaticJsonDocument<200> doc;
   doc["sensor"] = "gps";
@@ -62,6 +67,8 @@ void setup() {
 
 }
 
+String msg = "";
+
 void loop() {
   // put your main code here, to run repeatedly:
   //garden->led_c->turnOn();
@@ -83,4 +90,10 @@ void loop() {
 
   garden->led_a->turnOn();
   garden->led_d->setLuminosity(0);
+
+ if (btChannel.available()){
+    msg = btChannel.readString();
+    Serial.println(msg);
+  }
+  
 }

@@ -8,10 +8,18 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "Vodafone-A45840614";
-const char* password = "";
+#define RED 18
+#define ADC_VREF_mV    3300.0 // in millivolt
+#define ADC_RESOLUTION 4096.0
+#define PIN_LM35       1 // ESP32 pin GIOP36 (ADC0) connected to LM35
+#define LIGHT_SENSOR_PIN 2 // ESP32 pin GIOP36 (ADC0)
 
-const char *serviceURI = "https://9288-2-42-108-46.eu.ngrok.io";
+const char* ssid = "Vodafone-A45840614";
+const char* password = "p372xc2mywxb9sts";
+
+const char *serviceURI = "https://3e33-2-42-108-46.eu.ngrok.io";
+
+String msg;
 
 void connectToWifi(const char* ssid, const char* password){
   WiFi.begin(ssid, password);
@@ -27,18 +35,21 @@ void connectToWifi(const char* ssid, const char* password){
 
 void setup() {
   Serial.begin(115200); 
+  pinMode(RED, OUTPUT);
   connectToWifi(ssid, password);
 }
 
-int sendData(String address, float value, String place){  
+int sendData(String address, float value, String place, String msg){  
   
    HTTPClient http;    
    http.begin(address + "/garden/boardsensor");      
-   //http.addHeader("Content-Type", "application/json");    
+   http.addHeader("Content-Type", "application/json");    
     
-   String msg = 
-    String("{ \"origin\": ") + String(value) + 
-    ", \"place\": \"" + place +"\" }";
+//   String msg = 
+//    String("{ \"origin\": ") + String(value) + 
+//    ", \"place\": \"" + place +"\" }";
+//   
+    Serial.println(msg);
    
    int retCode = http.POST(msg);   
    http.end();  
@@ -47,10 +58,35 @@ int sendData(String address, float value, String place){
 }
 
 void loop() {
+  digitalWrite(RED, HIGH);
+   // read the ADC value from the temperature sensor
+  int adcVal = analogRead(PIN_LM35);
+  //Serial.print(adcVal);
+  // convert the ADC value to voltage in millivolt
+  float milliVolt = adcVal * (ADC_VREF_mV / ADC_RESOLUTION);
+  // convert the voltage to the temperature in °C
+  float tempC = milliVolt / 10;
+  // convert the °C to °F
+  //float tempF = tempC * 9 / 5 + 32;
+
+
+
+  int lumValue = analogRead(LIGHT_SENSOR_PIN);
+
+
+  String msg = 
+    String("{ \"origin\": ") + "sensor-board" + 
+    ", \"temperature\": \"" + String(tempC) + 
+    ", \"luminosity\": \"" + String(lumValue) + 
+    + "\" }";
+  delay(500);
+
+ // Serial.println(msg);
+ 
   if (WiFi.status()== WL_CONNECTED){      
 
     int value = random(15,20);
-    int code = sendData(serviceURI, value, "home");
+    int code = sendData(serviceURI, value, "home", msg);
     if (code == 200){
        Serial.println("ok");   
      } else {
@@ -62,5 +98,5 @@ void loop() {
   } else {
     Serial.println("WiFi Disconnected... Reconnect.");
     connectToWifi(ssid, password);
-  }
+    }
 }
