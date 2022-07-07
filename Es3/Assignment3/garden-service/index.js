@@ -19,8 +19,8 @@ server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
-//app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //app.use(parser)
 
@@ -32,12 +32,13 @@ app.post('/garden/boardsensor', async function(req, res) {
     }
     res.send(r)
   
-    console.log(typeof req.body)
+    console.log(req.body)
 });
 
 // da testare
 app.post('/garden/dashboard', async function(req, res) { 
-    console.log(req.body)
+  console.log(req.body)
+  res.send(gardenObject)
 });
 
 // da testare
@@ -46,7 +47,7 @@ app.post('/garden/app', async function(req, res) {
 });
 
 //serial data
-/*
+
 port.on("open", function () {
   //console.log('open');
   parser.on('data', function(data) {
@@ -55,4 +56,3 @@ port.on("open", function () {
     gardenObject = JSON.parse(g);
   });
 });
-*/
