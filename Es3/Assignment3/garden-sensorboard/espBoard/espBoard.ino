@@ -17,7 +17,7 @@
 const char* ssid = "Vodafone-A45840614";
 const char* password = "p372xc2mywxb9sts";
 
-const char *serviceURI = "https://3e33-2-42-108-46.eu.ngrok.io";
+const char *serviceURI = "https://4197-2-42-108-46.eu.ngrok.io";
 
 String msg;
 
@@ -43,7 +43,7 @@ int sendData(String address, float value, String place, String msg){
   
    HTTPClient http;    
    http.begin(address + "/garden/boardsensor");      
-   http.addHeader("Content-Type", "application/json");    
+   http.addHeader("Content-Type", "text/plain");    
     
 //   String msg = 
 //    String("{ \"origin\": ") + String(value) + 
@@ -51,7 +51,7 @@ int sendData(String address, float value, String place, String msg){
 //   
     Serial.println(msg);
    
-   int retCode = http.POST(msg);   
+   int retCode = http.POST(msg + "\r\n" );   
    http.end();  
       
    return retCode;

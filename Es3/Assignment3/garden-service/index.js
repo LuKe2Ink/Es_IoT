@@ -19,16 +19,20 @@ server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text());
+
+//app.use(parser)
 
 // da testare
 app.post('/garden/boardsensor', async function(req, res) { 
-    /*var r = {
+  
+    var r = {
       "cacca" : "popo"
     }
-    res.send(r)*/
-    console.log(req.body)
+    res.send(r)
+  
+    console.log(typeof req.body)
 });
 
 // da testare
@@ -42,7 +46,7 @@ app.post('/garden/app', async function(req, res) {
 });
 
 //serial data
-
+/*
 port.on("open", function () {
   //console.log('open');
   parser.on('data', function(data) {
@@ -51,3 +55,4 @@ port.on("open", function () {
     gardenObject = JSON.parse(g);
   });
 });
+*/
