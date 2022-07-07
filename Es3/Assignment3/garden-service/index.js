@@ -9,8 +9,11 @@ const serialport = require('serialport');
 const SerialPort = require('serialport').SerialPort;
 const Readline = require('@serialport/parser-readline');
 
-//const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
-//const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
+var gardenObject={};
+
+
+const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
+const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -21,10 +24,10 @@ app.use(bodyParser.json());
 
 // da testare
 app.post('/garden/boardsensor', async function(req, res) { 
-    var r = {
+    /*var r = {
       "cacca" : "popo"
     }
-    res.send(r)
+    res.send(r)*/
     console.log(req.body)
 });
 
@@ -39,11 +42,12 @@ app.post('/garden/app', async function(req, res) {
 });
 
 //serial data
-/*
+
 port.on("open", function () {
-  console.log('open');
+  //console.log('open');
   parser.on('data', function(data) {
-    console.log(data);
+   console.log(data);
+    var g = data;
+    gardenObject = JSON.parse(g);
   });
 });
-*/
