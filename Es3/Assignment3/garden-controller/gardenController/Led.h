@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 
+#define MAX_LUMINOSITY 4
+#define MIN_LUMINOSITY 0
+
 class Led
 {
     public:

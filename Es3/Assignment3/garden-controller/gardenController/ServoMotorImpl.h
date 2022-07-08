@@ -1,0 +1,22 @@
+#ifndef __SERVOMOTORIMPL__
+#define __SERVOMOTORIMPL__
+
+#include "ServoMotor.h"
+#include "ServoTimer2.h"
+
+class ServoMotorImpl : public ServoMotor
+{
+
+public:
+  ServoMotorImpl(int pin);
+  void moveServo();
+
+private:
+  int pin;
+  int pos;
+  ServoTimer2 servo;
+  void off();
+  void on();
+};
+
+#endif

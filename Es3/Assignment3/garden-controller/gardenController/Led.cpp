@@ -8,12 +8,12 @@ Led::Led(int pin){
 
 void Led::turnOn(){
   digitalWrite(this->pin, HIGH);
-  this->luminosity = 1;
+  this->luminosity = MAX_LUMINOSITY;
 }
 
 void Led::turnOff(){
   digitalWrite(this->pin, LOW);
-  this->luminosity = 0;
+  this->luminosity = MIN_LUMINOSITY;
 }
 
 void Led::setLuminosity(int value){
