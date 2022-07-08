@@ -25,6 +25,7 @@ SoftwareSerial btChannel(RX, TX);
   scheda.init(100);
 
   routine = new RoutineTask(garden);
+  //routine->tick();
   routine->init(100);
   scheda.addTask(routine);
 
@@ -79,7 +80,6 @@ SoftwareSerial btChannel(RX, TX);
   Serial.println(time);
   Serial.println(latitude, 6);
   Serial.println(longitude, 6);*/
-
 ////////////////////////////////////////////////
 
   garden->state = AUTO;
@@ -136,6 +136,8 @@ void loop() {
 ///////////////////////////////////////////////////
 //  delay(500);
 
-  scheda.schedule();
+  if (garden.obj != null){
+    scheda.schedule();
+  }
   
 }
