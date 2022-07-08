@@ -10,6 +10,7 @@ int Photoresistor::getValue()
 {
   int value = analogRead(this->pin);
   value /= 128;
+  Serial.println(value);
   return value;
 }
 
