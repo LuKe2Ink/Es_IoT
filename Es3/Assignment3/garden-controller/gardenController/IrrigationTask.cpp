@@ -13,9 +13,9 @@ void IrrigationTask::tick()
 
   switch(this->state){
     case OPERATING:
-      if(garden->moveServo){
-        
-      }
+      //if(garden->moveServo){
+      //  
+      //}
       break;
     case NOT_OPERATING:
       break;

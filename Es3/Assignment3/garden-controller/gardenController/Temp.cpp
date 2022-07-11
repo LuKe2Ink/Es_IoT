@@ -1,12 +1,12 @@
 #include "Temp.h"
 #include "Arduino.h"
 
-Temp::Temp(int pin)
-{
-  this->pin = pin;
-}
-
 int Temp::getTemp()
 {
-  return (analogRead(this->pin) * 0.48828125);
+  return this->temp;
+}
+
+void Temp::setTemp(int t)
+{
+  this->temp = t;
 }

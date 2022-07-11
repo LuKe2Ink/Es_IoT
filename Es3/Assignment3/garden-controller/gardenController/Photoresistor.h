@@ -10,13 +10,12 @@ class Photoresistor
 {
 
   public:
-    Photoresistor(int pin);
     int getValue();
+    void setValue(int v);
     bool isLessThenMax();
     bool isLessThenMin();
+    int value;
 
-  private:
-    int pin;
 };
 
 #endif

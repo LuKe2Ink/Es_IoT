@@ -3,6 +3,10 @@
 
 #include "Task.h"
 #include "Garden.h"
+#include <SoftwareSerial.h>
+
+#define RX 2
+#define TX 3
 
 class RoutineTask:public Task
 {
@@ -16,6 +20,7 @@ class RoutineTask:public Task
     void turnOnAllLed();
     void turnOffAllLed();
     void activateIrrigationSystem();
+    void setData();
   
 };
 

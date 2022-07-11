@@ -7,11 +7,9 @@ class Temp
 {
 
   public:
-    Temp(int pin);
     int getTemp();
-
-  private:
-    int pin;
+    void setTemp(int t);
+    int temp;
 };
 
 #endif

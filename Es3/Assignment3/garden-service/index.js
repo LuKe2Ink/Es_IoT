@@ -51,8 +51,21 @@ app.post('/garden/app', async function(req, res) {
 port.on("open", function () {
   //console.log('open');
   parser.on('data', function(data) {
-   console.log(data);
+   //console.log(data);
     var g = data;
     gardenObject = JSON.parse(g);
+    console.log(gardenObject);
   });
 });
+
+
+
+setInterval(()=> {
+
+port.write("{\"sesso\" : \"bello\"}\n", function(err) {
+  if (err) {
+    return console.log('Error on write: ', err.message)
+  }
+  console.log('message written')
+})
+}, 1000);

@@ -14,14 +14,12 @@ Garden* garden;
 RoutineTask *routine;
 IrrigationTask *irrigation;
 
-SoftwareSerial btChannel(RX, TX);
+//SoftwareSerial btChannel(RX, TX);
 
- void setup() {
-  // put your setup code here, to run once:
-  //xSerial.begin(9600);
+void setup() {
   Serial.begin(9600);
   garden = new Garden();
-  btChannel.begin(9600);
+ // btChannel.begin(9600);
   scheda.init(100);
 
   routine = new RoutineTask(garden);
@@ -88,7 +86,39 @@ SoftwareSerial btChannel(RX, TX);
 
 //String msg = "";
 
+String inData = "";
+
+
 void loop() {
+ scheda.schedule(); 
+
+
+// while (Serial.available() > 0) {
+//        char received = Serial.read();
+//        inData.concat(received);
+//
+//        // Process message when new line character is received
+//        if (received == '\n') {
+//            // Message is ready in inDate
+//            break;
+//        }
+//    }
+//    Serial.print(inData);
+    if(Serial.available()){
+      inData = Serial.readStringUntil('\n');
+    }
+    Serial.println(inData);
+    inData = " ";
+
+
+
+//  if (Serial.available() > 0) {
+//    String incomingString = Serial.readString();
+//
+//    // prints the received data
+//    //Serial.print("I received: ");
+//    Serial.println(incomingString);
+//  }
   // put your main code here, to run repeatedly:
   //garden->led_c->turnOn();
 //  int i;
@@ -136,8 +166,10 @@ void loop() {
 ///////////////////////////////////////////////////
 //  delay(500);
 
+  /*
   if (garden.obj != null){
     scheda.schedule();
   }
+  */
   
 }

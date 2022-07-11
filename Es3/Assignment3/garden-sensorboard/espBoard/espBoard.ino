@@ -1,21 +1,14 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "Scheduler.h"
+#include "SensorBoard.h"
 
-#include "Photoresistor.h"
-#include "Temp.h"
+//const char *ssid = "Vodafone-A45840614";
+const char *ssid = "TCL";
+const char *password = "caccapopo";
 
-#define RED 18
-#define PIN_LM35 1
-#define LIGHT_SENSOR_PIN 2
-
-const char *ssid = "Vodafone-A45840614";
-const char *password = "p372xc2mywxb9sts";
-
-const char *serviceURI = "https://9322-2-42-108-46.eu.ngrok.io";
-
-String msg;
-Photoresistor *photoresistor;
-Temp *temp;
+Scheduler scheda;
+SensorBoard* sensorboard;
 
 void connectToWifi(const char *ssid, const char *password)
 {
@@ -34,49 +27,25 @@ void connectToWifi(const char *ssid, const char *password)
 void setup()
 {
   Serial.begin(115200);
-
-  pinMode(RED, OUTPUT);
-  photoresistor = new Photoresistor(LIGHT_SENSOR_PIN);
-  temp = new Temp(PIN_LM35);
   // First connection to WIFI
   connectToWifi(ssid, password);
+
+  scheda.init(100);
+  sensorboard = new SensorBoard();
+  sensorboard->init(1000);
+  scheda.addTask(sensorboard);
 }
 
-int sendData(String address, String msg)
-{
 
-  HTTPClient http;
-  http.begin(address + "/garden/boardsensor");
-  http.addHeader("Content-Type", "application/json");
-
-  Serial.println(msg);
-
-  // add body to POST
-  int retCode = http.POST(msg);
-  http.end();
-
-  return retCode;
-}
 
 void loop()
 {
-  digitalWrite(RED, HIGH);
-
-  int tempC = temp->getTemp();
-
-  int lumValue = photoresistor->getValue();
-
-  String msg =
-      String("{ \"origin\": ") + "\"sensor-board\"" +
-      ", \"temperature\": " + tempC +
-      ", \"luminosity\": " + lumValue +
-      +" }";
-
-  delay(350);
+  //digitalWrite(RED, HIGH);
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    int code = sendData(serviceURI, msg);
+    //tick()
+/*     int code = sendData(serviceURI, msg);
     if (code == 200)
     {
       Serial.println("ok");
@@ -85,7 +54,8 @@ void loop()
     {
       Serial.println(String("error: ") + code);
     }
-    delay(1000);
+    delay(1000); */
+    scheda.schedule();
   }
   else
   {
