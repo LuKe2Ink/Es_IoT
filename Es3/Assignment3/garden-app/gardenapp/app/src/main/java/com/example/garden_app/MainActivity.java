@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,7 +18,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Set;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
     Button led1;
@@ -34,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     TextView valueLed4;
     MainViewModel viewModel;
     private BluetoothConnection connection;
+    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +159,97 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+//        System.setProperty("javax.net.ssl.debug", "all");
+//            AsyncTask.execute(()->{
+//                URL url;
+//                try {
+//                    url = new URL("https://192.168.43.101:3000/garden/app/getData");
+//                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                    connection.setRequestMethod("GET");
+//                    connection.setRequestProperty("Content-Type", "application/json");
+//                    //System.out.println(connection.getResponseCode());
+//                    System.out.println(connection.g);
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                } catch (ProtocolException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+
+
+//            Request request = new Request.Builder()
+//                    .url("https://192.168.43.101:3000/garden/app/getData")
+//                    .build();
+//
+//            client.newCall(request).enqueue(new Callback() {
+//                @Override public void onFailure(Call call, IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                @Override public void onResponse(Call call, Response response) throws IOException {
+//                    try (ResponseBody responseBody = response.body()) {
+//                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+//
+//                        Headers responseHeaders = response.headers();
+//                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+//                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+//                        }
+//
+//                        System.out.println(responseBody.string());
+//                    }
+//                }
+//            });
+
+        AsyncTask.execute(()->{
+            executePost("http://192.168.43.101:3000/garden/app/getData", "");
+//            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
+//            System.out.println(stringa);
+
+        });
+
+    }
+    public static String executePost(String targetURL, String urlParameters) {
+        HttpURLConnection connection = null;
+
+        try {
+            //Create connection
+            URL url = new URL(targetURL);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+//            //Send request
+//            DataOutputStream wr = new DataOutputStream (
+//                    connection.getOutputStream());
+//            wr.writeBytes(urlParameters);
+//            wr.close();
+
+            //Get Response
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            String line;
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+            rd.close();
+            return response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
     public void led1(View v) {
