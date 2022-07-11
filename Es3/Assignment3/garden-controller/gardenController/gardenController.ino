@@ -104,10 +104,49 @@ void loop() {
 //        }
 //    }
 //    Serial.print(inData);
-    if(Serial.available()){
-      inData = Serial.readStringUntil('\n');
-    }
-    Serial.println(inData);
+    if(Serial.available() > 0){
+      inData = Serial.readString();
+  
+
+   // Serial.println(inData);
+ StaticJsonDocument<200> doc1;
+// char json[] =
+//      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+   DeserializationError error = deserializeJson(doc1, inData);
+
+  //Serial.println(String(inData));
+  // Test if parsing succeeds.
+  if (error) {
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+
+  // Fetch values.
+  //
+
+  
+  
+  // Most of the time, you can rely on the implicit casts.
+  // In other case, you can do doc["time"].as<long>();
+  
+  int led = doc1["led1"];
+  int led2 = doc1["led2"];
+  int led3 = doc1["led3"];
+  int led4 = doc1["led4"];
+  
+    //Serial.println(led);
+ //   Serial.println(led2);
+    Serial.println(led3);
+  //  Serial.println(led4);
+
+    if(led3 == 0){
+        garden->led_c->setLuminosity(0);
+      }else {
+        garden->led_d->setLuminosity(0);
+     }
+   }
     inData = " ";
 
 

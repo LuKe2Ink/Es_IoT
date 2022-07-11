@@ -20,8 +20,8 @@ var gardenObject={
 };
 
 
-// const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
-// const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
+const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
+const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -39,6 +39,7 @@ app.put('/garden/sensorboard', async function(req, res) {
     gardenObject["temp"] = input.temp;
     gardenObject["bright"] = input.bright;
     res.send("ok")
+    sendOnSerial()
 });
 
 //da testare
@@ -58,19 +59,32 @@ app.get('/garden/app/getData', async function(req,res){
   res.send("porcodio");
 })
 
+function sendOnSerial() {
+ // console.log('from server')
+ // console.log(JSON.stringify(gardenObject))
+ // console.log('stop seriale');
+  port.write(JSON.stringify(gardenObject), function(err) {
+    if (err) {
+      return console.log('Error on write: ', err.message)
+    }
+    console.log('message written')
+  })
+}
+
+
 //serial data
 
 port.on("open", function () {
   //console.log('open');
   parser.on('data', function(data) {
-   //console.log(data);
-    var g = data;
-    gardenObject = JSON.parse(g);
-    console.log(gardenObject);
+   console.log(data);
+    // var g = data;
+     //gardenObject = JSON.parse(g);
+     //console.log(gardenObject);
   });
 });
 
-
+/*
 
 setInterval(()=> {
 
@@ -81,3 +95,4 @@ port.write("{\"sesso\" : \"bello\"}\n", function(err) {
   console.log('message written')
 })
 }, 1000);
+*/
