@@ -9,11 +9,19 @@ const serialport = require('serialport');
 const SerialPort = require('serialport').SerialPort;
 const Readline = require('@serialport/parser-readline');
 
-var gardenObject={};
+
+var gardenObject={
+  "led1" : 1,
+  "led2" : 1,
+  "led3" : 0,
+  "led4" : 0,
+  "water" : 0,
+  "state" : "bella pe te"
+};
 
 
-const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
-const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
+// const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
+// const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -24,27 +32,31 @@ app.use(bodyParser.json());
 
 //app.use(parser)
 
-// da testare
-app.post('/garden/boardsensor', async function(req, res) { 
-  
-    var r = {
-      "cacca" : "popo"
-    }
-    res.send(r)
-  
-    console.log(req.body)
+//da testare
+//Put perché andrà sempre a modificare i dati correnti
+app.put('/garden/sensorboard', async function(req, res) { 
+    var input = req.body;
+    gardenObject["temp"] = input.temp;
+    gardenObject["bright"] = input.bright;
+    res.send("ok")
 });
 
-// da testare
-app.post('/garden/dashboard', async function(req, res) { 
-  console.log(req.body)
-  res.send(gardenObject)
+//da testare
+//Get perché deve richiede esclusivamente i dati, non andandoli a modificare
+app.get('/garden/dashboard', async function(req, res) { 
+  res.send(gardenObject);
 });
 
-// da testare
-app.post('/garden/app', async function(req, res) { 
-    console.log(req.body)
+//da testare
+//Pathc perché andrà a modificare parzialmente l'oggetto gardenObject
+app.patch('/garden/app/update', async function(req, res) { 
+    var input = req.body;
+    gardenObject = input;
 });
+//Get per andare a ritirare i dati necessari
+app.get('/garden/app/getData', async function(req,res){
+  res.send("porcodio");
+})
 
 //serial data
 
