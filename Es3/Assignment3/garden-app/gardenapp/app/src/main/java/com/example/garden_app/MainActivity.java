@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     TextView valueLed4;
     MainViewModel viewModel;
     private BluetoothConnection connection;
-    private final OkHttpClient client = new OkHttpClient();
+//    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 connection = new BluetoothConnection(device.getAddress(), 3000);
                 connection.open();
+                System.out.println("Open");
+                manualControl();
             } catch (Exception e) {
 
             }
@@ -203,12 +205,12 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            });
 
-        AsyncTask.execute(()->{
-            executePost("http://192.168.43.101:3000/garden/app/getData", "");
-//            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
-//            System.out.println(stringa);
-
-        });
+//        AsyncTask.execute(()->{
+//            executePost("http://192.168.43.101:3000/garden/app/getData", "");
+////            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
+////            System.out.println(stringa);
+//
+//        });
 
     }
     public static String executePost(String targetURL, String urlParameters) {
@@ -250,6 +252,11 @@ public class MainActivity extends AppCompatActivity {
                 connection.disconnect();
             }
         }
+    }
+
+    public void manualControl(){
+        String json = "{\"control\":\"manual\"}";
+        send(json);
     }
 
     public void led1(View v) {
@@ -317,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-        String json = "{\"led4\":\""+op+"\"}";
+        String json = "{\"irrigation\":\""+op+"\"}";
         System.out.println(json);
         send(json);
     }

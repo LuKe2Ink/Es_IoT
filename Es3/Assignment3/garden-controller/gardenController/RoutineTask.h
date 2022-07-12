@@ -3,7 +3,7 @@
 
 #include "Task.h"
 #include "Garden.h"
-#include <SoftwareSerial.h>
+#include <ArduinoJson.h>
 
 #define RX 2
 #define TX 3
@@ -19,7 +19,14 @@ class RoutineTask:public Task
     void tick();
     void turnOffAllLed();
     void activateIrrigationSystem();
-    void setData();
+//    void setData();
+    void checkManualControl();
+    void checkChanges(JsonObject root);
+    void checkLed1();
+    void checkLed2();
+    void checkLed3(String op);
+    void checkLed4(String op);
+    void checkIrrigation(String op);
   private:
     void turnOnAllLed();
     
