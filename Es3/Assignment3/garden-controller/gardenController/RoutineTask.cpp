@@ -18,7 +18,11 @@ void RoutineTask::tick()
     case AUTO:
       if(garden->sensorBoard->photoresistor->isLessThenMax()){
         turnOnAllLed();
-        if(this->garden->isIrrigationSystemOperating && garden->sensorBoard->photoresistor->isLessThenMin()){
+        garden->led_c->setLuminosity(1);
+        garden->led_d->setLuminosity(4);
+        garden->sensorBoard->photoresistor->setValue(1);
+        if( !this->garden->isIrrigationSystemOperating && garden->sensorBoard->photoresistor->isLessThenMin()){
+          this->garden->isIrrigationSystemOperating = true;
           activateIrrigationSystem();
         }
       }else{
@@ -36,8 +40,6 @@ void RoutineTask::tick()
 void RoutineTask::turnOnAllLed(){
   garden->led_a->turnOn();
   garden->led_b->turnOn();
-  garden->led_c->turnOn();
-  garden->led_d->turnOn();
 }
 
 void RoutineTask::turnOffAllLed(){
@@ -48,7 +50,8 @@ void RoutineTask::turnOffAllLed(){
 }
 
 void RoutineTask::activateIrrigationSystem(){
-  garden->moveServo = true;
+  //garden->moveServo = true;
+  garden->servo->moveServo();
 }
 
 void RoutineTask::setData(){

@@ -17,11 +17,12 @@ class RoutineTask:public Task
     RoutineTask(Garden *garden);
     void init(int period);
     void tick();
-    void turnOnAllLed();
     void turnOffAllLed();
     void activateIrrigationSystem();
     void setData();
-  
+  private:
+    void turnOnAllLed();
+    
 };
 
 

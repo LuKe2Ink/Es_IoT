@@ -31,9 +31,10 @@ void ServoMotorImpl::moveServo()
         {
          previousMillis = servoMillis;
          servo.write(pos);
+         Serial.println(pos);
+         pos -= 1; // da cambiare
          i++;
         }
-
   }
   
 
