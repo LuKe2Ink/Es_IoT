@@ -205,12 +205,13 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            });
 
-//        AsyncTask.execute(()->{
-//            executePost("http://192.168.43.101:3000/garden/app/getData", "");
-////            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
-////            System.out.println(stringa);
-//
-//        });
+        AsyncTask.execute(()->{
+            String stringa = executePost("http://localhost:3000/garden/app/getData", "");
+//            String stringa = executePost("http://localhost:3000/garden/app/getData", "");
+//            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
+             System.out.println(stringa);
+
+        });
 
     }
     public static String executePost(String targetURL, String urlParameters) {
@@ -223,9 +224,6 @@ public class MainActivity extends AppCompatActivity {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type",
                     "application/json");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
 
 //            //Send request
 //            DataOutputStream wr = new DataOutputStream (

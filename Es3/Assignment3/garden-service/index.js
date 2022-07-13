@@ -20,8 +20,8 @@ var gardenObject={
 };
 
 
-const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
-const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
+// const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
+// const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -74,15 +74,15 @@ function sendOnSerial() {
 
 //serial data
 
-port.on("open", function () {
-  //console.log('open');
-  parser.on('data', function(data) {
-   console.log(data);
-    // var g = data;
-     //gardenObject = JSON.parse(g);
-     //console.log(gardenObject);
-  });
-});
+// port.on("open", function () {
+//   //console.log('open');
+//   parser.on('data', function(data) {
+//    console.log(data);
+//     // var g = data;
+//      //gardenObject = JSON.parse(g);
+//      //console.log(gardenObject);
+//   });
+// });
 
 /*
 
