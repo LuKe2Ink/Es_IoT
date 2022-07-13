@@ -56,7 +56,7 @@ app.patch('/garden/app/update', async function(req, res) {
 });
 //Get per andare a ritirare i dati necessari
 app.get('/garden/app/getData', async function(req,res){
-  res.send("porcodio");
+  res.send(gardenObject);
 })
 
 function sendOnSerial() {
