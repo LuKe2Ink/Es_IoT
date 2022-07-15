@@ -6,9 +6,6 @@
 #include "RoutineTask.h"
 #include "IrrigationTask.h"
 
-#define RX 2
-#define TX 3
-
 Scheduler scheda;
 Garden* garden;
 RoutineTask *routine;
@@ -19,7 +16,6 @@ IrrigationTask *irrigation;
 void setup() {
   Serial.begin(9600);
   garden = new Garden();
- // btChannel.begin(9600);
   scheda.init(100);
 
   routine = new RoutineTask(garden);
@@ -92,7 +88,6 @@ String inData = "";
 void loop() {
  scheda.schedule(); 
 
-
 // while (Serial.available() > 0) {
 //        char received = Serial.read();
 //        inData.concat(received);
@@ -106,6 +101,7 @@ void loop() {
 //    Serial.print(inData);
     if(Serial.available() > 0){
       inData = Serial.readString();
+    }
   
 
    // Serial.println(inData);
@@ -117,11 +113,11 @@ void loop() {
 
   //Serial.println(String(inData));
   // Test if parsing succeeds.
-  if (error) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
-    return;
-  }
+//  if (error) {
+//    Serial.print(F("deserializeJson() failed: "));
+//    Serial.println(error.f_str());
+//    return;
+//  }
 
   // Fetch values.
   //
@@ -138,16 +134,16 @@ void loop() {
   
     //Serial.println(led);
  //   Serial.println(led2);
-    Serial.println(led3);
+//    Serial.println(led3);
   //  Serial.println(led4);
 
-    if(led3 == 0){
-        garden->led_c->setLuminosity(0);
-      }else {
-        garden->led_d->setLuminosity(0);
-     }
-   }
-    inData = " ";
+//    if(led3 == 0){
+//        garden->led_c->setLuminosity(0);
+//      }else {
+//        garden->led_d->setLuminosity(0);
+//     }
+     inData = " ";
+}
 
 
 
@@ -210,5 +206,3 @@ void loop() {
     scheda.schedule();
   }
   */
-  
-}

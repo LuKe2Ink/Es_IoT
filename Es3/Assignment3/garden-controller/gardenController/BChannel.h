@@ -7,7 +7,7 @@
 class BChannel{
     public:
         BChannel(int RX, int TX);
-        void isAvailable();
+        bool isAvailable();
         String readString();
 };
 

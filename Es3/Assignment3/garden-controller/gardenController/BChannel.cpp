@@ -4,7 +4,7 @@
 BChannel::BChannel(int RX, int TX){
     SoftwareSerial btChannel(RX, TX);
 }
-void BChannel::isAvailable(){
+bool BChannel::isAvailable(){
     
 }
 String BChannel::readString(){}

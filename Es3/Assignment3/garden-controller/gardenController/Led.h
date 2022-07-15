@@ -16,6 +16,7 @@ class Led
         void turnOff();
         void setLuminosity(int value);
         int getLuminosity();
+        bool isOn();
 };
 
 #endif

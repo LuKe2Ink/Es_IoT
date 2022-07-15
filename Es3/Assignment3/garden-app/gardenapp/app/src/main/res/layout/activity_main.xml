@@ -259,10 +259,10 @@
         app:layout_constraintTop_toBottomOf="@+id/led4_plus" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/irr_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/default_value"
+        android:text="@string/default_value_irr"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/irr_open_close"

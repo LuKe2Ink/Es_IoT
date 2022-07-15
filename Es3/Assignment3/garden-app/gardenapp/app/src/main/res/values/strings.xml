@@ -17,4 +17,5 @@
     <string name="bluetooth_switch_on">Switch bluetooth on</string>
     <string name="bluetooth_switch_off">Switch bluetooth off</string>
     <string name="reload_device_list">Reload</string>
+    <string name="default_value_irr">1</string>
 </resources>

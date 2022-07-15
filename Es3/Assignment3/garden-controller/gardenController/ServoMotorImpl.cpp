@@ -2,8 +2,9 @@
 #include "ServoMotorImpl.h"
 #include "Arduino.h"
 
-long servointerval = 2;
+long servointerval = 80;
 long previousMillis = 0;
+
 
 long elapsed_time = 0;
 
@@ -16,6 +17,27 @@ ServoMotorImpl::ServoMotorImpl(int pin)
 void ServoMotorImpl::on()
 {
   this->servo.attach(this->pin);
+}
+
+void ServoMotorImpl::setSpeedServo(int speedLevel){
+  switch(speedLevel){
+    case 1:
+      servointerval = 80;
+    break;
+    case 2:
+      servointerval = 60;
+    break;
+    case 3:
+      servointerval = 40;
+    break;
+    case 4:
+      servointerval = 20;
+    break;
+    case 5:
+      servointerval = 2;
+    break;
+  }
+  Serial.println(servointerval);
 }
 
 void ServoMotorImpl::moveServo()

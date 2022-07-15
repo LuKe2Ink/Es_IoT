@@ -18,6 +18,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -52,9 +55,14 @@ public class MainActivity extends AppCompatActivity {
     Button irrSot;
     TextView valueLed3;
     TextView valueLed4;
+    TextView irrValue;
     MainViewModel viewModel;
     private BluetoothConnection connection;
-    private final OkHttpClient client = new OkHttpClient();
+    private boolean manualMode = false;
+
+    private JSONObject json;
+
+//    private final OkHttpClient client = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 connection = new BluetoothConnection(device.getAddress(), 3000);
                 connection.open();
+                System.out.println("Open");
+                manualControl();
             } catch (Exception e) {
 
             }
@@ -84,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
         irrigation_change = findViewById(R.id.irr_open_close);
         irrPlus = findViewById(R.id.irr_add);
         irrSot = findViewById(R.id.irr_sot);
+        irrValue = findViewById(R.id.irr_value);
         req_man_contr = findViewById(R.id.req_man_contr);
 
-        viewModel.init(Integer.parseInt(valueLed3.getText().toString()), Integer.parseInt(valueLed4.getText().toString()), 0);
 
         led1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,15 +213,25 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            });
 
+
         AsyncTask.execute(()->{
-            executePost("http://192.168.43.101:3000/garden/app/getData", "");
+            String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+//            String stringa = executePost("http://localhost:3000/garden/app/getData", "");
 //            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
-//            System.out.println(stringa);
+            //System.out.println(stringa);
+            try {
+                json = new JSONObject(stringa);
+                viewModel.init((Integer) json.get("led3"), (Integer) json.get("led4"), 1);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
 
         });
 
     }
-    public static String executePost(String targetURL, String urlParameters) {
+    public static String executeRequest(String targetURL, String urlParameters) {
         HttpURLConnection connection = null;
 
         try {
@@ -221,9 +241,6 @@ public class MainActivity extends AppCompatActivity {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type",
                     "application/json");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
 
 //            //Send request
 //            DataOutputStream wr = new DataOutputStream (
@@ -252,54 +269,75 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void manualControl(){
+        try {
+            json.put("state", "manual");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        send(json.toString());
+    }
+
     public void led1(View v) {
-        String json = "{\"led1\":\"change\"}";
+        try {
+            boolean led = (boolean) json.get("led1");
+            json.put("led1", !led);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println(json);
-        send(json);
+        send(json.toString());
     }
 
     public void led2(View v) {
-        String json = "{\"led2\":\"change\"}";
+        try {
+            boolean led = (boolean) json.get("led2");
+            json.put("led2", !led);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println(json);
-        send(json);
+        send(json.toString());
     }
 
-    public void led3(View v) {
-        String op;
+    public void led3(View v){
         switch (v.getId()){
             case R.id.led3_plus:
                 valueLed3.setText(String.valueOf(viewModel.incLed3()));
-                op = "inc";
                 break;
             case R.id.led3_sot:
                 valueLed3.setText(String.valueOf(viewModel.decLed3()));
-                op = "dec";
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-        String json = "{\"led3\":\""+op+"\"}";
+        try {
+            json.put("led3", viewModel.getLed3value());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println(json);
-        send(json);
+        send(json.toString());
     }
 
     public void led4(View v) {
-        String op;
         switch (v.getId()){
             case R.id.led4_plus:
                 valueLed4.setText(String.valueOf(viewModel.incLed4()));
-                op = "inc";
                 break;
             case R.id.led4_sot:
                 valueLed4.setText(String.valueOf(viewModel.decLed4()));
-                op = "dec";
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-        String json = "{\"led4\":\""+op+"\"}";
+        try {
+            json.put("led4", viewModel.getLed4value());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println(json);
-        send(json);
+        send(json.toString());
     }
 
     public void irrigation(View v){
@@ -309,17 +347,24 @@ public class MainActivity extends AppCompatActivity {
                 op = "change";
                 break;
             case R.id.irr_add:
-                op = "inc";
+                viewModel.incIrr();
                 break;
             case R.id.irr_sot:
-                op = "dec";
+                viewModel.decIrr();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-        String json = "{\"led4\":\""+op+"\"}";
+        op = String.valueOf(viewModel.getIrrigationValue());
+        irrValue.setText(op);
+
+        try {
+            json.put("irrigation", viewModel.getIrrigationValue());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println(json);
-        send(json);
+        send(json.toString());
     }
 
     private void send(String command) {
@@ -328,5 +373,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+    }
+
+    private void setEnabled(){
+        led1.setEnabled(manualMode);
+        led2.setEnabled(manualMode);
+
+        led3plus.setEnabled(manualMode);
+        led3sot.setEnabled(manualMode);
+        led4plus.setEnabled(manualMode);
+        led4sot.setEnabled(manualMode);
+
     }
 }

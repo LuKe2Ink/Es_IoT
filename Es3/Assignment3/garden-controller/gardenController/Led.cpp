@@ -25,3 +25,7 @@ void Led::setLuminosity(int value){
 int Led::getLuminosity(){
   return this->luminosity;
 }
+
+bool Led::isOn(){
+  return digitalRead(this->pin) == HIGH; 
+}
