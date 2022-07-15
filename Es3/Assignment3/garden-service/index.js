@@ -11,8 +11,8 @@ const Readline = require('@serialport/parser-readline');
 
 
 var gardenObject={
-  "led1" : 1,
-  "led2" : 1,
+  "led1" : true,
+  "led2" : true,
   "led3" : 0,
   "led4" : 0,
   "water" : 0,
@@ -47,6 +47,10 @@ app.put('/garden/sensorboard', async function(req, res) {
 app.get('/garden/dashboard', async function(req, res) { 
   res.send(gardenObject);
 });
+app.get('/garden/dashboard/getState', async function(req, res) { 
+  res.send(gardenObject.state);
+});
+
 
 //da testare
 //Pathc perché andrà a modificare parzialmente l'oggetto gardenObject
@@ -54,6 +58,7 @@ app.patch('/garden/app/update', async function(req, res) {
     var input = req.body;
     gardenObject = input;
 });
+
 //Get per andare a ritirare i dati necessari
 app.get('/garden/app/getData', async function(req,res){
   res.send(gardenObject);
