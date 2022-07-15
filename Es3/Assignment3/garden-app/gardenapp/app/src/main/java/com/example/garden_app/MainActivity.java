@@ -231,7 +231,10 @@ public class MainActivity extends AppCompatActivity {
             //System.out.println(stringa);
             try {
                 json = new JSONObject(stringa);
-                viewModel.init((Integer) json.get("led3"), (Integer) json.get("led4"), 1);
+                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));
+                valueLed3.setText(String.valueOf(json.getInt("led3")));
+                valueLed4.setText(String.valueOf(json.getInt("led4")));
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -369,18 +372,14 @@ public class MainActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-<<<<<<< Updated upstream
         op = String.valueOf(viewModel.getIrrigationValue());
         irrValue.setText(op);
 
         try {
-            json.put("irrigation", viewModel.getIrrigationValue());
+            json.put("water", viewModel.getIrrigationValue());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-=======
-        String json = "{\"irrigation\":\""+op+"\"}";
->>>>>>> Stashed changes
         System.out.println(json);
         send(json.toString());
     }
