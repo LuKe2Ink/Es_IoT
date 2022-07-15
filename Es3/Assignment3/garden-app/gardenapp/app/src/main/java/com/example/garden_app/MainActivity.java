@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     Button irrSot;
     TextView valueLed3;
     TextView valueLed4;
+    TextView irrValue;
     MainViewModel viewModel;
     private BluetoothConnection connection;
 //    private final OkHttpClient client = new OkHttpClient();
@@ -86,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
         irrigation_change = findViewById(R.id.irr_open_close);
         irrPlus = findViewById(R.id.irr_add);
         irrSot = findViewById(R.id.irr_sot);
+        irrValue = findViewById(R.id.irr_value);
         req_man_contr = findViewById(R.id.req_man_contr);
 
-        viewModel.init(Integer.parseInt(valueLed3.getText().toString()), Integer.parseInt(valueLed4.getText().toString()), 0);
+        viewModel.init(Integer.parseInt(valueLed3.getText().toString()), Integer.parseInt(valueLed4.getText().toString()), 1);
 
         led1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,14 +316,16 @@ public class MainActivity extends AppCompatActivity {
                 op = "change";
                 break;
             case R.id.irr_add:
-                op = "inc";
+                viewModel.incIrr();
                 break;
             case R.id.irr_sot:
-                op = "dec";
+                viewModel.decIrr();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
+        op = String.valueOf(viewModel.getIrrigationValue());
+        irrValue.setText(op);
         String json = "{\"irrigation\":\""+op+"\"}";
         System.out.println(json);
         send(json);

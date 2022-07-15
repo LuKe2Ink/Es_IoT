@@ -122,7 +122,6 @@ void RoutineTask::checkLed3(String op){
     int lum = garden->led_c->getLuminosity() - 1;
     garden->led_c->setLuminosity(lum);
   }
-  Serial.println(garden->led_c->getLuminosity());
 }
 
 void RoutineTask::checkLed4(String op){
@@ -133,12 +132,13 @@ void RoutineTask::checkLed4(String op){
     int lum = garden->led_d->getLuminosity() - 1;
     garden->led_d->setLuminosity(lum);
   }
-  Serial.println(garden->led_d->getLuminosity());
 }
 
 void RoutineTask::checkIrrigation(String op){
   if(op == "change"){
     garden->servo->moveServo();
+  }else{
+    garden->servo->setSpeedServo(op.toInt());
   }
 }
 
