@@ -34,6 +34,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -63,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean manualMode = false;
 
     private JSONObject json;
+
+    private String prevState;
+    private int prevIrrValue;
 
 //    private final OkHttpClient client = new OkHttpClient();
 
@@ -176,7 +181,15 @@ public class MainActivity extends AppCompatActivity {
         alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                String state = "";
+                try {
+                    state = json.getString("state");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(state.contains("alarma")){
+                    removeAlarm();
+                }
             }
         });
 
@@ -234,15 +247,14 @@ public class MainActivity extends AppCompatActivity {
                 viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));
                 valueLed3.setText(String.valueOf(json.getInt("led3")));
                 valueLed4.setText(String.valueOf(json.getInt("led4")));
-
-
+                irrValue.setText(String.valueOf(json.getInt("water")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
         });
 
+        setEnabled();
+        getUpdate();
     }
     public static String executeRequest(String targetURL, String urlParameters) {
         HttpURLConnection connection = null;
@@ -282,12 +294,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void getUpdate(){
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                AsyncTask.execute(()->{
+                    String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+                    try {
+                        JSONObject  j = new JSONObject(stringa);
+                        String state = j.getString("state");
+                        if(state.contains("alarm")){
+                            prevIrrValue = json.getInt("water");
+                            prevState = json.getString("state");
+                            manualMode = false;
+                            setEnabled();
+                        }
+                        json = j;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        },0,300);
+    }
+
+    public void removeAlarm(){
+        try {
+            json.put("state", prevState);
+            json.put("water", prevIrrValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(prevState.contains("manual")){
+            manualMode = true;
+        } else {
+            manualMode = false;
+        }
+        prevState = "";
+        prevIrrValue = 0;
+        setEnabled();
+    }
+
     public void manualControl(){
         try {
             json.put("state", "manual");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        manualMode = true;
+        setEnabled();
         send(json.toString());
     }
 
