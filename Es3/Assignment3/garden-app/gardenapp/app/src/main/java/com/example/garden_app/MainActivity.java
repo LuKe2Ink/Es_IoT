@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     TextView valueLed3;
     TextView valueLed4;
     TextView irrValue;
+    ImageView alarm;
     MainViewModel viewModel;
     private BluetoothConnection connection;
     private boolean manualMode = false;
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         irrPlus = findViewById(R.id.irr_add);
         irrSot = findViewById(R.id.irr_sot);
         irrValue = findViewById(R.id.irr_value);
+        alarm = findViewById(R.id.alarm);
         req_man_contr = findViewById(R.id.req_man_contr);
 
 
@@ -167,6 +170,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
                 startActivity(intent1);
                 finish();
+            }
+        });
+
+        alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
             }
         });
 
@@ -348,13 +358,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.irr_add:
                 viewModel.incIrr();
+                op = String.valueOf(viewModel.getIrrigationValue());
+                irrValue.setText(op);
                 break;
             case R.id.irr_sot:
                 viewModel.decIrr();
+                op = String.valueOf(viewModel.getIrrigationValue());
+                irrValue.setText(op);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
+<<<<<<< Updated upstream
         op = String.valueOf(viewModel.getIrrigationValue());
         irrValue.setText(op);
 
@@ -363,6 +378,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+=======
+        String json = "{\"irrigation\":\""+op+"\"}";
+>>>>>>> Stashed changes
         System.out.println(json);
         send(json.toString());
     }

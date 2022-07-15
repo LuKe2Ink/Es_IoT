@@ -22,19 +22,19 @@ void ServoMotorImpl::on()
 void ServoMotorImpl::setSpeedServo(int speedLevel){
   switch(speedLevel){
     case 1:
-      servointerval = 80;
-    break;
-    case 2:
-      servointerval = 60;
-    break;
-    case 3:
-      servointerval = 40;
-    break;
-    case 4:
       servointerval = 20;
     break;
+    case 2:
+      servointerval = 15;
+    break;
+    case 3:
+      servointerval = 10;
+    break;
+    case 4:
+      servointerval = 5;
+    break;
     case 5:
-      servointerval = 2;
+      servointerval = 1;
     break;
   }
   Serial.println(servointerval);
