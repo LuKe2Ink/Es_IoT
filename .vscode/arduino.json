@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "Es2\\Coffee_machine_task\\Coffee_machine_task.ino",
+    "sketch": "Es3\\Assignment3\\garden-controller\\gardenController\\gardenController.ino",
     "port": "COM3"
 }

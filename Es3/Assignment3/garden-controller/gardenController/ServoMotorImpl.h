@@ -10,6 +10,7 @@ class ServoMotorImpl : public ServoMotor
 public:
   ServoMotorImpl(int pin);
   void moveServo();
+  bool isIrrigationSystemOperating = false;
   void setSpeedServo(int speedLevel);
 
 private:

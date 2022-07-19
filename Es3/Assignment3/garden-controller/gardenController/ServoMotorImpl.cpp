@@ -16,7 +16,7 @@ ServoMotorImpl::ServoMotorImpl(int pin)
 
 void ServoMotorImpl::on()
 {
-  servo.attach(pin);
+  this->servo.attach(this->pin);
 }
 
 void ServoMotorImpl::setSpeedServo(int speedLevel){
@@ -43,7 +43,6 @@ void ServoMotorImpl::setSpeedServo(int speedLevel){
 void ServoMotorImpl::moveServo()
 {
   on();
-
   previousMillis = millis();
   for (int i = MIN_PULSE_WIDTH; i < MAX_PULSE_WIDTH;)
   {
@@ -52,31 +51,16 @@ void ServoMotorImpl::moveServo()
      if(servoMillis - previousMillis > servointerval)
         {
          previousMillis = servoMillis;
-         servo.write(pos);
-         Serial.println(pos);
-         pos += 1;
+         this->servo.write(pos);
+         pos += 1; // da cambiare
          i++;
         }
   }
-
-   for (int i = MAX_PULSE_WIDTH; i > MIN_PULSE_WIDTH;)
-  {
-    unsigned long servoMillis = millis();
-
-     if(servoMillis - previousMillis > servointerval)
-        {
-         previousMillis = servoMillis;
-         servo.write(pos);
-         Serial.println(pos);
-         pos -= 1;
-         i--;
-        }
-  }
-
   off();
 }
 
 void ServoMotorImpl::off()
 {
-  servo.detach();
+  this->servo.detach();
+  this->isIrrigationSystemOperating = false;
 }

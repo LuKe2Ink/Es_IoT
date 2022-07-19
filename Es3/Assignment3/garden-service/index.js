@@ -77,6 +77,7 @@ function sendOnSerial() {
 }
 
 
+
 //serial data
 
 // port.on("open", function () {
