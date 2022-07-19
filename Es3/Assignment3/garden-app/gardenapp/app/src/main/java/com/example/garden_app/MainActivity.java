@@ -172,9 +172,10 @@ public class MainActivity extends AppCompatActivity {
         req_man_contr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
-                startActivity(intent1);
-                finish();
+//                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
+//                startActivity(intent1);
+//                finish();
+                manualControl();
             }
         });
 
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(state.contains("alarma")){
+                if(state.contains("alarm")){
                     removeAlarm();
                 }
             }
@@ -242,20 +243,23 @@ public class MainActivity extends AppCompatActivity {
 //            String stringa = executePost("http://localhost:3000/garden/app/getData", "");
 //            String stringa = executePost("https://182c-5-171-24-18.eu.ngrok.io/garden/app/getData", "");
             //System.out.println(stringa);
-            try {
-                json = new JSONObject(stringa);
-                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));
-                valueLed3.setText(String.valueOf(json.getInt("led3")));
-                valueLed4.setText(String.valueOf(json.getInt("led4")));
-                irrValue.setText(String.valueOf(json.getInt("water")));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            this.runOnUiThread(()->{
+
+                try {
+                    json = new JSONObject(stringa);
+                    viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));valueLed3.setText(String.valueOf(json.getInt("led3")));
+                    valueLed4.setText(String.valueOf(json.getInt("led4")));
+                    irrValue.setText(String.valueOf(json.getInt("water")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
         });
 
         setEnabled();
         getUpdate();
     }
+
     public static String executeRequest(String targetURL, String urlParameters) {
         HttpURLConnection connection = null;
 
@@ -298,22 +302,34 @@ public class MainActivity extends AppCompatActivity {
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                AsyncTask.execute(()->{
-                    String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
-                    try {
-                        JSONObject  j = new JSONObject(stringa);
-                        String state = j.getString("state");
-                        if(state.contains("alarm")){
-                            prevIrrValue = json.getInt("water");
-                            prevState = json.getString("state");
-                            manualMode = false;
-                            setEnabled();
+                    AsyncTask.execute(()->{
+                        String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+                        try {
+                            if(!json.has("state")){
+                                JSONObject  j = new JSONObject(stringa);
+                                String state = j.getString("state");
+                                if(state.contains("alarm")){
+                                    prevIrrValue = json.getInt("water");
+                                    prevState = json.getString("state");
+                                    manualMode = false;
+                                    setEnabled();
+                                }
+                                json = j;
+                            } else {
+                                JSONObject  j = new JSONObject(stringa);
+                                String state = j.getString("state");
+                                if(state.contains("alarm")){
+                                    prevIrrValue = json.getInt("water");
+                                    prevState = json.getString("state");
+                                    manualMode = false;
+                                    json.put("state", state);
+                                    setEnabled();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        json = j;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
             }
         },0,300);
     }
@@ -343,13 +359,17 @@ public class MainActivity extends AppCompatActivity {
         }
         manualMode = true;
         setEnabled();
+        System.out.println(json.toString());
         send(json.toString());
     }
 
     public void led1(View v) {
         try {
-            boolean led = (boolean) json.get("led1");
+            boolean led = json.getBoolean("led1");
+            System.out.println(led);
             json.put("led1", !led);
+            led = json.getBoolean("led1");
+            System.out.println(led);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -455,6 +475,10 @@ public class MainActivity extends AppCompatActivity {
         led3sot.setEnabled(manualMode);
         led4plus.setEnabled(manualMode);
         led4sot.setEnabled(manualMode);
+
+        irrigation_change.setEnabled(manualMode);
+        irrPlus.setEnabled(manualMode);
+        irrSot.setEnabled(manualMode);
 
     }
 }
