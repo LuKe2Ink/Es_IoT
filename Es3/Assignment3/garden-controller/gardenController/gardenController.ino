@@ -77,7 +77,7 @@ void setup() {
 ////////////////////////////////////////////////
 
   garden->state = AUTO;
-
+  garden->stateIrrigation = OPERATING;
 }
 
 //String msg = "";

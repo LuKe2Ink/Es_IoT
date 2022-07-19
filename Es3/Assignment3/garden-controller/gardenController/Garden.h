@@ -24,6 +24,12 @@ enum stato
   ALARM
 };
 
+enum statoIrrigation
+{
+  OPERATING,
+  NOT_OPERATING
+};
+
 class Garden {
     public:
         stato state;
@@ -31,13 +37,14 @@ class Garden {
         Led* led_b = new Led(LED_B);
         Led* led_c = new Led(LED_C);
         Led* led_d = new Led(LED_D);
-        Led* led_esp = new Led(LED_ESP);
+        //Led* led_esp = new Led(LED_ESP);
         SensorBoard* sensorBoard = new SensorBoard();
         /*
         Temp* temp = new Temp(TEMP);
         Photoresistor* photoresistor = new Photoresistor(A1);
         */
-        ServoMotorImpl *servo = new ServoMotorImpl(SERVO);
+        ServoMotor *servo = new ServoMotorImpl(SERVO);
+        statoIrrigation stateIrrigation;
         bool moveServo = false;
 };
 

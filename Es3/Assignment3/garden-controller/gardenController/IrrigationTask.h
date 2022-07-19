@@ -4,11 +4,7 @@
 #include "Task.h"
 #include "Garden.h"
 
-enum stateIrrigation
-{
-  OPERATING,
-  NOT_OPERATING
-};
+#define IRRIGATION_SLEEP_TIME 60000
 
 class IrrigationTask:public Task
 {
@@ -16,10 +12,10 @@ class IrrigationTask:public Task
   Garden *garden;
 
   public:
-    stateIrrigation state;
     IrrigationTask(Garden *garden);
     void init(int period);
     void tick();
+    
   
 };
 
