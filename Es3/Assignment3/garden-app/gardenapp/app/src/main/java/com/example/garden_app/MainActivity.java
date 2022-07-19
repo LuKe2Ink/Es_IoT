@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -56,11 +59,15 @@ public class MainActivity extends AppCompatActivity {
     TextView valueLed3;
     TextView valueLed4;
     TextView irrValue;
+    ImageView alarm;
     MainViewModel viewModel;
     private BluetoothConnection connection;
     private boolean manualMode = false;
 
     private JSONObject json;
+
+    private String prevState;
+    private int prevIrrValue;
 
 //    private final OkHttpClient client = new OkHttpClient();
 
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         irrPlus = findViewById(R.id.irr_add);
         irrSot = findViewById(R.id.irr_sot);
         irrValue = findViewById(R.id.irr_value);
+        alarm = findViewById(R.id.alarm);
         req_man_contr = findViewById(R.id.req_man_contr);
 
 
@@ -170,6 +178,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String state = "";
+                try {
+                    state = json.getString("state");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(state.contains("alarma")){
+                    removeAlarm();
+                }
+            }
+        });
+
 //        System.setProperty("javax.net.ssl.debug", "all");
 //            AsyncTask.execute(()->{
 //                URL url;
@@ -221,15 +244,17 @@ public class MainActivity extends AppCompatActivity {
             //System.out.println(stringa);
             try {
                 json = new JSONObject(stringa);
-                viewModel.init((Integer) json.get("led3"), (Integer) json.get("led4"), 1);
-
+                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));
+                valueLed3.setText(String.valueOf(json.getInt("led3")));
+                valueLed4.setText(String.valueOf(json.getInt("led4")));
+                irrValue.setText(String.valueOf(json.getInt("water")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
         });
 
+        setEnabled();
+        getUpdate();
     }
     public static String executeRequest(String targetURL, String urlParameters) {
         HttpURLConnection connection = null;
@@ -269,12 +294,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void getUpdate(){
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                AsyncTask.execute(()->{
+                    String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+                    try {
+                        JSONObject  j = new JSONObject(stringa);
+                        String state = j.getString("state");
+                        if(state.contains("alarm")){
+                            prevIrrValue = json.getInt("water");
+                            prevState = json.getString("state");
+                            manualMode = false;
+                            setEnabled();
+                        }
+                        json = j;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        },0,300);
+    }
+
+    public void removeAlarm(){
+        try {
+            json.put("state", prevState);
+            json.put("water", prevIrrValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(prevState.contains("manual")){
+            manualMode = true;
+        } else {
+            manualMode = false;
+        }
+        prevState = "";
+        prevIrrValue = 0;
+        setEnabled();
+    }
+
     public void manualControl(){
         try {
             json.put("state", "manual");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        manualMode = true;
+        setEnabled();
         send(json.toString());
     }
 
@@ -348,9 +416,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.irr_add:
                 viewModel.incIrr();
+                op = String.valueOf(viewModel.getIrrigationValue());
+                irrValue.setText(op);
                 break;
             case R.id.irr_sot:
                 viewModel.decIrr();
+                op = String.valueOf(viewModel.getIrrigationValue());
+                irrValue.setText(op);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
@@ -359,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
         irrValue.setText(op);
 
         try {
-            json.put("irrigation", viewModel.getIrrigationValue());
+            json.put("water", viewModel.getIrrigationValue());
         } catch (JSONException e) {
             e.printStackTrace();
         }
