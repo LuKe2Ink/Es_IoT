@@ -68,70 +68,57 @@ void RoutineTask::activateIrrigationSystem(){
 void RoutineTask::checkManualControl(){
   if(btChannel.available()){
     String msg = btChannel.readString();
+    Serial.println(msg);
     deserializeJson(doc, msg);
     JsonObject root = doc.as<JsonObject>();
-    String control = root["control"];
+    String control = root["state"];
     Serial.println(control);
     if(control == "manual"){
       this->garden->state = MANUAL;
+      checkChanges(root);
     }
   }
 }
 
 void RoutineTask::checkChanges(JsonObject root){
   if(root.containsKey("led1")){
-    checkLed1();
-    return;
+    bool op = root["led1"];
+    checkLed1(op);
   }
   if(root.containsKey("led2")){
-    checkLed2();
-    return;
+    bool op = root["led2"];
+    checkLed2(op);
   }
   if(root.containsKey("led3")){
     String op = root["led3"];
     checkLed3(op);
-    return;
   }
   if(root.containsKey("led4")){
     String op = root["led4"];
     checkLed4(op);
-    return;
   }
   if(root.containsKey("irrigation")){
     String op = root["irrigation"];
     checkIrrigation(op);
-    return;
   }
 }
 
-void RoutineTask::checkLed1(){
-  if(garden->led_a->isOn()) garden->led_a->turnOff();
-  else garden->led_a->turnOn();
+void RoutineTask::checkLed1(bool op){
+  if(op) garden->led_a->turnOn();
+  else garden->led_a->turnOff();
 }
 
-void RoutineTask::checkLed2(){
-  if(garden->led_b->isOn()) garden->led_b->turnOff();
-  else garden->led_b->turnOn();
+void RoutineTask::checkLed2(bool op){
+  if(op) garden->led_b->turnOn();
+  else garden->led_b->turnOff();
 }
 
 void RoutineTask::checkLed3(String op){
-  if(op == "inc"){
-    int lum = garden->led_c->getLuminosity() + 1;
-    garden->led_c->setLuminosity(lum);
-  }else{
-    int lum = garden->led_c->getLuminosity() - 1;
-    garden->led_c->setLuminosity(lum);
-  }
+  garden->led_c->setLuminosity(op.toInt());
 }
 
 void RoutineTask::checkLed4(String op){
-  if(op == "inc"){
-    int lum = garden->led_d->getLuminosity() + 1;
-    garden->led_d->setLuminosity(lum);
-  }else{
-    int lum = garden->led_d->getLuminosity() - 1;
-    garden->led_d->setLuminosity(lum);
-  }
+  garden->led_d->setLuminosity(op.toInt());
 }
 
 void RoutineTask::checkIrrigation(String op){

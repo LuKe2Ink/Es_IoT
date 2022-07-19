@@ -22,8 +22,8 @@ class RoutineTask:public Task
 //    void setData();
     void checkManualControl();
     void checkChanges(JsonObject root);
-    void checkLed1();
-    void checkLed2();
+    void checkLed1(bool op);
+    void checkLed2(bool op);
     void checkLed3(String op);
     void checkLed4(String op);
     void checkIrrigation(String op);
