@@ -14,7 +14,7 @@ var gardenObject;
 setTimeout(() => {
   gardenObject={
     "temp" : 17,
-    "bright": 4,
+    "bright": 3,
     "led1" : true,
     "led2" : true,
     "led3" : 0,

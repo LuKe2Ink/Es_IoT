@@ -21,6 +21,7 @@ setInterval(async function () {
         document.getElementById("temperature").innerText = temp +"°C";
         bright = gardenObject.bright;
         document.getElementById("brightness").innerText = bright;
+        document.getElementById("brightBar").value = bright*25
         
         if(gardenObject.led1){
            document.getElementById("led1").innerText = "Led on";
