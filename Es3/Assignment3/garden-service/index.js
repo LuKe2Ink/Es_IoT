@@ -9,15 +9,24 @@ const serialport = require('serialport');
 const SerialPort = require('serialport').SerialPort;
 const Readline = require('@serialport/parser-readline');
 
+var gardenObject;
 
-var gardenObject={
-  "led1" : true,
-  "led2" : true,
-  "led3" : 0,
-  "led4" : 0,
-  "water" : 0,
-  "state" : "bella pe te"
-};
+setTimeout(() => {
+  gardenObject={
+    "temp" : 17,
+    "bright": 4,
+    "led1" : true,
+    "led2" : true,
+    "led3" : 0,
+    "led4" : 3,
+    "water" : 0,
+    "state" : "bella pe te"
+  };
+}, 7000);
+
+setTimeout(() => {
+  gardenObject["state"] = "ribella pe te"
+}, 20000);
 
 
 // const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
@@ -47,6 +56,7 @@ app.put('/garden/sensorboard', async function(req, res) {
 app.get('/garden/dashboard', async function(req, res) { 
   res.send(gardenObject);
 });
+
 app.get('/garden/dashboard/getState', async function(req, res) { 
   res.send(gardenObject.state);
 });

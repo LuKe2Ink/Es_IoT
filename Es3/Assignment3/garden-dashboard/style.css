@@ -1,12 +1,26 @@
+div{
+    margin-right: 50px;
+}
 .contenitore{
     display: inline-flex;
 }
-#temperatureContainer{
+#data{
+    display: none;
+}
+#loading{
     display: inline-flex;
-    color: blue;
+}
+#Container{
+    display: inline-flex;
     display: block;
     margin-right: 50px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    border: solid black 3px;
 }
-#robe{
-    clear: none;
+img{
+    width: 60px;
+}
+#loading > img{
+    width: 100px;
 }

@@ -5,7 +5,7 @@ function createWindow() {
     // icon: getPathIcon(),
     autoHideMenuBar: true,
     alwaysOnTop: true,
-    width: 500,
+    width: 1000,
     height: 500,
     webPreferences: {
       nodeIntegration: true,
@@ -14,9 +14,9 @@ function createWindow() {
   })
   ////win.openDevTools();
   
-  win.loadFile('./vaffa.html');
+  win.loadFile('./dashboard.html');
 
-  win.openDevTools()
+  //win.openDevTools()
 //   win.on('close', function (event){
 //     event.preventDefault();
 //     win.hide();

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/1.0.2/package/lib/browser/fs.min.js"></script>-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/68b52276fd.js" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <center>
+    <h1>Dashboard of the garden</h1>
+    <div id="data">
+
+        <div class="contenitore">
+            <div id="Container">
+                <h2>
+                    Temperature &nbsp;<i class="fa-solid fa-temperature-high"></i>
+                </h2>
+                <h3 id="temperature"></h3>
+            </div>
+    
+            <div id="Container">
+                <h2>
+                    Brightness &nbsp;<i class="fa-solid fa-lightbulb" style="color: black;"></i>
+                </h2>
+                <h3 id="brightness"></h3>
+            </div>
+        </div></br>
+        <div class="contenitore">
+            <div id="led1Container">
+                <img id="bulbLed1" src="./src/off.png">
+                <h3 id="led1"></h3>
+            </div>
+            <div id="led2Container">
+                <img id="bulbLed2" src="./src/off.png">
+                <h3 id="led2"></h3>
+            </div>
+            <div id="led3Container">
+                <img id="bulbLed3" src="./src/off.png">
+                <h3 id="led3"></h3>
+            </div>
+            <div id="led4Container">
+                <img id="bulbLed4" src="./src/off.png">
+                <h3 id="led4"></h3>
+            </div>
+        </div></br>
+        <div class="contenitore">
+            <div id="Container">
+                <h2>
+                    Water System
+                </h2>
+                <h3 id="water"></h3>
+            </div>
+            <div id="Container">
+                <h2>
+                    State of garden management
+                </h2>
+                <h3 id="state"></h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading">
+        <h2>Waiting the data</h2><img src="./src/loading.gif">
+    </div>
+   </center>
+</body>
+<script src="./httpRequest.js"></script>
+</html>
