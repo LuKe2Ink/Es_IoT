@@ -1,6 +1,4 @@
-div{
-    margin-right: 50px;
-}
+
 .contenitore{
     display: inline-flex;
 }
@@ -10,12 +8,20 @@ div{
 #loading{
     display: inline-flex;
 }
-#Container{
+
+.bright{
+    margin-right: 50px;
+}
+
+.temp{
+    margin-left: 50px;
+}
+
+.temp, .bright{
     display: inline-flex;
     display: block;
-    margin-right: 50px;
-    margin-bottom: 50px;
     margin-top: 50px;
+    height: 120px;
     border: solid black 3px;
 }
 img{
