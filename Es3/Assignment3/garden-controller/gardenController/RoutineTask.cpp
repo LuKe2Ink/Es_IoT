@@ -61,13 +61,16 @@ void RoutineTask::tick()
   }
   
   // print JSON on serial to comunicate with garden-service
-  // makeJson();
+  //TODO decomentare
+  makeJson();
 }
 
 void RoutineTask::checkAlarmCondition(){
   if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
     this->garden->state = ALARM;
-    // LED esp tunr on 
+    // LED esp tunr on
+    this->garden->led_esp->turnOn();
+    //TODO spegnerlo da qualche parte....
   }
 }
 
@@ -103,6 +106,8 @@ void RoutineTask::makeJson(){
   doc["led2"] = garden->led_b->getLuminosity();
   doc["led3"] = garden->led_c->getLuminosity();
   doc["led4"] = garden->led_d->getLuminosity();
+  // doc["led_esp"] = garden->led_esp->getLuminosity(); //TODO is on
+  doc["led_esp"] = 1; //TEST
   doc["state"] = garden->state;
   //TODO NON CI GIUREREI 
   doc["water"] = garden->stateIrrigation;

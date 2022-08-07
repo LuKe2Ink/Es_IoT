@@ -37,7 +37,7 @@ class Garden {
         Led* led_b = new Led(LED_B);
         Led* led_c = new Led(LED_C);
         Led* led_d = new Led(LED_D);
-        //Led* led_esp = new Led(LED_ESP);
+        Led* led_esp = new Led(LED_ESP);
         SensorBoard* sensorBoard = new SensorBoard();
         /*
         Temp* temp = new Temp(TEMP);

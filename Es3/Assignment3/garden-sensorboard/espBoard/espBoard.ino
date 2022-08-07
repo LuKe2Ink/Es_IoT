@@ -1,5 +1,8 @@
+
 #include <WiFi.h>
+#include <AsyncTCP.h>
 #include <HTTPClient.h>
+#include <ESPAsyncWebServer.h>
 
 #include "Photoresistor.h"
 #include "Temp.h"
@@ -16,6 +19,12 @@ const char *serviceURI = "https://31ad-2-34-171-178.eu.ngrok.io";
 String msg;
 Photoresistor *photoresistor;
 Temp *temp;
+
+AsyncWebServer server(80);
+
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
 
 void connectToWifi(const char *ssid, const char *password)
 {
@@ -40,6 +49,26 @@ void setup()
   temp = new Temp(PIN_LM35);
   // First connection to WIFI
   connectToWifi(ssid, password);
+
+
+
+
+  // http server
+
+
+ Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/plain", "Hello, world");
+    });
+
+
+
+
+    server.onNotFound(notFound);
+
+    server.begin();
 }
 
 int sendData(String address, String msg)
@@ -60,7 +89,6 @@ int sendData(String address, String msg)
 
 void loop()
 {
-//  digitalWrite(RED, HIGH);
 
   int tempC = temp->getTemp();
 

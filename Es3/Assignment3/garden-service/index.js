@@ -58,7 +58,7 @@ app.put('/garden/sensorboard', async function(req, res) {
     var input = req.body;
     gardenObject["temp"] = input.temperature;
     gardenObject["bright"] = input.luminosity;
-    res.send("ok")
+    res.send("ok sei forte")
     sendOnSerial()
 });
 
@@ -103,10 +103,16 @@ function sendOnSerial() {
 port.on("open", function () {
   //console.log('open');
   parser.on('data', function(data) {
-   console.log(data);
-    // var g = data;
-     //gardenObject = JSON.parse(g);
-     //console.log(gardenObject);
+  //  console.log(data);
+    var g = data;
+    gardenObject = JSON.parse(g);
+    console.log(gardenObject);
+    if(gardenObject["led_esp"] > 0){
+      app.get('/192.168.1.22', async function(req,res){
+        console.log("from ESP")
+        console.log(res)
+      })
+    }
   });
 });
 
