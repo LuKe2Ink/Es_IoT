@@ -16,27 +16,34 @@ void RoutineTask::init(int period){
 
 void RoutineTask::tick()
 {
+  // reads data from serial, JSON sent by garden-service
+  //TODO i dati vanno letti solo nella modalita AUTO altrimenti bisogna (non so come) inviare i dati all'esp per fargli ricevere il comando di accendere un led 
+  readSerial();
 //  this->setData();
   switch(this->garden->state){
+    checkAlarmCondition();
     case AUTO:
-//      if(garden->sensorBoard->photoresistor->isLessThenMax()){
-//        turnOnAllLed();
-//        garden->led_c->setLuminosity(1);
-//        garden->led_d->setLuminosity(4);
-//        garden->sensorBoard->photoresistor->setValue(1);
-////        if( !this->garden->isIrrigationSystemOperating && garden->sensorBoard->photoresistor->isLessThenMin()){
-////          this->garden->isIrrigationSystemOperating = true;
-////          activateIrrigationSystem();
-////        }
-//      }else{
-//        turnOffAllLed();
-//      }
+    // Serial.print("light: ");
+    // Serial.println(garden->sensorBoard->photoresistor->getValue());
+    // Serial.print("temp: ");
+    // Serial.println(garden->sensorBoard->temp->getTemp());
+//TODO ora arduino riceve i dati sulla seriale dal server che li riceve dall'esp e li invia 
+     if(garden->sensorBoard->photoresistor->isLessThenMax()){
+       turnOnAllLed();
+       if(this->garden->stateIrrigation == NOT_OPERATING && garden->sensorBoard->photoresistor->isLessThenMin()){
+         this->garden->stateIrrigation = OPERATING;
+         activateIrrigationSystem();
+       }
+     }else{
+       turnOffAllLed();
+     }
       checkManualControl();
       break;
     case MANUAL:
+    checkAlarmCondition();
       if(btChannel.available()){
         String msg = btChannel.readString();
-        Serial.println(msg);
+        // Serial.println(msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
         checkChanges(root);
@@ -45,7 +52,7 @@ void RoutineTask::tick()
     case ALARM:
       if(btChannel.available()){
         String msg = btChannel.readString();
-        Serial.println(msg);
+        // Serial.println(msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
         checkAlarmDeactivated(root);
@@ -53,6 +60,60 @@ void RoutineTask::tick()
       break;
   }
   
+  // print JSON on serial to comunicate with garden-service
+  // makeJson();
+}
+
+void RoutineTask::checkAlarmCondition(){
+  if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
+    this->garden->state = ALARM;
+    // LED esp tunr on 
+  }
+}
+
+void RoutineTask::readSerial(){
+  String inData = "";
+    if(Serial.available() > 0){
+      inData = Serial.readString();
+      //make inData a JSON obj
+      StaticJsonDocument<200> doc1;
+      DeserializationError error = deserializeJson(doc1, inData);
+      // Test if parsing succeeds.
+      if (error) {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        Serial.println(inData);
+        return;
+      }
+      //reads temp and lumionosity
+      garden->sensorBoard->temp->setTemp(doc1["temp"]);
+      garden->sensorBoard->photoresistor->setValue(doc1["bright"]);
+    }
+}
+
+
+void RoutineTask::makeJson(){
+  StaticJsonDocument<200> doc;
+  //
+  // doc["sensor"] = "gps";
+  // doc["time"] = 1351824120;
+  
+  //
+  doc["led1"] = garden->led_a->getLuminosity();
+  doc["led2"] = garden->led_b->getLuminosity();
+  doc["led3"] = garden->led_c->getLuminosity();
+  doc["led4"] = garden->led_d->getLuminosity();
+  doc["state"] = garden->state;
+  //TODO NON CI GIUREREI 
+  doc["water"] = garden->stateIrrigation;
+  // JsonArray data = doc.createNestedArray("data");
+  // data.add(48.756080);
+  // data.add(2.302038);
+  //
+  //  //stampa json
+  serializeJson(doc, Serial);
+  //  // fondamentale
+  Serial.println("\r\n");
 }
 
 void RoutineTask::turnOnAllLed(){
@@ -78,11 +139,11 @@ void RoutineTask::activateIrrigationSystem(){
 void RoutineTask::checkManualControl(){
   if(btChannel.available()){
     String msg = btChannel.readString();
-    Serial.println(msg);
+    // Serial.println(msg);
     deserializeJson(doc, msg);
     JsonObject root = doc.as<JsonObject>();
     String control = root["state"];
-    Serial.println(control);
+    // Serial.println(control);
     if(control == "manual"){
       this->garden->state = MANUAL;
       checkChanges(root);

@@ -11,26 +11,37 @@ const Readline = require('@serialport/parser-readline');
 
 var gardenObject;
 
-setTimeout(() => {
-  gardenObject={
-    "temp" : 17,
-    "bright": 3,
-    "led1" : true,
-    "led2" : true,
-    "led3" : 0,
-    "led4" : 3,
-    "water" : 0,
-    "state" : "bella pe te"
-  };
-}, 7000);
+gardenObject={
+  "temp" : 17,
+  "bright": 3,
+  "led1" : true,
+  "led2" : true,
+  "led3" : 0,
+  "led4" : 3,
+  "water" : 0,
+  "state" : "bella pe te"
+};
 
-setTimeout(() => {
-  gardenObject["state"] = "ribella pe te"
-}, 20000);
+// setTimeout(() => {
+//   gardenObject={
+//     "temp" : 17,
+//     "bright": 3,
+//     "led1" : true,
+//     "led2" : true,
+//     "led3" : 0,
+//     "led4" : 3,
+//     "water" : 0,
+//     "state" : "bella pe te"
+//   };
+// }, 7000);
+
+// setTimeout(() => {
+//   gardenObject["state"] = "ribella pe te"
+// }, 20000);
 
 
-// const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
-// const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
+const port = new SerialPort({path: 'COM3', baudRate: 9600 , parser:Readline});
+const parser = port.pipe(new Readline.ReadlineParser({ delimiter: '\r\n' }))
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -45,8 +56,8 @@ app.use(bodyParser.json());
 //Put perché andrà sempre a modificare i dati correnti
 app.put('/garden/sensorboard', async function(req, res) { 
     var input = req.body;
-    gardenObject["temp"] = input.temp;
-    gardenObject["bright"] = input.bright;
+    gardenObject["temp"] = input.temperature;
+    gardenObject["bright"] = input.luminosity;
     res.send("ok")
     sendOnSerial()
 });
@@ -82,23 +93,22 @@ function sendOnSerial() {
     if (err) {
       return console.log('Error on write: ', err.message)
     }
-    console.log('message written')
+    // console.log('message written')
   })
 }
 
 
 
 //serial data
-
-// port.on("open", function () {
-//   //console.log('open');
-//   parser.on('data', function(data) {
-//    console.log(data);
-//     // var g = data;
-//      //gardenObject = JSON.parse(g);
-//      //console.log(gardenObject);
-//   });
-// });
+port.on("open", function () {
+  //console.log('open');
+  parser.on('data', function(data) {
+   console.log(data);
+    // var g = data;
+     //gardenObject = JSON.parse(g);
+     //console.log(gardenObject);
+  });
+});
 
 /*
 

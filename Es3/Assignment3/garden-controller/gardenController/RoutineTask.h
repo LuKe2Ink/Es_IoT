@@ -28,9 +28,12 @@ class RoutineTask:public Task
     void checkLed3(String op);
     void checkLed4(String op);
     void checkIrrigation(String op);
-    
+
   private:
     void turnOnAllLed();
+    void makeJson();
+    void readSerial();
+    void checkAlarmCondition();
     
 };
 

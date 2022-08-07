@@ -37,7 +37,7 @@ void ServoMotorImpl::setSpeedServo(int speedLevel){
       servointerval = 1;
     break;
   }
-  Serial.println(servointerval);
+  // Serial.println(servointerval);
 }
 
 void ServoMotorImpl::moveServo()

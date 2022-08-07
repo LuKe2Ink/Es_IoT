@@ -27,19 +27,21 @@ void setup() {
   irrigation->init(20);
   scheda.addTask(irrigation);
   /////////////////////////////////////////  
-//   StaticJsonDocument<200> doc;
-//
-//  doc["sensor"] = "gps";
-//  doc["time"] = 1351824120;
-//
-//  JsonArray data = doc.createNestedArray("data");
-//  data.add(48.756080);
-//  data.add(2.302038);
-//
-//  //stampa json
-//  serializeJson(doc, Serial);
-//  // fondamentale
-//  Serial.println("\r\n");
+
+//StaticJsonDocument<200> doc;
+////
+// doc["sensor"] = "gps";
+// doc["time"] = 1351824120;
+////
+//  // doc["led1"] = garden->led_a;
+// JsonArray data = doc.createNestedArray("data");
+// data.add(48.756080);
+// data.add(2.302038);
+////
+////  //stampa json
+//serializeJson(doc, Serial);
+////  // fondamentale
+//Serial.println("\r\n");
 
 /////////////////////////////////////////////////
 
@@ -48,7 +50,7 @@ void setup() {
 //
 // StaticJsonDocument<200> doc1;
 // char json[] =
-//      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+    //  "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
 //
 //   DeserializationError error = deserializeJson(doc1, json);
 //
@@ -105,11 +107,11 @@ void loop() {
   
 
    // Serial.println(inData);
- StaticJsonDocument<200> doc1;
+//  StaticJsonDocument<200> doc1;
 // char json[] =
 //      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
 
-   DeserializationError error = deserializeJson(doc1, inData);
+  //  DeserializationError error = deserializeJson(doc1, inData);
 
   //Serial.println(String(inData));
   // Test if parsing succeeds.
@@ -127,10 +129,7 @@ void loop() {
   // Most of the time, you can rely on the implicit casts.
   // In other case, you can do doc["time"].as<long>();
   
-  int led = doc1["led1"];
-  int led2 = doc1["led2"];
-  int led3 = doc1["led3"];
-  int led4 = doc1["led4"];
+  // int led = doc1["led1"]; int led2 = doc1["led2"]; int led3 = doc1["led3"]; int led4 = doc1["led4"];
   
     //Serial.println(led);
  //   Serial.println(led2);

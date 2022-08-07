@@ -11,7 +11,7 @@
 const char *ssid = "Vodafone-A45840614";
 const char *password = "p372xc2mywxb9sts";
 
-const char *serviceURI = "https://07bc-5-89-150-169.eu.ngrok.io";
+const char *serviceURI = "https://31ad-2-34-171-178.eu.ngrok.io";
 
 String msg;
 Photoresistor *photoresistor;
@@ -60,7 +60,7 @@ int sendData(String address, String msg)
 
 void loop()
 {
-  digitalWrite(RED, HIGH);
+//  digitalWrite(RED, HIGH);
 
   int tempC = temp->getTemp();
 
