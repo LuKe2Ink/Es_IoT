@@ -9,6 +9,10 @@ const serialport = require('serialport');
 const SerialPort = require('serialport').SerialPort;
 const Readline = require('@serialport/parser-readline');
 
+
+var requestify = require('requestify');
+
+
 var gardenObject;
 
 gardenObject={
@@ -108,10 +112,18 @@ port.on("open", function () {
     gardenObject = JSON.parse(g);
     console.log(gardenObject);
     if(gardenObject["led_esp"] > 0){
-      app.get('/192.168.1.22', async function(req,res){
-        console.log("from ESP")
-        console.log(res)
-      })
+      requestify.get('http://192.168.1.22/get?led=1')
+      .then(function(response) {
+          // Get the response body (JSON parsed or jQuery object for XMLs)
+          console.log(response.getBody());
+      });
+    } else {
+      requestify.get('http://192.168.1.22/get?led=0')
+      .then(function(response) {
+          // Get the response body (JSON parsed or jQuery object for XMLs)
+          console.log(response.getBody());
+});
+
     }
   });
 });

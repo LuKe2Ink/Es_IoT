@@ -59,8 +59,14 @@ void setup()
  Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(200, "text/plain", "Hello, world");
+    server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
+        Serial.println(request->getParam("led")->value());
+        if (request->getParam("led")->value() == "1"){
+        digitalWrite(RED, HIGH);
+        } else {
+          digitalWrite(RED, LOW);
+          }
+        request->send(200, "text/plain", "Led received state");
     });
 
 
