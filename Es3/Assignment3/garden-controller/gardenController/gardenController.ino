@@ -11,7 +11,7 @@ Garden* garden;
 RoutineTask *routine;
 IrrigationTask *irrigation;
 
-//SoftwareSerial btChannel(RX, TX);
+// SoftwareSerial btChannel(RX, TX);
 
 void setup() {
   Serial.begin(9600);

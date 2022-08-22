@@ -46,6 +46,7 @@ void RoutineTask::tick()
         // Serial.println(msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
+        Serial.println("{\"MANUELLLLL\" : 0}");
         checkChanges(root);
       }
       break;
@@ -102,12 +103,12 @@ void RoutineTask::makeJson(){
   // doc["time"] = 1351824120;
   
   //
-  doc["led1"] = garden->led_a->getLuminosity();
-  doc["led2"] = garden->led_b->getLuminosity();
+  doc["led1"] = garden->led_a->getLuminosity() > 0;
+  doc["led2"] = garden->led_b->getLuminosity() > 0;
   doc["led3"] = garden->led_c->getLuminosity();
   doc["led4"] = garden->led_d->getLuminosity();
   // doc["led_esp"] = garden->led_esp->getLuminosity(); //TODO is on
-  doc["led_esp"] = 1; //TEST
+  // doc["led_esp"] = 1; //TEST
   doc["state"] = garden->state;
   //TODO NON CI GIUREREI 
   doc["water"] = garden->stateIrrigation;
@@ -148,7 +149,8 @@ void RoutineTask::checkManualControl(){
     deserializeJson(doc, msg);
     JsonObject root = doc.as<JsonObject>();
     String control = root["state"];
-    // Serial.println(control);
+    Serial.println(root);
+    Serial.println("ZIO CAN");
     if(control == "manual"){
       this->garden->state = MANUAL;
       checkChanges(root);

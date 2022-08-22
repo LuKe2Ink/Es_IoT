@@ -14,7 +14,7 @@
 const char *ssid = "Vodafone-A45840614";
 const char *password = "p372xc2mywxb9sts";
 
-const char *serviceURI = "https://31ad-2-34-171-178.eu.ngrok.io";
+const char *serviceURI = "https://1274-2-34-171-178.eu.ngrok.io";
 
 String msg;
 Photoresistor *photoresistor;
@@ -66,7 +66,7 @@ void setup()
         } else {
           digitalWrite(RED, LOW);
           }
-        request->send(200, "text/plain", "Led received state");
+      //  request->send(200, "text/plain", "Led received state");
     });
 
 

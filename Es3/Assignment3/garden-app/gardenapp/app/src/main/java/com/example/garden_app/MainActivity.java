@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -37,13 +38,13 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+//import okhttp3.Call;
+//import okhttp3.Callback;
+//import okhttp3.Headers;
+//import okhttp3.OkHttpClient;
+//import okhttp3.Request;
+//import okhttp3.Response;
+//import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
     Button led1;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView alarm;
     MainViewModel viewModel;
     private BluetoothConnection connection;
-    private boolean manualMode = false;
+    private static boolean manualMode = false;
 
     private JSONObject json;
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         if(intent.hasExtra("device")){
+            System.out.println("Almeno ci provo");
             BluetoothDevice device = intent.getExtras().getParcelable("device");
             try {
                 connection = new BluetoothConnection(device.getAddress(), 3000);
@@ -88,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+//                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
+//                startActivity(intent1);
+//                finish();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         led1 = findViewById(R.id.led1_on_off);
@@ -105,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
         alarm = findViewById(R.id.alarm);
         req_man_contr = findViewById(R.id.req_man_contr);
 
+        if(manualMode){
+            setEnabled();
+        }
 
         led1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,9 +180,10 @@ public class MainActivity extends AppCompatActivity {
         req_man_contr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
-//                startActivity(intent1);
-//                finish();
+                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
+                startActivity(intent1);
+                finish();
+                //TODO il problema e' che cambiando activity il json perder lo stato manuale e si blocca tuttoh
                 manualControl();
             }
         });
@@ -298,13 +307,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void checkJaison(){
+        String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+        if(json == null){
+            try {
+                json = new JSONObject(stringa);
+                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));valueLed3.setText(String.valueOf(json.getInt("led3")));
+                valueLed4.setText(String.valueOf(json.getInt("led4")));
+                irrValue.setText(String.valueOf(json.getInt("water")));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     public void getUpdate(){
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                    AsyncTask.execute(()->{
-                        String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+                AsyncTask.execute(()->{
+                    String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
                         try {
+                            checkJaison();
                             if(!json.has("state")){
                                 JSONObject  j = new JSONObject(stringa);
                                 String state = j.getString("state");
@@ -335,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void removeAlarm(){
+        checkJaison();
         try {
             json.put("state", prevState);
             json.put("water", prevIrrValue);
@@ -352,8 +378,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void manualControl(){
+        checkJaison();
         try {
             json.put("state", "manual");
+            System.out.println("json after manual = " + json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
