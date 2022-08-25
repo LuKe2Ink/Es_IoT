@@ -16,7 +16,7 @@ function createWindow() {
   
   win.loadFile('./dashboard.html');
 
-  //win.openDevTools()
+win.openDevTools()
 //   win.on('close', function (event){
 //     event.preventDefault();
 //     win.hide();

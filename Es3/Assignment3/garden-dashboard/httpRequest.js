@@ -21,7 +21,10 @@ setInterval(async function () {
         document.getElementById("temperature").innerText = temp +"°C";
         bright = gardenObject.bright;
         document.getElementById("brightness").innerText = bright;
-        document.getElementById("brightBar").value = bright*25
+      //   document.getElementById("brightBar").value = bright*25
+        //document.getElementById("brightBar").ariaValueNow = bright * 12.5
+        document.getElementById("brightBar").style.width = bright * 14.29 + "%" 
+
         
         if(gardenObject.led1){
            document.getElementById("led1").innerText = "Led on";
@@ -54,7 +57,7 @@ setInterval(async function () {
             document.getElementById("bulbLed4").src = "./src/off.png";
          }
         
-        document.getElementById("water").innerText = gardenObject.water;
+        document.getElementById("water").innerText = gardenObject.w;
         document.getElementById("state").innerText = gardenObject.state;
     }
     

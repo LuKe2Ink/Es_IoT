@@ -67,7 +67,7 @@ app.put('/garden/sensorboard', async function(req, res) {
     //res.send("ok sei forte")
     res.send("ok")
 
-    // sendOnSerial()
+    sendOnSerial()
 });
 
 //da testare
@@ -108,13 +108,21 @@ function sendOnSerial() {
   })
 }
 
+function jsonConcat(o1, o2) {
+ for (var key in o2) {
+  o1[key] = o2[key];
+ }
+ return o1;
+}
+
 //serial data
 port.on("open", async function () {
   //console.log('open');
   parser.on('data', async function(data) {
    console.log(data);
     var g = data;
-    gardenObject = JSON.parse(g);
+    var j = JSON.parse(g);
+    gardenObject = jsonConcat(gardenObject, j);
     // console.log(gardenObject);
     if(gardenObject["led_esp"] > 0){
       requestify.get('http://192.168.1.22/get?led=1')

@@ -14,7 +14,7 @@
 const char *ssid = "Vodafone-A45840614";
 const char *password = "p372xc2mywxb9sts";
 
-const char *serviceURI = "https://6b05-5-88-61-211.eu.ngrok.io";
+const char *serviceURI = "https://be8a-5-88-61-211.eu.ngrok.io";
 
 String msg;
 Photoresistor *photoresistor;

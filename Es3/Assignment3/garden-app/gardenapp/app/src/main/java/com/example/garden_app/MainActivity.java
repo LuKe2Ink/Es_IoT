@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private JSONObject json ;
 
-    private String prevState;
+    private static int prevState;
     private int prevIrrValue;
 
 //    private final OkHttpClient client = new OkHttpClient();
@@ -193,13 +193,14 @@ public class MainActivity extends AppCompatActivity {
         alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String state = "";
+                System.out.println("CLICCCCCAAAAAA");
+                int state = 0;
                 try {
-                    state = json.getString("state");
+                    state = json.getInt("state");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(state.contains("alarm")){
+                if(state == 2){
                     removeAlarm();
                 }
             }
@@ -264,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
                     irrValue.setText(String.valueOf(json.getInt(WATER)));
                     System.out.println("dopo" + json);
                     json.remove("w");
+                    json.remove("temp");
+                    json.remove("bright");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -343,20 +346,20 @@ public class MainActivity extends AppCompatActivity {
                             checkJaison();
                             if(!json.has("state")){
                                 JSONObject  j = new JSONObject(stringa);
-                                String state = j.getString("state");
-                                if(state.contains("alarm")){
-                                    prevIrrValue = json.getInt(WATER);
-                                    prevState = json.getString("state");
+                                int state = j.getInt("state");
+                                if(state == 2){
+                                 //   prevIrrValue = json.getInt(WATER);
+                                    prevState = json.getInt("state");
                                     manualMode = false;
                                     setEnabled();
                                 }
                                 json = j;
                             } else {
                                 JSONObject  j = new JSONObject(stringa);
-                                String state = j.getString("state");
-                                if(state.contains("alarm")){
-                                    prevIrrValue = json.getInt(WATER);
-                                    prevState = json.getString("state");
+                                int state = j.getInt("state");
+                                if(state == 2){
+                                  //  prevIrrValue = json.getInt(WATER);
+                                    prevState = json.getInt("state");
                                     manualMode = false;
                                     json.put("state", state);
                                     setEnabled();
@@ -378,14 +381,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(prevState.contains("manual")){
+        if(prevState == 1){
             manualMode = true;
         } else {
             manualMode = false;
         }
-        prevState = "";
+        prevState = 3;
         prevIrrValue = 0;
         setEnabled();
+        System.out.println(json.toString());
+        send(json.toString());
     }
 
     public void manualControl(){

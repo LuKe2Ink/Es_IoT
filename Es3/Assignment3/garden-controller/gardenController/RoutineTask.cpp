@@ -21,8 +21,8 @@ void RoutineTask::tick()
   readSerial();
 //  this->setData();
   switch(this->garden->state){
-    checkAlarmCondition();
     case AUTO:
+    checkAlarmCondition();
     // Serial.print("light: ");
     // Serial.println(garden->sensorBoard->photoresistor->getValue());
     // Serial.print("temp: ");
@@ -66,12 +66,19 @@ void RoutineTask::tick()
 }
 
 void RoutineTask::checkAlarmCondition(){
-  if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
+  // if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
+  int t = garden->sensorBoard->temp->getTemp();
+  // Serial.println("{ \"temp\" : "); Serial.print(t); Serial.print("}");
+
+  if(garden->sensorBoard->temp->getTemp() > 2 && garden->stateIrrigation == OPERATING){
     this->garden->state = ALARM;
     // LED esp tunr on
     this->garden->led_esp->turnOn();
     //TODO spegnerlo da qualche parte....
   }
+  //  else {
+    // Serial.println("{ \"temp\" : " + String(t) + "}"); 
+  // }
 }
 
 void RoutineTask::readSerial(){
@@ -88,9 +95,11 @@ void RoutineTask::readSerial(){
         Serial.println(inData);
         return;
       }
+      int t = doc1["temp"];
+      int b = doc1["bright"];
       //reads temp and lumionosity
-      garden->sensorBoard->temp->setTemp(doc1["temp"]);
-      garden->sensorBoard->photoresistor->setValue(doc1["bright"]);
+      garden->sensorBoard->temp->setTemp(t);
+      garden->sensorBoard->photoresistor->setValue(b);
     }
 }
 
@@ -106,7 +115,7 @@ void RoutineTask::makeJson(){
   doc["led2"] = garden->led_b->getLuminosity() > 0;
   doc["led3"] = garden->led_c->getLuminosity();
   doc["led4"] = garden->led_d->getLuminosity();
-  // doc["led_esp"] = garden->led_esp->getLuminosity(); //TODO is on
+  doc["led_esp"] = garden->led_esp->getLuminosity(); 
   // doc["led_esp"] = 1; //TEST
   doc["state"] = garden->state;
   //TODO NON CI GIUREREI 
