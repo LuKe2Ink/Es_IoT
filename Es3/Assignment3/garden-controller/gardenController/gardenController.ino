@@ -20,7 +20,7 @@ void setup() {
 
   routine = new RoutineTask(garden);
   //routine->tick();
-  routine->init(100);
+  routine->init(700);
   scheda.addTask(routine);
 
   irrigation = new IrrigationTask(garden);

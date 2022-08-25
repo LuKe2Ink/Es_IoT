@@ -9,7 +9,7 @@
     <string name="on_off">On/Off</string>
     <string name="default_value">0</string>
     <string name="irrigation_system">Irrigation System</string>
-    <string name="open_close">Open/Close</string>
+    <string name="open_close">Start</string>
     <string name="require_manual_control">Require Manual Control</string>
     <string name="select_device">Select device</string>
     <string name="select_device_hint">Select a device from the list below. If you cannot find it, ensure that it has already been paired with this device.</string>

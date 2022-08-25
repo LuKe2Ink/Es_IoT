@@ -16,16 +16,16 @@ const { Console } = require('console');
 
 var gardenObject;
 
-// gardenObject={
-//   "temp" : 17,
-//   "bright": 3,
-//   "led1" : true,
-//   "led2" : true,
-//   "led3" : 0,
-//   "led4" : 3,
-//   "water" : 0,
-//   "state" : "bella pe te"
-// };
+gardenObject={
+  "temp" : 17,
+  "bright": 3,
+  "led1" : true,
+  "led2" : true,
+  "led3" : 0,
+  "led4" : 3,
+  "w" : 0,
+  "state" : "bella pe te"
+};
 
 // setTimeout(() => {
 //   gardenObject={
@@ -61,10 +61,13 @@ app.use(bodyParser.json());
 //Put perché andrà sempre a modificare i dati correnti
 app.put('/garden/sensorboard', async function(req, res) { 
     var input = req.body;
+    // console.log(input);
     gardenObject["temp"] = input.temperature;
     gardenObject["bright"] = input.luminosity;
-    res.send("ok sei forte")
-    sendOnSerial()
+    //res.send("ok sei forte")
+    res.send("ok")
+
+    // sendOnSerial()
 });
 
 //da testare
@@ -105,35 +108,58 @@ function sendOnSerial() {
   })
 }
 
-
-
 //serial data
-port.on("open", function () {
+port.on("open", async function () {
   //console.log('open');
-  parser.on('data', function(data) {
-  //  console.log(data);
+  parser.on('data', async function(data) {
+   console.log(data);
     var g = data;
     gardenObject = JSON.parse(g);
-    console.log(gardenObject);
-    if (gardenObject["state"] == 1){
-      console.log(gardenObject);
-    }
+    // console.log(gardenObject);
     if(gardenObject["led_esp"] > 0){
       requestify.get('http://192.168.1.22/get?led=1')
       .then(function(response) {
           // Get the response body (JSON parsed or jQuery object for XMLs)
-          console.log(response.getBody());
+          // console.log(response.getBody());
       });
     } else {
       requestify.get('http://192.168.1.22/get?led=0')
       .then(function(response) {
           // Get the response body (JSON parsed or jQuery object for XMLs)
-          console.log(response.getBody());
+          // console.log(response.getBody());
+      
+});
+}});
 });
 
-    }
-  });
-});
+
+//serial data
+// port.on("open", async function () {
+//   //console.log('open');
+//   parser.on('data', async function(data) {
+//   //  console.log(data);
+//     var g = data;
+//     gardenObject = JSON.parse(g);
+//     console.log(gardenObject);
+//     if (gardenObject["state"] == 1){
+//       console.log(gardenObject);
+//     }
+//     if(gardenObject["led_esp"] > 0){
+//       requestify.get('http://192.168.1.22/get?led=1')
+//       .then(function(response) {
+//           // Get the response body (JSON parsed or jQuery object for XMLs)
+//           console.log(response.getBody());
+//       });
+//     } else {
+//       requestify.get('http://192.168.1.22/get?led=0')
+//       .then(function(response) {
+//           // Get the response body (JSON parsed or jQuery object for XMLs)
+//           console.log(response.getBody());
+// });
+
+//     }
+//   });
+// });
 
 /*
 

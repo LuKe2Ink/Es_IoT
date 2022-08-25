@@ -27,7 +27,7 @@ class RoutineTask:public Task
     void checkLed2(bool op);
     void checkLed3(String op);
     void checkLed4(String op);
-    void checkIrrigation(String op);
+    void checkIrrigation(int op);
 
   private:
     void turnOnAllLed();

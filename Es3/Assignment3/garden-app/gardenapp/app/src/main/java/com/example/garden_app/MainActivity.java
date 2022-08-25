@@ -47,6 +47,7 @@ import java.util.TimerTask;
 //import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String WATER = "w";
     Button led1;
     Button led2;
     Button led3plus;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothConnection connection;
     private static boolean manualMode = false;
 
-    private JSONObject json;
+    private JSONObject json ;
 
     private String prevState;
     private int prevIrrValue;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Intent intent = getIntent();
         if(intent.hasExtra("device")){
             System.out.println("Almeno ci provo");
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         irrigation_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                irrigation(view);
+                irrigationSend(view);
             }
         });
 
@@ -180,9 +182,9 @@ public class MainActivity extends AppCompatActivity {
         req_man_contr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
-                startActivity(intent1);
-                finish();
+//                Intent intent1 = new Intent(getApplicationContext(), ConnectionActivity.class);
+//                startActivity(intent1);
+//                finish();
                 //TODO il problema e' che cambiando activity il json perder lo stato manuale e si blocca tuttoh
                 manualControl();
             }
@@ -256,9 +258,12 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     json = new JSONObject(stringa);
-                    viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));valueLed3.setText(String.valueOf(json.getInt("led3")));
+                    System.out.println("prima" + json);
+                    viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt(WATER));valueLed3.setText(String.valueOf(json.getInt("led3")));
                     valueLed4.setText(String.valueOf(json.getInt("led4")));
-                    irrValue.setText(String.valueOf(json.getInt("water")));
+                    irrValue.setText(String.valueOf(json.getInt(WATER)));
+                    System.out.println("dopo" + json);
+                    json.remove("w");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -267,6 +272,12 @@ public class MainActivity extends AppCompatActivity {
 
         setEnabled();
         getUpdate();
+    }
+
+    private void irrigationSend(View view) {
+                System.out.println(json);
+        send("{\"w\" :" + String.valueOf(viewModel.getIrrigationValue()) + "}");
+
     }
 
     public static String executeRequest(String targetURL, String urlParameters) {
@@ -312,9 +323,9 @@ public class MainActivity extends AppCompatActivity {
         if(json == null){
             try {
                 json = new JSONObject(stringa);
-                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt("water"));valueLed3.setText(String.valueOf(json.getInt("led3")));
+                viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt(WATER));valueLed3.setText(String.valueOf(json.getInt("led3")));
                 valueLed4.setText(String.valueOf(json.getInt("led4")));
-                irrValue.setText(String.valueOf(json.getInt("water")));
+                irrValue.setText(String.valueOf(json.getInt(WATER)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -334,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject  j = new JSONObject(stringa);
                                 String state = j.getString("state");
                                 if(state.contains("alarm")){
-                                    prevIrrValue = json.getInt("water");
+                                    prevIrrValue = json.getInt(WATER);
                                     prevState = json.getString("state");
                                     manualMode = false;
                                     setEnabled();
@@ -344,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject  j = new JSONObject(stringa);
                                 String state = j.getString("state");
                                 if(state.contains("alarm")){
-                                    prevIrrValue = json.getInt("water");
+                                    prevIrrValue = json.getInt(WATER);
                                     prevState = json.getString("state");
                                     manualMode = false;
                                     json.put("state", state);
@@ -363,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         checkJaison();
         try {
             json.put("state", prevState);
-            json.put("water", prevIrrValue);
+            json.put(WATER, prevIrrValue);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -387,7 +398,6 @@ public class MainActivity extends AppCompatActivity {
         }
         manualMode = true;
         setEnabled();
-        System.out.println(json.toString());
         send(json.toString());
     }
 
@@ -459,32 +469,35 @@ public class MainActivity extends AppCompatActivity {
     public void irrigation(View v){
         String op;
         switch (v.getId()){
-            case R.id.irr_open_close:
-                op = "change";
-                break;
+//            case R.id.irr_open_close:
+//                try {
+//                    json.put("water", viewModel.getIrrigationValue());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                System.out.println(json);
+//                System.out.println(json);
+//                break;
             case R.id.irr_add:
                 viewModel.incIrr();
-                op = String.valueOf(viewModel.getIrrigationValue());
-                irrValue.setText(op);
+                irrValue.setText(String.valueOf(viewModel.getIrrigationValue()));
                 break;
             case R.id.irr_sot:
                 viewModel.decIrr();
-                op = String.valueOf(viewModel.getIrrigationValue());
-                irrValue.setText(op);
+                irrValue.setText(String.valueOf(viewModel.getIrrigationValue()));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
-        op = String.valueOf(viewModel.getIrrigationValue());
-        irrValue.setText(op);
-
         try {
-            json.put("water", viewModel.getIrrigationValue());
+            json.put(WATER, viewModel.getIrrigationValue());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(json);
-        send(json.toString());
+
+//        op = String.valueOf(viewModel.getIrrigationValue());
+//        irrValue.setText(op);
+
     }
 
     private void send(String command) {

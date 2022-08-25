@@ -43,10 +43,9 @@ void RoutineTask::tick()
     checkAlarmCondition();
       if(btChannel.available()){
         String msg = btChannel.readString();
-        // Serial.println(msg);
+       // Serial.println(msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
-        Serial.println("{\"MANUELLLLL\" : 0}");
         checkChanges(root);
       }
       break;
@@ -111,7 +110,7 @@ void RoutineTask::makeJson(){
   // doc["led_esp"] = 1; //TEST
   doc["state"] = garden->state;
   //TODO NON CI GIUREREI 
-  doc["water"] = garden->stateIrrigation;
+  doc["w"] = garden->stateIrrigation;
   // JsonArray data = doc.createNestedArray("data");
   // data.add(48.756080);
   // data.add(2.302038);
@@ -146,11 +145,16 @@ void RoutineTask::checkManualControl(){
   if(btChannel.available()){
     String msg = btChannel.readString();
     // Serial.println(msg);
-    deserializeJson(doc, msg);
+    DeserializationError error = deserializeJson(doc, msg);
+      if (error) {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        return;
+      }
     JsonObject root = doc.as<JsonObject>();
     String control = root["state"];
-    Serial.println(root);
-    Serial.println("ZIO CAN");
+  //  Serial.println(root);
+    // Serial.println("ZIO CAN");
     if(control == "manual"){
       this->garden->state = MANUAL;
       checkChanges(root);
@@ -170,6 +174,11 @@ void RoutineTask::checkAlarmDeactivated(JsonObject root){
 }
 
 void RoutineTask::checkChanges(JsonObject root){
+//  Serial.println("{ \"val\" : \"prima\"}");
+//  String u = root["undefined"];
+//  Serial.println(root);
+//  Serial.println(u);
+//  Serial.println("{ \"val\" : \"dopo\"}");
   if(root.containsKey("led1")){
     bool op = root["led1"];
     checkLed1(op);
@@ -186,8 +195,11 @@ void RoutineTask::checkChanges(JsonObject root){
     String op = root["led4"];
     checkLed4(op);
   }
-  if(root.containsKey("irrigation")){
-    String op = root["irrigation"];
+  if(root.containsKey("w")){
+    int op = root["w"];
+   // String ocane = root["water"];
+    //Serial.println("{ \"val\" : " + ocane + "}");
+    if(op == 0) return;
     checkIrrigation(op);
   }
 }
@@ -210,12 +222,9 @@ void RoutineTask::checkLed4(String op){
   garden->led_d->setLuminosity(op.toInt());
 }
 
-void RoutineTask::checkIrrigation(String op){
-  if(op == "change"){
-    activateIrrigationSystem();
-  }else{
-    garden->servo->setSpeedServo(op.toInt());
-  }
+void RoutineTask::checkIrrigation(int op){
+  garden->servo->setSpeedServo(op);
+  activateIrrigationSystem();
 }
 
 //void RoutineTask::setData(){
