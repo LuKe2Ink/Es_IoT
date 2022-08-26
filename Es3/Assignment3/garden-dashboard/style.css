@@ -8,6 +8,18 @@
 #loading{
     display: inline-flex;
 }
+#Container, #led1Container, #led2Container, #led3Container, #led4Container{
+    margin-bottom: 50px;
+    margin-right: 50px;
+    border: solid black 3px;
+}
+#Container{
+    width: 350px;
+}
+
+#led1Container, #led2Container, #led3Container, #led4Container{
+    width: 160px;
+}
 
 .bright{
     margin-right: 50px;

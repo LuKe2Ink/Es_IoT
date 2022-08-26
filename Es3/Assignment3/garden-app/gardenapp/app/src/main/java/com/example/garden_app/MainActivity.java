@@ -532,6 +532,7 @@ public class MainActivity extends AppCompatActivity {
             irrigation_change.setEnabled(manualMode);
             irrPlus.setEnabled(manualMode);
             irrSot.setEnabled(manualMode);
+            req_man_contr.setEnabled(!manualMode);
         });
 
     }

@@ -58,7 +58,21 @@ setInterval(async function () {
          }
         
         document.getElementById("water").innerText = gardenObject.w;
-        document.getElementById("state").innerText = gardenObject.state;
+
+        switch(gardenObject.state){
+         case 0:
+            document.getElementById("state").innerText = "Auto";
+            break;
+            
+         case 1:
+            document.getElementById("state").innerText = "Manual";
+            break;
+            
+         case 2:
+            document.getElementById("state").innerText = "Alarm";
+            break;
+
+        }
     }
     
     
