@@ -27,12 +27,11 @@ void RoutineTask::tick()
     // Serial.println(garden->sensorBoard->photoresistor->getValue());
     // Serial.print("temp: ");
     // Serial.println(garden->sensorBoard->temp->getTemp());
-//TODO ora arduino riceve i dati sulla seriale dal server che li riceve dall'esp e li invia 
      if(garden->sensorBoard->photoresistor->isLessThenMax()){
        turnOnAllLed();
-       if(this->garden->stateIrrigation == NOT_OPERATING && garden->sensorBoard->photoresistor->isLessThenMin()){
-         this->garden->stateIrrigation = OPERATING;
-         activateIrrigationSystem();
+       if(this->garden->stateIrrigation == OPERATING && garden->sensorBoard->photoresistor->isLessThenMin()){
+          garden->servo->setSpeedServo(5); //TODO magic number
+          activateIrrigationSystem();
        }
      }else{
        turnOffAllLed();
@@ -43,7 +42,7 @@ void RoutineTask::tick()
     checkAlarmCondition();
       if(btChannel.available()){
         String msg = btChannel.readString();
-       // Serial.println(msg);
+       // Serial.println("manual try: " + msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
         checkChanges(root);
@@ -52,7 +51,7 @@ void RoutineTask::tick()
     case ALARM:
       if(btChannel.available()){
         String msg = btChannel.readString();
-        // Serial.println(msg);
+        //Serial.println("alarm try: " + msg);
         deserializeJson(doc, msg);
         JsonObject root = doc.as<JsonObject>();
         checkAlarmDeactivated(root);
@@ -70,7 +69,8 @@ void RoutineTask::checkAlarmCondition(){
   int t = garden->sensorBoard->temp->getTemp();
   // Serial.println("{ \"temp\" : "); Serial.print(t); Serial.print("}");
 
-  if(garden->sensorBoard->temp->getTemp() > 2 && garden->stateIrrigation == OPERATING){
+  if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){  //GIUSTA !!!! 
+  //  if(garden->sensorBoard->temp->getTemp() >= 3 && garden->stateIrrigation == NOT_OPERATING){
     this->garden->state = ALARM;
     // LED esp tunr on
     this->garden->led_esp->turnOn();
@@ -90,13 +90,13 @@ void RoutineTask::readSerial(){
       DeserializationError error = deserializeJson(doc1, inData);
       // Test if parsing succeeds.
       if (error) {
+        Serial.println("failed serial msg: " + inData);
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.f_str());
-        Serial.println(inData);
         return;
       }
-      int t = doc1["temp"];
-      int b = doc1["bright"];
+      int t = doc1["t"];
+      int b = doc1["b"];
       //reads temp and lumionosity
       garden->sensorBoard->temp->setTemp(t);
       garden->sensorBoard->photoresistor->setValue(b);
@@ -152,31 +152,34 @@ void RoutineTask::activateIrrigationSystem(){
 
 void RoutineTask::checkManualControl(){
   if(btChannel.available()){
+    StaticJsonDocument<200> docSerial;
     String msg = btChannel.readString();
-    // Serial.println(msg);
-    DeserializationError error = deserializeJson(doc, msg);
+    Serial.println(msg);
+    DeserializationError error = deserializeJson(docSerial, msg);
       if (error) {
+        Serial.println("failed blutooth msg: " + msg);
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.f_str());
         return;
       }
-    JsonObject root = doc.as<JsonObject>();
-    String control = root["state"];
-  //  Serial.println(root);
-    // Serial.println("ZIO CAN");
-    if(control == "manual"){
+    JsonObject root = docSerial.as<JsonObject>();
+    int control = root["state"];
+    Serial.println(control);
+    if(control == 1){
       this->garden->state = MANUAL;
-      checkChanges(root);
+      // checkChanges(root);
     }
   }
 }
 
 void RoutineTask::checkAlarmDeactivated(JsonObject root){
+
+  this->garden->led_esp->turnOff();
   if(root.containsKey("state")){
-    String state = root["state"];
-    if(state == "manual"){
+    int state = root["state"];
+    if(state == 1){
       this->garden->state = MANUAL;
-    }else if(state == "auto"){
+    }else{
       this->garden->state = AUTO;
     }
   }

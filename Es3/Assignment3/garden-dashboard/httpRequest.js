@@ -9,7 +9,7 @@ setInterval(async function () {
     console.log(response.data)
     gardenObject = response.data;
 
-    if(gardenObject.temp){
+    if(gardenObject.t){
         
         var loading = document.getElementById("loading");
         if(loading.style.display != "none") {
@@ -17,9 +17,9 @@ setInterval(async function () {
             document.getElementById("data").style.display = "block";
         }
 
-        temp = gardenObject.temp; //o gardenObject[0]
+        temp = gardenObject.t; //o gardenObject[0]
         document.getElementById("temperature").innerText = temp +"°C";
-        bright = gardenObject.bright;
+        bright = gardenObject.b;
         document.getElementById("brightness").innerText = bright;
       //   document.getElementById("brightBar").value = bright*25
         //document.getElementById("brightBar").ariaValueNow = bright * 12.5

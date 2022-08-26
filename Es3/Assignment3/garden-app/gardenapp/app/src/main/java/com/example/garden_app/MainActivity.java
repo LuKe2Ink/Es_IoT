@@ -265,8 +265,9 @@ public class MainActivity extends AppCompatActivity {
                     irrValue.setText(String.valueOf(json.getInt(WATER)));
                     System.out.println("dopo" + json);
                     json.remove("w");
-                    json.remove("temp");
-                    json.remove("bright");
+                    json.remove("t");
+                    json.remove("b");
+                    json.remove("led_esp");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -349,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                                 int state = j.getInt("state");
                                 if(state == 2){
                                  //   prevIrrValue = json.getInt(WATER);
-                                    prevState = json.getInt("state");
+                                 //   prevState = json.getInt("state");
                                     manualMode = false;
                                     setEnabled();
                                 }
@@ -359,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
                                 int state = j.getInt("state");
                                 if(state == 2){
                                   //  prevIrrValue = json.getInt(WATER);
-                                    prevState = json.getInt("state");
+                                   // prevState = json.getInt("state");
                                     manualMode = false;
                                     json.put("state", state);
                                     setEnabled();
@@ -368,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    System.out.println("prevState loop = " + prevState);
                     });
             }
         },0,300);
@@ -386,24 +388,27 @@ public class MainActivity extends AppCompatActivity {
         } else {
             manualMode = false;
         }
-        prevState = 3;
+//        prevState = 3;
         prevIrrValue = 0;
         setEnabled();
-        System.out.println(json.toString());
-        send(json.toString());
+//        System.out.println(json.toString());
+//        send(json.toString());
+        System.out.println("prev state: " + prevState);
+        send("{\"state\" : " + String.valueOf(prevState) + "}");
     }
 
     public void manualControl(){
         checkJaison();
         try {
-            json.put("state", "manual");
+            json.put("state", 1);
             System.out.println("json after manual = " + json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         manualMode = true;
         setEnabled();
-        send(json.toString());
+        //send(json.toString());
+        send("{\"state\" : 1 }");
     }
 
     public void led1(View v) {
@@ -513,18 +518,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void setEnabled(){
-        led1.setEnabled(manualMode);
-        led2.setEnabled(manualMode);
+        this.runOnUiThread(() -> {
+            led1.setEnabled(manualMode);
+            led2.setEnabled(manualMode);
 
-        led3plus.setEnabled(manualMode);
-        led3sot.setEnabled(manualMode);
-        led4plus.setEnabled(manualMode);
-        led4sot.setEnabled(manualMode);
+            led3plus.setEnabled(manualMode);
+            led3sot.setEnabled(manualMode);
+            led4plus.setEnabled(manualMode);
+            led4sot.setEnabled(manualMode);
 
-        irrigation_change.setEnabled(manualMode);
-        irrPlus.setEnabled(manualMode);
-        irrSot.setEnabled(manualMode);
+            irrigation_change.setEnabled(manualMode);
+            irrPlus.setEnabled(manualMode);
+            irrSot.setEnabled(manualMode);
+        });
 
     }
 }

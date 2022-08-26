@@ -10,7 +10,6 @@ Photoresistor::Photoresistor(int pin)
 int Photoresistor::getValue()
 {
   int value = analogRead(this->pin);
-  Serial.println("lum"); Serial.print(value);
   value /= 512;
   return value;
 }

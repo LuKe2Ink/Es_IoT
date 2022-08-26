@@ -17,14 +17,14 @@ const { Console } = require('console');
 var gardenObject;
 
 gardenObject={
-  "temp" : 17,
-  "bright": 3,
+  "t" : 17,
+  "b": 3,
   "led1" : true,
   "led2" : true,
   "led3" : 0,
   "led4" : 3,
   "w" : 0,
-  "state" : "bella pe te"
+  "state" : 0
 };
 
 // setTimeout(() => {
@@ -62,8 +62,8 @@ app.use(bodyParser.json());
 app.put('/garden/sensorboard', async function(req, res) { 
     var input = req.body;
     // console.log(input);
-    gardenObject["temp"] = input.temperature;
-    gardenObject["bright"] = input.luminosity;
+    gardenObject["t"] = input.temperature;
+    gardenObject["b"] = input.luminosity;
     //res.send("ok sei forte")
     res.send("ok")
 
@@ -100,11 +100,16 @@ function sendOnSerial() {
  // console.log('from server')
  // console.log(JSON.stringify(gardenObject))
  // console.log('stop seriale');
-  port.write(JSON.stringify(gardenObject), function(err) {
+  var esp_obj = {
+    "t" : gardenObject["t"],
+    "b" : gardenObject["b"],
+  }
+  port.write(JSON.stringify(esp_obj), function(err) {
     if (err) {
       return console.log('Error on write: ', err.message)
     }
-    // console.log('message written')
+    console.log('message written')
+    console.log(JSON.stringify(esp_obj))
   })
 }
 
