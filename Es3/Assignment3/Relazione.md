@@ -3,6 +3,45 @@
 - Sulla seriale c'e' un limite di 64 bytes e tronca i messaggi
 
 ## App
+Per la comunicazione tra l'app e arduino era necessario l'utilizzo del HC-05, un dispositivo che permette la comunicazione tra un microprocesore
+e un qualsiasi dispositivo dotato di comunicazione Bluetooth.
+
+Una funzionalità importante dell'app era quella di rimanere costantemente aggiornata sullo stato dell'arduino e dei suoi componenti anche quando in 
+modalità automatica, e per fare ciò abbiamo adoperato la classe astratta AsyncTask.
+Questa classe consente i eseguire detemnate operazioni in background senza dover manipolare thread.
+
+```cpp
+AsyncTask.execute(()->{
+    String stringa = executeRequest("http://localhost:3000/garden/app/getData", "");
+    this.runOnUiThread(()->{
+
+        try {
+            json = new JSONObject(stringa);
+            System.out.println("prima" + json);
+            viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt(WATER));valueLed3.setText(String.valueOf(json.getInt("led3")));
+            valueLed4.setText(String.valueOf(json.getInt("led4")));
+            irrValue.setText(String.valueOf(json.getInt(WATER)));
+            System.out.println("dopo" + json);
+            json.remove("w");
+            json.remove("t");
+            json.remove("b");
+            json.remove("led_esp");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    });
+});
+```
+
+Per la ricezione dei dati dal server invece abbiamo adoperato una funzione che passato come parametro l'indirizzo url del server, apriva una richiesta
+di GET a quel determinato indirizzo per poi mettersi in attesa di ricevere la stringa JSON contenente tutte le informazioni necessarie per l'inizializzazione 
+e l'aggiornamento dell'app.
+
+La comunicazione tra app e controller si basa sull' utilizzo di messaggi JSON che ci ha permesso uno scambio più veloce ed efficiente di informazioni tra
+le due parti.
+Per l'invio di un qualsiasi cambiamento infatti andremo a modificare il JSON ricevuto inizialmente dal server aggiornandone le informazioni(per esempio 
+se voglio settare la luminosità del led3 a 4, andremo modificare il valore della chiave "led3" a 4).
+Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'arduino, che sarà in grado di riceverli e leggerli.
 
 ## Controller
 
