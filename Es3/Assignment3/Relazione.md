@@ -46,6 +46,62 @@ Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'ardu
 
 ## Controller
 
+Il controller gestirà tramite scheduler due task principali, la prima sarà quella del sistema di irrigazione, mentre l'altra sarà per il sistema della "casa".
+
+Il sistema di irrigazione avrà due stati:
+OPERATIVO: specificherà che il sistema è operativo e pronto per l'immediato utilizzo.
+NON OPERATIVO: specificherà che il sistema non sarà operativo. Ciò avverrà in seguito all'attivazione dell'impianto di irrigazione che porterà poi ad una 
+"pausa" dell'impianto per un determinato periodo di tempo;
+
+La "casa" invece avrà gli stati:
+AUTO: qui l'attivazione dei led e dell'impianto di irrigazione avverrà in maniera automatica a seconda del valori letti dai sensori.
+MANUAL: qui la "casa" verrà gestita tramite dispositivo mobile
+ALARM: in questo caso invece il sistema si metterà in attesa di ricevere dal dispositivo mobile un segnale che gli permettà di disattivare lo stato di allarme
+e di tornare allo stato precedente.
+
+Per la comunicazione tra App e Arduino utilizzeremo la libreria SoftwareSerial che consente la comunicazione seriale su altri pin digitali di una scheda Arduino.
+Tramite questa seriale Arduino riceverà dall'app il messaggio sottoforma di JSON con i cambiamente effettuati da app.
+
+```cpp
+case MANUAL:
+    checkAlarmCondition();
+      if(btChannel.available()){
+        String msg = btChannel.readString();
+       // Serial.println("manual try: " + msg);
+        deserializeJson(doc, msg);
+        JsonObject root = doc.as<JsonObject>();
+        checkChanges(root);
+      }
+      break;
+```
+
+Inoltre Arduino riceverà dal seriale principale i valori letti dall'esp sottoforma di JSON che utilizzerà per effettuare i check necessari per il corretto funzionamento
+della casa.
+
+```cpp
+void RoutineTask::readSerial(){
+  String inData = "";
+    if(Serial.available() > 0){
+      inData = Serial.readString();
+      //make inData a JSON obj
+      StaticJsonDocument<200> doc1;
+      DeserializationError error = deserializeJson(doc1, inData);
+      // Test if parsing succeeds.
+      if (error) {
+        Serial.println("failed serial msg: " + inData);
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        return;
+      }
+      int t = doc1["t"];
+      int b = doc1["b"];
+      //reads temp and lumionosity
+      garden->sensorBoard->temp->setTemp(t);
+      garden->sensorBoard->photoresistor->setValue(b);
+    }
+}
+```
+
 ## Dash-Board
 <!-- TODO aggiungere foto dashboard-->
 
