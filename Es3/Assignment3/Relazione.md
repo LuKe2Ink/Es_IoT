@@ -3,12 +3,13 @@
 - Sulla seriale c'e' un limite di 64 bytes e tronca i messaggi
 
 ## App
+
 Per la comunicazione tra l'app e arduino era necessario l'utilizzo del HC-05, un dispositivo che permette la comunicazione tra un microprocesore
 e un qualsiasi dispositivo dotato di comunicazione Bluetooth.
 
-Una funzionalità importante dell'app era quella di rimanere costantemente aggiornata sullo stato dell'arduino e dei suoi componenti anche quando in 
+Una funzionalità importante dell'app era quella di rimanere costantemente aggiornata sullo stato dell'arduino e dei suoi componenti anche quando in
 modalità automatica, e per fare ciò abbiamo adoperato la classe astratta AsyncTask.
-Questa classe consente i eseguire detemnate operazioni in background senza dover manipolare thread.
+Questa classe consente i eseguire determinate operazioni in background senza dover manipolare thread.
 
 ```cpp
 AsyncTask.execute(()->{
@@ -17,11 +18,9 @@ AsyncTask.execute(()->{
 
         try {
             json = new JSONObject(stringa);
-            System.out.println("prima" + json);
             viewModel.init(json.getInt("led3"), json.getInt("led4"), json.getInt(WATER));valueLed3.setText(String.valueOf(json.getInt("led3")));
             valueLed4.setText(String.valueOf(json.getInt("led4")));
             irrValue.setText(String.valueOf(json.getInt(WATER)));
-            System.out.println("dopo" + json);
             json.remove("w");
             json.remove("t");
             json.remove("b");
@@ -33,19 +32,28 @@ AsyncTask.execute(()->{
 });
 ```
 
+<!-- TODO aggiungere screenshot app-->
+
 Per la ricezione dei dati dal server invece abbiamo adoperato una funzione che passato come parametro l'indirizzo url del server, apriva una richiesta
-di GET a quel determinato indirizzo per poi mettersi in attesa di ricevere la stringa JSON contenente tutte le informazioni necessarie per l'inizializzazione 
+di GET a quel determinato indirizzo per poi mettersi in attesa di ricevere la stringa JSON contenente tutte le informazioni necessarie per l'inizializzazione
 e l'aggiornamento dell'app.
 
 La comunicazione tra app e controller si basa sull' utilizzo di messaggi JSON che ci ha permesso uno scambio più veloce ed efficiente di informazioni tra
 le due parti.
-Per l'invio di un qualsiasi cambiamento infatti andremo a modificare il JSON ricevuto inizialmente dal server aggiornandone le informazioni(per esempio 
+Per l'invio di un qualsiasi cambiamento infatti andremo a modificare il JSON ricevuto inizialmente dal server aggiornandone le informazioni(per esempio
 se voglio settare la luminosità del led3 a 4, andremo modificare il valore della chiave "led3" a 4).
 Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'arduino, che sarà in grado di riceverli e leggerli.
 
 ## Controller
 
 ## Dash-Board
+<!-- TODO aggiungere foto dashboard-->
+
+La dashboard è un interfaccia web-based con la quale si può tenere sotto controllo il nostro garden. Per la realizzazione abbiamo utlizzato electron, un modulo di nodeJS con il quale abbiamo creato una pagina web responsive ai cambiamenti del nostro device.
+
+Per poter avere dei valori corretti da mostrare questa pagina ha al suo interno <!-- si può dire ???--> un piccolo server in ascolto sulla porta **http://localhost:3000/garden/dashboard** per poter ricevere le GET effettuate dal service contenti le informazioni necessarie ad mantenere aggiornata la schermata.
+
+Per indicare l'accensione/spegnimento dei led abbiamo usato delle immagini png con lampadine accese o spente, mentre per la parte di sensori abbiamo non solo mostrato i valori a schermo ma anche utilizzato delle progress bar mappate entro i valori indicatoci nell'assignment.
 
 ## Sensor-Board
 
