@@ -50,7 +50,7 @@ Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'ardu
 ## Sensor-Board
 
 Questa parte del assignment è svolta dall'esp, all'interno della funzione di setup l'esp si collega al wifi, successivamente abbiamo un server
-per poter gestire alcune richieste HTTP grazie alla libreria **ESPAsyncWebServer** all'indirizzo IP dell'esp che viene stampato subito prima.
+per poter gestire alcune richieste HTTP grazie alla libreria [**ESPAsyncWebServer**](https://github.com/me-no-dev/ESPAsyncWebServer) all'indirizzo IP dell'esp che viene stampato subito prima.
 
 ```cpp
     server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
