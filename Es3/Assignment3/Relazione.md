@@ -1,3 +1,6 @@
+
+![WhatsApp Image 2022-09-04 at 12 20 57](https://user-images.githubusercontent.com/55741556/188315725-454e2767-dc89-4572-a2b1-0b69a874fd42.jpeg)
+
 # cose
 
 - Sulla seriale c'e' un limite di 64 bytes e tronca i messaggi
