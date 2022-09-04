@@ -214,3 +214,5 @@ function sendOnSerial() {
   })
 }
 ```
+
+Link video assignement: https://liveunibo-my.sharepoint.com/:v:/g/personal/michele_nardini2_studio_unibo_it/ESpQAYytkLlLpZoA7LcEQ3YBj_Ib3aXv_u_Frwlo3UYDlQ?e=fu7p5R
