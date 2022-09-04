@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>
 #include <SoftwareSerial.h>
 
+#define SERVO_SPEED 5 
+
 SoftwareSerial btChannel(RX, TX);
 StaticJsonDocument<200> doc;
 
@@ -16,21 +18,14 @@ void RoutineTask::init(int period){
 
 void RoutineTask::tick()
 {
-  // reads data from serial, JSON sent by garden-service
-  //TODO i dati vanno letti solo nella modalita AUTO altrimenti bisogna (non so come) inviare i dati all'esp per fargli ricevere il comando di accendere un led 
   readSerial();
-//  this->setData();
   switch(this->garden->state){
     case AUTO:
     checkAlarmCondition();
-    // Serial.print("light: ");
-    // Serial.println(garden->sensorBoard->photoresistor->getValue());
-    // Serial.print("temp: ");
-    // Serial.println(garden->sensorBoard->temp->getTemp());
      if(garden->sensorBoard->photoresistor->isLessThenMax()){
        turnOnAllLed();
        if(this->garden->stateIrrigation == OPERATING && garden->sensorBoard->photoresistor->isLessThenMin()){
-          garden->servo->setSpeedServo(5); //TODO magic number
+          garden->servo->setSpeedServo(SERVO_SPEED);
           activateIrrigationSystem();
        }
      }else{
@@ -58,27 +53,17 @@ void RoutineTask::tick()
       }
       break;
   }
-  
   // print JSON on serial to comunicate with garden-service
-  //TODO decomentare
   makeJson();
 }
 
 void RoutineTask::checkAlarmCondition(){
-  // if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
   int t = garden->sensorBoard->temp->getTemp();
-  // Serial.println("{ \"temp\" : "); Serial.print(t); Serial.print("}");
-
-  if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){  //GIUSTA !!!! 
-  //  if(garden->sensorBoard->temp->getTemp() >= 3 && garden->stateIrrigation == NOT_OPERATING){
+  if(garden->sensorBoard->temp->getTemp() == 5 && garden->stateIrrigation == NOT_OPERATING){
     this->garden->state = ALARM;
-    // LED esp tunr on
+    // LED esp turn on
     this->garden->led_esp->turnOn();
-    //TODO spegnerlo da qualche parte....
   }
-  //  else {
-    // Serial.println("{ \"temp\" : " + String(t) + "}"); 
-  // }
 }
 
 void RoutineTask::readSerial(){
@@ -95,9 +80,10 @@ void RoutineTask::readSerial(){
         Serial.println(error.f_str());
         return;
       }
+      // reads temp and lumionosity
       int t = doc1["t"];
       int b = doc1["b"];
-      //reads temp and lumionosity
+      // set temp and luminosity into virtual sensorboard
       garden->sensorBoard->temp->setTemp(t);
       garden->sensorBoard->photoresistor->setValue(b);
     }
@@ -106,27 +92,16 @@ void RoutineTask::readSerial(){
 
 void RoutineTask::makeJson(){
   StaticJsonDocument<200> doc;
-  //
-  // doc["sensor"] = "gps";
-  // doc["time"] = 1351824120;
-  
-  //
   doc["led1"] = garden->led_a->getLuminosity() > 0;
   doc["led2"] = garden->led_b->getLuminosity() > 0;
   doc["led3"] = garden->led_c->getLuminosity();
   doc["led4"] = garden->led_d->getLuminosity();
   doc["led_esp"] = garden->led_esp->getLuminosity(); 
-  // doc["led_esp"] = 1; //TEST
   doc["state"] = garden->state;
-  //TODO NON CI GIUREREI 
   doc["w"] = garden->stateIrrigation;
-  // JsonArray data = doc.createNestedArray("data");
-  // data.add(48.756080);
-  // data.add(2.302038);
-  //
-  //  //stampa json
+  //stampa json
   serializeJson(doc, Serial);
-  //  // fondamentale
+  // fondamentale
   Serial.println("\r\n");
 }
 
@@ -143,7 +118,6 @@ void RoutineTask::turnOffAllLed(){
 }
 
 void RoutineTask::activateIrrigationSystem(){
-  //garden->moveServo = true;
   if(garden->stateIrrigation == OPERATING){
       garden->servo->moveServo();
       garden->stateIrrigation = NOT_OPERATING; 
@@ -167,7 +141,6 @@ void RoutineTask::checkManualControl(){
     Serial.println(control);
     if(control == 1){
       this->garden->state = MANUAL;
-      // checkChanges(root);
     }
   }
 }
@@ -186,11 +159,6 @@ void RoutineTask::checkAlarmDeactivated(JsonObject root){
 }
 
 void RoutineTask::checkChanges(JsonObject root){
-//  Serial.println("{ \"val\" : \"prima\"}");
-//  String u = root["undefined"];
-//  Serial.println(root);
-//  Serial.println(u);
-//  Serial.println("{ \"val\" : \"dopo\"}");
   if(root.containsKey("led1")){
     bool op = root["led1"];
     checkLed1(op);
@@ -209,8 +177,6 @@ void RoutineTask::checkChanges(JsonObject root){
   }
   if(root.containsKey("w")){
     int op = root["w"];
-   // String ocane = root["water"];
-    //Serial.println("{ \"val\" : " + ocane + "}");
     if(op == 0) return;
     checkIrrigation(op);
   }
@@ -238,41 +204,3 @@ void RoutineTask::checkIrrigation(int op){
   garden->servo->setSpeedServo(op);
   activateIrrigationSystem();
 }
-
-//void RoutineTask::setData(){
-// if (btChannel.available()){
-//    String msg = btChannel.readString();
-//    this->garden->led_b->turnOff();
-//    this->garden->state = MANUAL;
-//    Serial.println(msg);
-//  }
-//
-//  String msg = "";
-//
-//  
-// 
-//  
-////  int incomingByte = 0; // for incoming serial data
-////
-////  
-////  if (Serial.available() > 0) {
-////    // read the incoming byte:
-////    incomingByte = Serial.read();
-////
-////    // say what you got:
-////    
-////    Serial.print("{\"received\": 12 }");
-////    Serial.println(incomingByte, DEC);
-////  }
-////  
-//  
-////  //while(Serial.available() > 0){
-////  String msg = Serial.readString();
-////  Serial.println("serial: " + msg );
-////  if(msg != NULL){ 
-////  this->garden->led_b->turnOff();
-////  this->garden->state = MANUAL;
-////  //}
-////  }
-////  
-//}

@@ -19,7 +19,6 @@ class RoutineTask:public Task
     void tick();
     void turnOffAllLed();
     void activateIrrigationSystem();
-//    void setData();
     void checkManualControl();
     void checkChanges(JsonObject root);
     void checkAlarmDeactivated(JsonObject root);

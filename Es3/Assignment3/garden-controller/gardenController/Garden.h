@@ -39,10 +39,6 @@ class Garden {
         Led* led_d = new Led(LED_D);
         Led* led_esp = new Led(LED_ESP);
         SensorBoard* sensorBoard = new SensorBoard();
-        /*
-        Temp* temp = new Temp(TEMP);
-        Photoresistor* photoresistor = new Photoresistor(A1);
-        */
         ServoMotor *servo = new ServoMotorImpl(SERVO);
         statoIrrigation stateIrrigation;
         bool moveServo = false;
