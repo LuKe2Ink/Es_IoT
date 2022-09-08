@@ -1,3 +1,6 @@
+
+![WhatsApp Image 2022-09-04 at 12 20 57](https://user-images.githubusercontent.com/55741556/188315725-454e2767-dc89-4572-a2b1-0b69a874fd42.jpeg)
+
 # cose
 
 - Sulla seriale c'e' un limite di 64 bytes e tronca i messaggi
@@ -46,7 +49,61 @@ Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'ardu
 
 ## Controller
 
+Il controller gestirà tramite scheduler due task principali, la prima sarà quella del sistema di irrigazione, mentre l'altra sarà per il sistema della "casa".
 
+Il sistema di irrigazione avrà due stati:
+OPERATIVO: specificherà che il sistema è operativo e pronto per l'immediato utilizzo.
+NON OPERATIVO: specificherà che il sistema non sarà operativo. Ciò avverrà in seguito all'attivazione dell'impianto di irrigazione che porterà poi ad una 
+"pausa" dell'impianto per un determinato periodo di tempo;
+
+La "casa" invece avrà gli stati:
+AUTO: qui l'attivazione dei led e dell'impianto di irrigazione avverrà in maniera automatica a seconda del valori letti dai sensori.
+MANUAL: qui la "casa" verrà gestita tramite dispositivo mobile
+ALARM: in questo caso invece il sistema si metterà in attesa di ricevere dal dispositivo mobile un segnale che gli permettà di disattivare lo stato di allarme
+e di tornare allo stato precedente.
+
+Per la comunicazione tra App e Arduino utilizzeremo la libreria SoftwareSerial che consente la comunicazione seriale su altri pin digitali di una scheda Arduino.
+Tramite questa seriale Arduino riceverà dall'app il messaggio sottoforma di JSON con i cambiamente effettuati da app.
+
+```cpp
+case MANUAL:
+    checkAlarmCondition();
+      if(btChannel.available()){
+        String msg = btChannel.readString();
+       // Serial.println("manual try: " + msg);
+        deserializeJson(doc, msg);
+        JsonObject root = doc.as<JsonObject>();
+        checkChanges(root);
+      }
+      break;
+```
+
+Inoltre Arduino riceverà dal seriale principale i valori letti dall'esp sottoforma di JSON che utilizzerà per effettuare i check necessari per il corretto funzionamento
+della casa.
+
+```cpp
+void RoutineTask::readSerial(){
+  String inData = "";
+    if(Serial.available() > 0){
+      inData = Serial.readString();
+      //make inData a JSON obj
+      StaticJsonDocument<200> doc1;
+      DeserializationError error = deserializeJson(doc1, inData);
+      // Test if parsing succeeds.
+      if (error) {
+        Serial.println("failed serial msg: " + inData);
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        return;
+      }
+      int t = doc1["t"];
+      int b = doc1["b"];
+      //reads temp and lumionosity
+      garden->sensorBoard->temp->setTemp(t);
+      garden->sensorBoard->photoresistor->setValue(b);
+    }
+}
+```
 
 ## Dash-Board
 <!-- TODO aggiungere foto dashboard-->
@@ -60,7 +117,7 @@ Per indicare l'accensione/spegnimento dei led abbiamo usato delle immagini png c
 ## Sensor-Board
 
 Questa parte del assignment è svolta dall'esp, all'interno della funzione di setup l'esp si collega al wifi, successivamente abbiamo un server
-per poter gestire alcune richieste HTTP grazie alla libreria **ESPAsyncWebServer** all'indirizzo IP dell'esp che viene stampato subito prima.
+per poter gestire alcune richieste HTTP grazie alla libreria [**ESPAsyncWebServer**](https://github.com/me-no-dev/ESPAsyncWebServer) all'indirizzo IP dell'esp che viene stampato subito prima.
 
 ```cpp
     server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -157,3 +214,5 @@ function sendOnSerial() {
   })
 }
 ```
+
+Link video assignement: https://liveunibo-my.sharepoint.com/:v:/g/personal/michele_nardini2_studio_unibo_it/ESpQAYytkLlLpZoA7LcEQ3YBj_Ib3aXv_u_Frwlo3UYDlQ?e=fu7p5R

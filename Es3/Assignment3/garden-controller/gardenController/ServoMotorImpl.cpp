@@ -52,7 +52,7 @@ void ServoMotorImpl::moveServo()
         {
          previousMillis = servoMillis;
          this->servo.write(pos);
-         pos += 1; // da cambiare
+         pos += 1;
          i++;
         }
   }

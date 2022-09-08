@@ -12,6 +12,5 @@ class SensorBoard{
         SensorBoard();
         Photoresistor *photoresistor; 
         Temp *temp;
-        //Led* led;
 };
 #endif
