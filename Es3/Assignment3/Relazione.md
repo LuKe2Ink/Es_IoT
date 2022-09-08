@@ -46,6 +46,8 @@ Una volta fatto ciò spediremo i dati compattati alla seriale apposita dell'ardu
 
 ## Controller
 
+
+
 ## Dash-Board
 <!-- TODO aggiungere foto dashboard-->
 
